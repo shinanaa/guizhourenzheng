@@ -77,7 +77,7 @@
           that.title = res.recordTime;
           that.chongzhi = res.resultList;
         } else {
-          that.title = '暂无数据'
+          that.title = '暂无数据啊'
         }
       })
     },
