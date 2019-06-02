@@ -54,9 +54,9 @@ export const constantRouterMap = [
       meta: { title: '合格标准', icon: 'dashboard', noCache: true }
     },
     {
-      path: '/attestation/weights',
-      component: () => import('@/views/attestation/weights'),
-      name: 'weights',
+      path: '/attestation/setWeights',
+      component: () => import('@/views/attestation/setWeights'),
+      name: 'setWeights',
       meta: { title: '设置权重', icon: 'dashboard', noCache: true }
     }
     ]
