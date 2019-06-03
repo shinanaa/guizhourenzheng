@@ -51,6 +51,7 @@ export default {
     }
   },
   methods: {
+    // 是否只含有一个子集
     hasOneShowingChildren(children) {
       const showingChildren = children.filter(item => {
         return !item.hidden

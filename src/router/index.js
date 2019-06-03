@@ -34,30 +34,30 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/attestation/graduationRequire',
     alwaysShow: true, // will always show the root menu
-    meta: { title: '认证管理', icon: 'dashboard', roles: ['admin', 'editor'] },
+    meta: { title: '认证管理', icon: 'form', roles: ['admin', 'editor'] },
     children: [{
       path: '/attestation/graduationRequire',
       component: () => import('@/views/attestation/graduationRequire'),
       name: 'graduationRequire',
-      meta: { title: '毕业要求', icon: 'dashboard', noCache: true }
+      meta: { title: '毕业要求', icon: 'star', noCache: true }
     },
     {
       path: '/attestation/requireAndCourses',
       component: () => import('@/views/attestation/requireAndCourses'),
       name: 'requireAndCourses',
-      meta: { title: '要求与课程', icon: 'dashboard', noCache: true }
+      meta: { title: '要求与课程', icon: 'message', noCache: true }
     },
     {
       path: '/attestation/eligibility',
       component: () => import('@/views/attestation/eligibility'),
       name: 'eligibility',
-      meta: { title: '合格标准', icon: 'dashboard', noCache: true }
+      meta: { title: '合格标准', icon: 'example', noCache: true }
     },
     {
       path: '/attestation/setWeights',
       component: () => import('@/views/attestation/setWeights'),
       name: 'setWeights',
-      meta: { title: '设置权重', icon: 'dashboard', noCache: true }
+      meta: { title: '设置权重', icon: 'drag', noCache: true }
     }
     ]
   },

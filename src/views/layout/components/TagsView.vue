@@ -116,7 +116,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.tags-view-container {
+.tags-view-container {min-width:1120px;
   .tags-view-wrapper {
     background: #fff;
     height: 34px;

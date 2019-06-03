@@ -6,35 +6,19 @@
 
     <div class="right-menu">
       <error-log class="errLog-container right-menu-item"></error-log>
-
-      <el-tooltip effect="dark" :content="$t('navbar.screenfull')" placement="bottom">
-        <screenfull class="screenfull right-menu-item"></screenfull>
-      </el-tooltip>
-
-      <!--<lang-select class="international right-menu-item"></lang-select>-->
-
-      <el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">
-        <theme-picker class="theme-switch right-menu-item"></theme-picker>
-      </el-tooltip>
-
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+          <img class="user-avatar" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3809442943,2036280987&fm=27&gp=0.jpg">
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
+          <!--<router-link to="/">-->
             <el-dropdown-item>
-              {{$t('navbar.dashboard')}}
+              管理员
             </el-dropdown-item>
-          </router-link>
-          <!--<a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">-->
-            <!--<el-dropdown-item>-->
-              <!--{{$t('navbar.github')}}-->
-            <!--</el-dropdown-item>-->
-          <!--</a>-->
+          <!--</router-link>-->
           <el-dropdown-item divided>
-            <span @click="logout" style="display:block;">{{$t('navbar.logOut')}}</span>
+            <span @click="logout" style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -85,6 +69,7 @@ export default {
   height: 50px;
   line-height: 50px;
   border-radius: 0px !important;
+  min-width: 1120px;
   .hamburger-container {
     line-height: 58px;
     height: 50px;
