@@ -4,21 +4,9 @@
         <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
       </div>
       <div class="container">
-        <div class="tools">
-          <div class="tools-search">
-            <el-button type="info" class="choose" @click="chooseSchool">选择院系及专业</el-button>
-            <div class="search-fill">
-              <el-input placeholder="请输入..."></el-input>
-              <el-button type="primary" icon="el-icon-search">查询</el-button>
-            </div>
-          </div>
-          <div class="tools-btn">
-            <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible = true">创建</el-button>
-            <el-button type="warning" icon="el-icon-edit">编辑</el-button>
-            <el-button type="danger" icon="el-icon-delete">删除</el-button>
-          </div>
-        </div>
+        <table-tools @dialogFormVisible="dialogFormVisible = true" @chooseSchool="chooseSchool"></table-tools>
         <div class="content">
+          <!--表格-->
           <el-table
             :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
@@ -31,6 +19,7 @@
               </el-table-column>
             </template>
           </el-table>
+          <!--分页-->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -86,12 +75,13 @@
 <script>
   /* eslint-disable indent,quotes,semi,spaced-comment */
 
-  import ElButton from "element-ui/packages/button/src/button";
-  import ElInput from 'element-ui/packages/input/src/input';
+  import ElButton from 'element-ui/packages/button/src/button'
+  import ElInput from 'element-ui/packages/input/src/input'
+  import TableTools from '@/components/Guizhou/tableTools'
   export default {
     data: function() {
       return {
-        headers: [{
+        headers: [{ //表格头内容
           prop: 'amount',
           label: "要求序号"
         }, {
@@ -126,11 +116,11 @@
           label: "操作"
         }
         ],
-        chongzhi: [],
+        chongzhi: [], //表格内容
         currentPage: 1,
         total: 0,
-        pagesize: 10,
-        dialogFormVisible: false,
+        pagesize: 10, //表格列表每页显示条数
+        dialogFormVisible: false, //是否现在创建/编辑弹窗
         form: {
           name: '',
           region: '',
@@ -206,13 +196,14 @@
       },
       /* 学院选择树*/
       handleNodeClick(data) {
-        console.log(data);
+        console.log('点击了树');
+        this.isChoose = false;
       },
       chooseSchool() {
         this.isChoose = true;
       }
     },
-    components: { ElButton, ElInput },
+    components: { ElButton, ElInput, TableTools },
     created() {
       var that = this;
       this.$http.getRequest('getSourceCount').then(res => {
@@ -236,15 +227,6 @@
       .el-tree{background: #F8F8F8;}
     }
     .container{position: relative;min-width: 100%;margin-left: 200px;
-      .tools{
-        display: flex;justify-content: space-between;height:90px;align-items: center;padding: 0 30px;
-        .tools-search{display: flex;}
-        .choose{margin-right: 50px;}
-        .search-fill{
-          display: flex;
-        }
-        .search-fill .el-input{margin-right: 10px;}
-      }
       .content{padding: 0 30px;
         .el-pagination{
           padding: 30px 15px;text-align: right;}
@@ -255,8 +237,5 @@
     .container{margin-left: 0px;}
     .choose-school{width: 0px;}
   }
-
-
-
 
 </style>

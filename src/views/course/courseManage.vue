@@ -1,5 +1,5 @@
 <template>
-  <div class="requireAndCourses" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
+  <div class="courseManage" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
     <div class="choose-school">
       <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
     </div>
@@ -43,23 +43,11 @@
                 <el-option label="汉语国际教育" value="beijing"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="专业毕业要求" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标1" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标2" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标3" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标4" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="指标点数量" :label-width="formLabelWidth">
-              <el-input type="number" v-model="form.desc"></el-input>
+            <el-form-item label="课程" :label-width="formLabelWidth">
+              <el-select v-model="form.region" placeholder="请选择课程">
+                <el-option label="思想道德修养与法律基础" value="shanghai"></el-option>
+                <el-option label="马克思主义基本原理概论" value="beijing"></el-option>
+              </el-select>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -73,58 +61,32 @@
 </template>
 
 <script>
-  /* eslint-disable spaced-comment,semi,quotes */
-
-  import ElButton from "element-ui/packages/button/src/button";
-  import ElInput from 'element-ui/packages/input/src/input';
-  import TableTools from '@/components/Guizhou/tableTools';
+  import ElButton from 'element-ui/packages/button/src/button'
+  import ElInput from 'element-ui/packages/input/src/input'
+  import TableTools from '@/components/Guizhou/tableTools'
 
   export default {
     data: function() {
       return {
-        headers: [{ //表格头内容
+        headers: [{ // 表格头内容
           prop: 'amount',
-          label: "毕业要求"
+          label: '序号'
         }, {
           prop: 'sourceName',
-          label: "思想道德修养与法律基础"
+          label: '学年'
         }, {
           prop: 'rechargeMoney',
-          label: "马克思主义基本原理概论"
+          label: '专业'
         }, {
           prop: 'source',
-          label: "小学生品德发展与道德教育"
-        }, {
-          prop: 'withdrawMoney',
-          label: "小学课程论"
-        }, {
-          prop: 'amount',
-          label: "小学语文课程标准与教材解读"
-        }, {
-          prop: 'sourceName',
-          label: "小学数学课程标准与教材解读"
-        }, {
-          prop: 'rechargeMoney',
-          label: "中国教育史"
-        }, {
-          prop: 'source',
-          label: "小学教师专业发展入门"
-        }, {
-          prop: 'withdrawMoney',
-          label: "教育社会学"
-        }, {
-          prop: 'rechargeMoney',
-          label: "儿童创造教育"
-        }, {
-          prop: 'sourceName',
-          label: "操作"
+          label: '课程'
         }
         ],
-        chongzhi: [], //表格内容
+        chongzhi: [], // 表格内容
         currentPage: 1,
         total: 0,
-        pagesize: 10, //表格列表每页显示条数
-        dialogFormVisible: false, //是否现在创建/编辑弹窗
+        pagesize: 10, // 表格列表每页显示条数
+        dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
           name: '',
           region: '',
@@ -188,57 +150,57 @@
       }
     },
     methods: {
-      /*分页 val（每页显示数据）*/
+      /* 分页 val（每页显示数据）*/
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pagesize = val;
+        console.log(`每页 ${val} 条`)
+        this.pagesize = val
       },
-      /*分页 当前显示的页码*/
+      /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.currentPage = val;
+        console.log(`当前页: ${val}`)
+        this.currentPage = val
       },
       /* 学院选择树*/
       handleNodeClick(data) {
-        console.log('点击了树');
-        this.isChoose = false;
+        console.log('点击了树')
+        this.isChoose = false
       },
       chooseSchool() {
-        this.isChoose = true;
+        this.isChoose = true
       }
     },
     components: { ElButton, ElInput, TableTools },
     created() {
-      var that = this;
+      var that = this
       this.$http.getRequest('getSourceCount').then(res => {
         if (res.code === 1) {
           console.log(res)
-          that.title = res.recordTime;
-          that.chongzhi = res.resultList;
-          that.total = res.resultList.length;
+          that.title = res.recordTime
+          that.chongzhi = res.resultList
+          that.total = res.resultList.length
         } else {
           that.title = '暂无数据啊'
         }
       })
     },
-    name: 'require-and-courses'
+    name: 'course-manage'
   }
 </script>
 
 <style scoped rel="stylesheet/scss" lang="scss">
-  .requireAndCourses{position: relative;width:100%;height:100%;
-  .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
-  .el-tree{background: #F8F8F8;}
+  .courseManage{position: relative;width:100%;height:100%;
+    .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
+      .el-tree{background: #F8F8F8;}
+    }
+    .container{position: relative;min-width: 100%;margin-left: 200px;
+      .content{padding: 0 30px;
+        .el-pagination{
+          padding: 30px 15px;text-align: right;}
+      }
+    }
   }
-  .container{position: relative;min-width: 100%;margin-left: 200px;
-  .content{padding: 0 30px;
-  .el-pagination{
-    padding: 30px 15px;text-align: right;}
-  }
-  }
-  }
-  .requireAndCourses.hiddenChoose{
-  .container{margin-left: 0px;}
-  .choose-school{width: 0px;}
+  .courseManage.hiddenChoose{
+    .container{margin-left: 0px;}
+    .choose-school{width: 0px;}
   }
 </style>

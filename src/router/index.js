@@ -61,6 +61,44 @@ export const constantRouterMap = [
     }
     ]
   },
+  {
+    path: '/course',
+    component: Layout,
+    redirect: '/course/courseManage',
+    alwaysShow: true, // will always show the root menu
+    meta: { title: '课程管理', icon: 'form', roles: ['admin', 'editor'] },
+    children: [{
+      path: '/course/courseManage',
+      component: () => import('@/views/course/courseManage'),
+      name: 'courseManage',
+      meta: { title: '课程管理', icon: 'star', noCache: true }
+    },
+    {
+      path: '/course/knowledge',
+      component: () => import('@/views/course/knowledge'),
+      name: 'knowledge',
+      meta: { title: '章节知识点', icon: 'message', noCache: true }
+    },
+    {
+      path: '/course/indicator',
+      component: () => import('@/views/course/indicator'),
+      name: 'indicator',
+      meta: { title: '章节指标点', icon: 'example', noCache: true }
+    },
+    {
+      path: '/course/target',
+      component: () => import('@/views/course/target'),
+      name: 'target',
+      meta: { title: '课程目标', icon: 'drag', noCache: true }
+    },
+    {
+      path: '/course/granding',
+      component: () => import('@/views/course/granding'),
+      name: 'granding',
+      meta: { title: '课程评分标准', icon: 'drag', noCache: true }
+    }
+    ]
+  },
   /* {
     path: '',
     component: Layout,
