@@ -2,7 +2,8 @@
  * Created by qianggao on  2018/11/16
  */
 const i = {
-  loginOn: { url: 'login/login', isMock: false }, // 登录
+  loginOn: { url: 'login/login', isMock: true }, // 登录
+  getGraduationRequire: { url: 'attestation/graduationRequire', isMock: true }, // 获取毕业要求列表
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计

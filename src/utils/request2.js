@@ -94,7 +94,6 @@ const myHttp = {
     }
     // post请求时需要设定Content-Type
     config.data = param
-    console.info(config)
     return axios(config)
   },
   getRequest: function(url, param) {

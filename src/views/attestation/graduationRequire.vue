@@ -11,7 +11,7 @@
             :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
             border
-            style="width: 100%">
+            style="width: 100%;">
             <template v-for="header in headers">
               <el-table-column
                 :prop="header.prop"
@@ -81,41 +81,7 @@
   export default {
     data: function() {
       return {
-        headers: [{ //表格头内容
-          prop: 'amount',
-          label: "要求序号"
-        }, {
-          prop: 'sourceName',
-          label: "学院"
-        }, {
-          prop: 'rechargeMoney',
-          label: "专业"
-        }, {
-          prop: 'source',
-          label: "学年"
-        }, {
-          prop: 'withdrawMoney',
-          label: "专业毕业要求"
-        }, {
-          prop: 'amount',
-          label: "毕业培养目标1"
-        }, {
-          prop: 'sourceName',
-          label: "毕业培养目标2"
-        }, {
-          prop: 'rechargeMoney',
-          label: "毕业培养目标3"
-        }, {
-          prop: 'source',
-          label: "毕业培养目标4"
-        }, {
-          prop: 'withdrawMoney',
-          label: "指标点数量"
-        }, {
-          prop: 'sourceName',
-          label: "操作"
-        }
-        ],
+        headers: [],
         chongzhi: [], //表格内容
         currentPage: 1,
         total: 0,
@@ -131,7 +97,8 @@
           resource: '',
           desc: ''
         },
-        treeList: [{
+        treeList: [
+          {
           label: '文学院',
           children: [{
             label: '汉语言文学',
@@ -206,10 +173,10 @@
     components: { ElButton, ElInput, TableTools },
     created() {
       var that = this;
-      this.$http.getRequest('getSourceCount').then(res => {
+      this.$http.getRequest('getGraduationRequire').then(res => {
         if (res.code === 1) {
           console.log(res)
-          that.title = res.recordTime;
+          that.headers = res.headers;
           that.chongzhi = res.resultList;
           that.total = res.resultList.length;
         } else {

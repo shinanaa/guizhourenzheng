@@ -80,11 +80,11 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(valid => { // 验证
         if (valid) {
           this.loading = true
           this.loginForm.url = 'loginOn'
-          this.$store.dispatch('LoginByUsername', this.loginForm).then((result) => {
+          this.$store.dispatch('LoginByUsername', this.loginForm).then((result) => { // 提交vuex的actions 名字为LoginByUsername
             this.loading = false
             if (result.state === 0) {
               this.$router.push({ path: '/' })
