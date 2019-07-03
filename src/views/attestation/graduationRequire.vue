@@ -4,12 +4,13 @@
         <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
       </div>
       <div class="container">
-        <table-tools @dialogFormVisible="dialogFormVisible = true" @chooseSchool="chooseSchool"></table-tools>
+        <table-tools @createdContent="createdContent" @chooseSchool="isChoose = true" @editContent="editContent"></table-tools>
         <div class="content">
           <!--表格-->
           <el-table
             :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
+            @current-change="handleCurrentRow"
             border
             style="width: 100%;">
             <template v-for="header in headers">
@@ -29,7 +30,7 @@
             :total="total">
           </el-pagination>
           <!--创建-->
-          <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
+          <el-dialog :title="form.title" :visible.sync="dialogFormVisible">
             <el-form :model="form">
               <el-form-item label="院系" :label-width="formLabelWidth">
                 <el-select v-model="form.region" placeholder="请选择学院">
@@ -79,15 +80,16 @@
   import ElInput from 'element-ui/packages/input/src/input'
   import TableTools from '@/components/Guizhou/tableTools'
   export default {
-    data: function() {
+    data() {
       return {
-        headers: [],
+        headers: [], // 表头
         chongzhi: [], //表格内容
-        currentPage: 1,
-        total: 0,
-        pagesize: 10, //表格列表每页显示条数
+        currentPage: 1, // 分页 当前显示页
+        total: 0, // 分页 总条数
+        pagesize: 10, // 分页 表格列表每页显示条数
         dialogFormVisible: false, //是否现在创建/编辑弹窗
         form: {
+          title: '新增毕业要求', // 弹窗标题
           name: '',
           region: '',
           date1: '',
@@ -147,7 +149,8 @@
           label: 'label'
         },
         isChoose: false,
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        currentRow: null
       }
     },
     methods: {
@@ -166,8 +169,17 @@
         console.log('点击了树');
         this.isChoose = false;
       },
-      chooseSchool() {
-        this.isChoose = true;
+      createdContent() {
+        this.dialogFormVisible = true
+        this.form.title = '新增毕业要求'
+      },
+      editContent() {
+        this.dialogFormVisible = true
+        this.form.title = '修改毕业要求'
+        console.log(this.currentRow)
+      },
+      handleCurrentRow(val) {
+        this.currentRow = val;
       }
     },
     components: { ElButton, ElInput, TableTools },

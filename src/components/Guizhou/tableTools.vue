@@ -8,8 +8,8 @@
       </div>
     </div>
     <div class="tools-btn">
-      <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible">创建</el-button>
-      <el-button type="warning" icon="el-icon-edit">编辑</el-button>
+      <el-button type="success" icon="el-icon-plus" @click="createdContent">创建</el-button>
+      <el-button type="warning" icon="el-icon-edit" @click="editContent">编辑</el-button>
       <el-button type="danger" icon="el-icon-delete">删除</el-button>
     </div>
   </div>
@@ -18,11 +18,14 @@
 <script>
     export default {
       methods: {
-        dialogFormVisible() {
-          this.$emit('dialogFormVisible')
+        createdContent() {
+          this.$emit('createdContent')
         },
         chooseSchool() {
           this.$emit('chooseSchool')
+        },
+        editContent() {
+          this.$emit('editContent')
         }
       },
       name: 'table-tools'
