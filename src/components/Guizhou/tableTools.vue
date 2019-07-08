@@ -10,7 +10,7 @@
     <div class="tools-btn">
       <el-button type="success" icon="el-icon-plus" @click="createdContent">创建</el-button>
       <el-button type="warning" icon="el-icon-edit" @click="editContent">编辑</el-button>
-      <el-button type="danger" icon="el-icon-delete">删除</el-button>
+      <el-button type="danger" icon="el-icon-delete" @click="deleteContent">删除</el-button>
     </div>
   </div>
 </template>
@@ -26,6 +26,9 @@
         },
         editContent() {
           this.$emit('editContent')
+        },
+        deleteContent() {
+          this.$emit('deleteContent')
         }
       },
       name: 'table-tools'

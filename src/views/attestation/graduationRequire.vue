@@ -4,7 +4,12 @@
         <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
       </div>
       <div class="container">
-        <table-tools @createdContent="createdContent" @chooseSchool="isChoose = true" @editContent="editContent"></table-tools>
+        <table-tools
+          @createdContent="createdContent"
+          @chooseSchool="isChoose = true"
+          @editContent="editContent"
+          @deleteContent="deleteContent"
+        ></table-tools>
         <div class="content">
           <!--表格-->
           <el-table
@@ -29,43 +34,49 @@
             layout="prev, pager, next, jumper"
             :total="total">
           </el-pagination>
-          <!--创建-->
+          <!--创建/编辑-->
           <el-dialog :title="form.title" :visible.sync="dialogFormVisible">
             <el-form :model="form">
               <el-form-item label="院系" :label-width="formLabelWidth">
-                <el-select v-model="form.region" placeholder="请选择学院">
-                  <el-option label="文学院" value="shanghai"></el-option>
-                  <el-option label="历史与政治" value="beijing"></el-option>
+                <el-select v-model="form.college" placeholder="请选择学院">
+                  <el-option label="文学院" value="文学院"></el-option>
+                  <el-option label="历史与政治" value="历史与政治"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="专业" :label-width="formLabelWidth">
-                <el-select v-model="form.region" placeholder="请选择专业">
-                  <el-option label="汉语言文学" value="shanghai"></el-option>
-                  <el-option label="汉语国际教育" value="beijing"></el-option>
+                <el-select v-model="form.major" placeholder="请选择专业">
+                  <el-option label="汉语言文学" value="汉语言文学"></el-option>
+                  <el-option label="汉语国际教育" value="汉语国际教育"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="学年" :label-width="formLabelWidth">
+                <el-select v-model="form.schoolYear" placeholder="请选择学年">
+                  <el-option label="2018" value="2018"></el-option>
+                  <el-option label="2019" value="2019"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="专业毕业要求" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="form.require"></el-input>
               </el-form-item>
               <el-form-item label="毕业培养目标1" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="form.target1"></el-input>
               </el-form-item>
               <el-form-item label="毕业培养目标2" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="form.target2"></el-input>
               </el-form-item>
               <el-form-item label="毕业培养目标3" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="form.target3"></el-input>
               </el-form-item>
               <el-form-item label="毕业培养目标4" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="form.target4"></el-input>
               </el-form-item>
               <el-form-item label="指标点数量" :label-width="formLabelWidth">
-                <el-input type="number" v-model="form.desc"></el-input>
+                <el-input type="number" v-model="form.number"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+              <el-button type="primary" @click="sureDialog">确 定</el-button>
             </div>
           </el-dialog>
         </div>
@@ -90,14 +101,16 @@
         dialogFormVisible: false, //是否现在创建/编辑弹窗
         form: {
           title: '新增毕业要求', // 弹窗标题
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          order: '',
+          college: '',
+          major: '',
+          number: '',
+          require: '',
+          schoolYear: '',
+          target1: '',
+          target2: '',
+          target3: '',
+          target4: ''
         },
         treeList: [
           {
@@ -169,17 +182,56 @@
         console.log('点击了树');
         this.isChoose = false;
       },
+      /* 创建时修改弹窗title */
       createdContent() {
         this.dialogFormVisible = true
         this.form.title = '新增毕业要求'
       },
+      /* 编辑表格内容 */
       editContent() {
-        this.dialogFormVisible = true
-        this.form.title = '修改毕业要求'
-        console.log(this.currentRow)
+        if (this.currentRow) {
+          this.dialogFormVisible = true
+          this.form.title = '修改毕业要求'
+          this.form = this.currentRow
+          console.log(this.form)
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请先选择要修改的数据',
+            type: 'warning'
+          });
+        }
       },
       handleCurrentRow(val) {
         this.currentRow = val;
+      },
+      sureDialog() {
+        this.dialogFormVisible = false
+        if (this.form.title === '新增毕业要求') {
+          console.log(this.form);
+          this.$http.postRequest('addDialog', this.form).then(res => {
+            if (res.status === 0) {
+              this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'success'
+              });
+            }
+          })
+        } else if (this.form.title === '修改毕业要求') {
+          // this.$http.postRequest('editDialog', this.form)
+        }
+      },
+      deleteContent() {
+        if (this.currentRow) {
+          // this.$http.postRequest('editDialog', this.currentRow.order)
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请先选择要删除的数据',
+            type: 'warning'
+          });
+        }
       }
     },
     components: { ElButton, ElInput, TableTools },

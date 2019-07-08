@@ -4,6 +4,9 @@
 const i = {
   loginOn: { url: 'login/login', isMock: true }, // 登录
   getGraduationRequire: { url: 'attestation/graduationRequire', isMock: true }, // 获取毕业要求列表
+  addDialog: { url: 'attestation/addDialog', isMock: true }, // 添加表格数据
+  editDialog: { url: 'attestation/editDialog', isMock: true }, // 编辑选中表格内容
+  deleteDialog: { url: 'attestation/deleteDialog', isMock: true }, // 删除选中表格内容
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
