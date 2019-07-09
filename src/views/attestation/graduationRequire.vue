@@ -9,6 +9,7 @@
           @chooseSchool="isChoose = true"
           @editContent="editContent"
           @deleteContent="deleteContent"
+          @searchData="searchData"
         ></table-tools>
         <div class="content">
           <!--表格-->
@@ -85,8 +86,6 @@
 </template>
 
 <script>
-  /* eslint-disable indent,quotes,semi,spaced-comment */
-
   import ElButton from 'element-ui/packages/button/src/button'
   import ElInput from 'element-ui/packages/input/src/input'
   import TableTools from '@/components/Guizhou/tableTools'
@@ -94,13 +93,13 @@
     data() {
       return {
         headers: [], // 表头
-        chongzhi: [], //表格内容
+        chongzhi: [], // 表格内容
         currentPage: 1, // 分页 当前显示页
         total: 0, // 分页 总条数
         pagesize: 10, // 分页 表格列表每页显示条数
-        dialogFormVisible: false, //是否现在创建/编辑弹窗
+        dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
-          title: '新增毕业要求', // 弹窗标题
+          title: '', // 弹窗标题
           order: '',
           college: '',
           major: '',
@@ -114,49 +113,49 @@
         },
         treeList: [
           {
-          label: '文学院',
-          children: [{
-            label: '汉语言文学',
+            label: '文学院',
             children: [{
-              label: '2018学年'
+              label: '汉语言文学',
+              children: [{
+                label: '2018学年'
+              }, {
+                label: '2019学年'
+              }]
             }, {
-              label: '2019学年'
+              label: '汉语国际教育',
+              children: [{
+                label: '2018学年'
+              }, {
+                label: '2019学年'
+              }]
             }]
           }, {
-            label: '汉语国际教育',
+            label: '历史与政治学院',
             children: [{
-              label: '2018学年'
+              label: '思想政治教育',
+              children: [{
+                label: '2018学年'
+              }]
             }, {
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '历史与政治学院',
-          children: [{
-            label: '思想政治教育',
-            children: [{
-              label: '2018学年'
+              label: '历史学',
+              children: [{
+                label: '2019学年'
+              }]
             }]
           }, {
-            label: '历史学',
+            label: '教育科学学院',
             children: [{
-              label: '2019学年'
+              label: '教育学',
+              children: [{
+                label: '2019学年'
+              }]
+            }, {
+              label: '小学教育',
+              children: [{
+                label: '2019学年'
+              }]
             }]
-          }]
-        }, {
-          label: '教育科学学院',
-          children: [{
-            label: '教育学',
-            children: [{
-              label: '2019学年'
-            }]
-          }, {
-            label: '小学教育',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }],
+          }],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -167,20 +166,20 @@
       }
     },
     methods: {
-      /*分页 val（每页显示数据）*/
+      /* 分页 val（每页显示数据）*/
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pagesize = val;
+        console.log(`每页 ${val} 条`)
+        this.pagesize = val
       },
-      /*分页 当前显示的页码*/
+      /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.currentPage = val;
+        console.log(`当前页: ${val}`)
+        this.currentPage = val
       },
       /* 学院选择树*/
       handleNodeClick(data) {
-        console.log('点击了树');
-        this.isChoose = false;
+        console.log('点击了树')
+        this.isChoose = false
       },
       /* 创建时修改弹窗title */
       createdContent() {
@@ -191,65 +190,96 @@
       editContent() {
         if (this.currentRow) {
           this.dialogFormVisible = true
-          this.form.title = '修改毕业要求'
           this.form = this.currentRow
-          console.log(this.form)
+          this.form.title = '修改毕业要求'
         } else {
           this.$message({
             showClose: true,
             message: '请先选择要修改的数据',
             type: 'warning'
-          });
+          })
         }
       },
       handleCurrentRow(val) {
-        this.currentRow = val;
+        this.currentRow = val
       },
       sureDialog() {
         this.dialogFormVisible = false
         if (this.form.title === '新增毕业要求') {
-          console.log(this.form);
           this.$http.postRequest('addDialog', this.form).then(res => {
             if (res.status === 0) {
               this.$message({
                 showClose: true,
                 message: res.msg,
                 type: 'success'
-              });
+              })
             }
           })
         } else if (this.form.title === '修改毕业要求') {
-          // this.$http.postRequest('editDialog', this.form)
+          this.$http.postRequest('editDialog', this.form).then(res => {
+            if (res.status === 0) {
+              this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'success'
+              })
+            }
+          })
         }
       },
       deleteContent() {
         if (this.currentRow) {
-          // this.$http.postRequest('editDialog', this.currentRow.order)
+          this.$http.postRequest('deleteDialog', this.currentRow.order).then(res => {
+            if (res.status === 0) {
+              this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'success'
+              })
+            }
+          })
         } else {
           this.$message({
             showClose: true,
             message: '请先选择要删除的数据',
             type: 'warning'
-          });
+          })
+        }
+      },
+      // 搜索查询
+      searchData(param) {
+        if (param) {
+          var that = this
+          this.$http.getRequest('getSearchData', param).then(res => {
+            if (res.code === 1) {
+              that.chongzhi = res.resultList
+              that.total = res.resultList.length
+            }
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '查询内容不可为空',
+            type: 'error'
+          })
         }
       }
     },
     components: { ElButton, ElInput, TableTools },
     created() {
-      var that = this;
+      var that = this
       this.$http.getRequest('getGraduationRequire').then(res => {
         if (res.code === 1) {
-          console.log(res)
-          that.headers = res.headers;
-          that.chongzhi = res.resultList;
-          that.total = res.resultList.length;
+          that.headers = res.headers
+          that.chongzhi = res.resultList
+          that.total = res.resultList.length
         } else {
           that.title = '暂无数据啊'
         }
       })
     },
     name: 'graduation-require'
-    }
+  }
 </script>
 
 <style scoped rel="stylesheet/scss" lang="scss">

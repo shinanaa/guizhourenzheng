@@ -3,8 +3,8 @@
     <div class="tools-search">
       <el-button type="info" class="choose" @click="chooseSchool">选择院系及专业</el-button>
       <div class="search-fill">
-        <el-input placeholder="请输入..."></el-input>
-        <el-button type="primary" icon="el-icon-search">查询</el-button>
+        <el-input placeholder="请输入..." v-model="search"></el-input>
+        <el-button type="primary" icon="el-icon-search" @click="searchData">查询</el-button>
       </div>
     </div>
     <div class="tools-btn">
@@ -17,6 +17,11 @@
 
 <script>
     export default {
+      data() {
+        return {
+          'search': ''
+        }
+      },
       methods: {
         createdContent() {
           this.$emit('createdContent')
@@ -29,6 +34,9 @@
         },
         deleteContent() {
           this.$emit('deleteContent')
+        },
+        searchData() {
+          this.$emit('searchData', this.search)
         }
       },
       name: 'table-tools'

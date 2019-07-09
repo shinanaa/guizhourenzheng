@@ -7,6 +7,7 @@ const i = {
   addDialog: { url: 'attestation/addDialog', isMock: true }, // 添加表格数据
   editDialog: { url: 'attestation/editDialog', isMock: true }, // 编辑选中表格内容
   deleteDialog: { url: 'attestation/deleteDialog', isMock: true }, // 删除选中表格内容
+  getSearchData: { url: 'attestation/getSearchData', isMock: true }, // 获取查询的数据
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
