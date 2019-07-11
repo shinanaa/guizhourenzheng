@@ -7,12 +7,13 @@
           ref="tree"
           show-checkbox
           accordion
-          @node-click="handleNodeClick"></el-tree>
+          @node-click="handleNodeClick"
+          @check-change="handleCheckChange"></el-tree>
       </div>
       <div class="container">
         <table-tools
           @createdContent="createdContent"
-          @chooseSchool="chooseSchool"
+          @chooseSchool="isChoose = true"
           @editContent="editContent"
           @deleteContent="deleteContent"
           @searchData="searchData"
@@ -23,7 +24,6 @@
             :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
             @current-change="handleCurrentRow"
-            @check-change="handleCheckChange"
             border
             style="width: 100%;">
             <template v-for="header in headers">
@@ -46,18 +46,16 @@
             :total="total">
           </el-pagination>
           <!--创建/编辑-->
-          <el-dialog :title="form.title" :visible.sync="dialogFormVisible">
+          <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
             <el-form :model="form" :rules="rules" ref="dialogForm">
               <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
-                <el-select v-model="form.college" placeholder="请选择学院">
-                  <el-option label="文学院" value="文学院"></el-option>
-                  <el-option label="历史与政治" value="历史与政治"></el-option>
+                <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
+                  <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
                 <el-select v-model="form.major" placeholder="请选择专业">
-                  <el-option label="汉语言文学" value="汉语言文学"></el-option>
-                  <el-option label="汉语国际教育" value="汉语国际教育"></el-option>
+                  <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
@@ -72,7 +70,8 @@
               <el-form-item label="毕业培养目标1" :label-width="formLabelWidth">
                 <el-input type="textarea" v-model="form.target1"></el-input>
               </el-form-item>
-              <el-form-item label="毕业培养目标2" :label-width="formLabelWidth
+              <el-form-item label="毕业培养目标2" :label-width="formLabelWidth">
+                <el-input type="textarea" v-model="form.target2"></el-input>
               </el-form-item>
               <el-form-item label="毕业培养目标3" :label-width="formLabelWidth">
                 <el-input type="textarea" v-model="form.target3"></el-input>
@@ -85,7 +84,7 @@
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button @click="resetForm">取 消</el-button>
               <el-button type="primary" @click="sureDialog">确 定</el-button>
             </div>
           </el-dialog>
@@ -137,7 +136,9 @@
             { required: true, message: '请输入指标点数量', trigger: 'blur' }
           ]
         },
+        school: [],
         treeList: [],
+        majorList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -160,6 +161,11 @@
           that.title = '暂无数据'
         }
       })
+      this.$http.getRequest('getChooseData').then(res => {
+        if (res.status === 1) {
+          this.treeList = res.schoolData
+        }
+      })
     },
     methods: {
       /* 分页 val（每页显示数据）*/
@@ -178,15 +184,13 @@
         // this.isChoose = false
       },
       handleCheckChange(data, checked, indeterminate) {
-        console.log(data, checked, indeterminate)
+        console.log(data.label, checked, indeterminate)
+        // if (indeterminate) {}
       },
-      chooseSchool() {
-        this.$http.getRequest('getChooseData').then(res => {
-          if (res.status === 1) {
-            this.isChoose = true
-            this.treeList = res.schoolData
-          }
-        })
+      resetForm() {
+        this.dialogFormVisible = false
+        this.$refs.dialogForm.resetFields()
+        this.form = {}
       },
       /* 创建时修改弹窗title */
       createdContent() {
@@ -279,6 +283,13 @@
             type: 'error'
           })
         }
+      },
+      handleChange(value) {
+        console.log(value)
+      },
+      selectCollege(data) {
+        console.log(data)
+        this.majorList = this.treeList[data].children
       }
     }
   }
