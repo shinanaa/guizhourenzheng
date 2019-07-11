@@ -7,8 +7,7 @@
           ref="tree"
           show-checkbox
           accordion
-          @node-click="handleNodeClick"
-          @check-change="handleCheckChange"></el-tree>
+          @node-click="handleCheckChange"></el-tree>
       </div>
       <div class="container">
         <table-tools
@@ -178,14 +177,11 @@
         console.log(`当前页: ${val}`)
         this.currentPage = val
       },
-      /* 学院选择树*/
-      handleNodeClick(data) {
-        // console.log(data.label)
-        // this.isChoose = false
-      },
       handleCheckChange(data, checked, indeterminate) {
-        console.log(data.label, checked, indeterminate)
-        // if (indeterminate) {}
+        if (checked) {
+          // console.log(data.id)
+          console.log(this.$refs.tree.getCheckedNodes())
+        }
       },
       resetForm() {
         this.dialogFormVisible = false
