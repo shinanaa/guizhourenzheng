@@ -32,7 +32,7 @@
               </el-table-column>
             </template>
             <div slot="empty">
-                <p>{{title}}</p>
+                <p>{{emptyText}}</p>
             </div>
           </el-table>
           <!--分页-->
@@ -98,7 +98,7 @@
     name: 'graduation-require',
     data() {
       return {
-        title: '暂无数据',
+        emptyText: '暂无数据',
         headers: [], // 表头
         tableList: [], // 表格内容
         currentPage: 1, // 分页 当前显示页
@@ -150,16 +150,7 @@
     },
     components: { TableTools },
     created() {
-      var that = this
-      this.$http.getRequest('getGraduationRequire').then(res => {
-        if (res.code === 1) {
-          that.headers = res.headers
-          that.tableList = res.resultList
-          that.total = res.resultList.length
-        } else {
-          that.title = '暂无数据'
-        }
-      })
+      this.getGraduationRequire()
       this.$http.getRequest('getChooseData').then(res => {
         if (res.status === 1) {
           this.treeList = res.schoolData
@@ -177,15 +168,17 @@
         console.log(`当前页: ${val}`)
         this.currentPage = val
       },
+      // tree选择状态切换时触发此方法
       handleCheckChange(data, checked, indeterminate) {
         if (checked) {
           // console.log(data.id)
           console.log(this.$refs.tree.getCheckedNodes())
         }
       },
+      // 重置form表单
       resetForm() {
         this.dialogFormVisible = false
-        this.$refs.dialogForm.resetFields()
+        this.$refs.dialogForm.resetFields() // 取消验证状态颜色
         this.form = {}
       },
       /* 创建时修改弹窗title */
@@ -217,25 +210,11 @@
           if (valid) {
             this.dialogFormVisible = false
             if (this.form.title === '新增毕业要求') {
-              this.$http.postRequest('addDialog', this.form).then(res => {
-                if (res.status === 0) {
-                  this.$message({
-                    showClose: true,
-                    message: res.msg,
-                    type: 'success'
-                  })
-                }
-              })
+              this.operateForm('addDialog', this.form)
+              this.getGraduationRequire()
             } else if (this.form.title === '修改毕业要求') {
-              this.$http.postRequest('editDialog', this.form).then(res => {
-                if (res.status === 0) {
-                  this.$message({
-                    showClose: true,
-                    message: res.msg,
-                    type: 'success'
-                  })
-                }
-              })
+              this.operateForm('editDialog', this.form)
+              this.getGraduationRequire()
             }
           } else {
             return false
@@ -244,15 +223,8 @@
       },
       deleteContent() {
         if (this.currentRow) {
-          this.$http.postRequest('deleteDialog', this.currentRow.order).then(res => {
-            if (res.status === 0) {
-              this.$message({
-                showClose: true,
-                message: res.msg,
-                type: 'success'
-              })
-            }
-          })
+          this.operateForm('deleteDialog', this.currentRow.order)
+          this.getGraduationRequire()
         } else {
           this.$message({
             showClose: true,
@@ -269,7 +241,7 @@
             if (res.code === 1) {
               that.tableList = res.resultList
               that.total = res.resultList.length
-              that.title = '无相关内容，请您调整查询内容'
+              that.emptyText = '无相关内容，请您调整查询内容'
             }
           })
         } else {
@@ -286,11 +258,35 @@
       selectCollege(data) {
         console.log(data)
         this.majorList = this.treeList[data].children
+      },
+      // 获取页面数据
+      getGraduationRequire() {
+        var that = this
+        this.$http.getRequest('getGraduationRequire').then(res => {
+          if (res.code === 1) {
+            that.headers = res.headers
+            that.tableList = res.resultList
+            that.total = res.resultList.length
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
+      },
+      // 操作表单
+      operateForm(url, params) {
+        this.$http.postRequest(url, params).then(res => {
+          if (res.status === 0) {
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: 'success'
+            })
+          }
+        })
       }
     }
   }
 </script>
-
 <style scoped rel="stylesheet/scss" lang="scss">
   .graduationRequire{position: relative;width:100%;height:100%;
     .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;background: #F8F8F8;
@@ -307,5 +303,4 @@
     .container{margin-left: 0px;}
     .choose-school{width: 0px;}
   }
-
 </style>
