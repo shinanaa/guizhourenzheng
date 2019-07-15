@@ -94,50 +94,7 @@
           resource: '',
           desc: ''
         },
-        treeList: [{
-          label: '文学院',
-          children: [{
-            label: '汉语言文学',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }, {
-            label: '汉语国际教育',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '历史与政治学院',
-          children: [{
-            label: '思想政治教育',
-            children: [{
-              label: '2018学年'
-            }]
-          }, {
-            label: '历史学',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '教育科学学院',
-          children: [{
-            label: '教育学',
-            children: [{
-              label: '2019学年'
-            }]
-          }, {
-            label: '小学教育',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }],
+        treeList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -148,6 +105,11 @@
     },
     created() {
       this.getRequireCourses()
+      this.$http.getRequest('getChooseData').then(res => {
+        if (res.status === 1) {
+          this.treeList = res.schoolData
+        }
+      })
     },
     methods: {
       /* 分页 val（每页显示数据）*/
