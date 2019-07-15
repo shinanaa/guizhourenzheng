@@ -1,17 +1,17 @@
 <template>
   <div class="requireAndCourses" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
     <div class="choose-school">
-      <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+      <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick" show-checkbox></el-tree>
     </div>
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true" @chooseSchool="chooseSchool"></table-tools>
       <div class="content">
         <!--表格-->
         <el-table
-          :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           highlight-current-row
           border
-          style="width: 100%">
+          style="width: 100%;text-align: center;">
           <template v-for="header in headers">
             <el-table-column
               :prop="header.prop"
@@ -32,9 +32,10 @@
         <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
           <el-form :model="form">
             <el-form-item label="院系" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择学院">
-                <el-option label="文学院" value="shanghai"></el-option>
-                <el-option label="历史与政治" value="beijing"></el-option>
+              <el-select v-model="form.region" placeholder="难度">
+                <el-option label="H" value="H"></el-option>
+                <el-option label="M" value="M"></el-option>
+                <el-option label="L" value="L"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="专业" :label-width="formLabelWidth">
@@ -73,58 +74,16 @@
 </template>
 
 <script>
-  /* eslint-disable spaced-comment,semi,quotes */
-
-  import ElButton from "element-ui/packages/button/src/button";
-  import ElInput from 'element-ui/packages/input/src/input';
-  import TableTools from '@/components/Guizhou/tableTools';
-
+  import TableTools from '@/components/Guizhou/tableTools'
   export default {
     data: function() {
       return {
-        headers: [{ //表格头内容
-          prop: 'amount',
-          label: "毕业要求"
-        }, {
-          prop: 'sourceName',
-          label: "思想道德修养与法律基础"
-        }, {
-          prop: 'rechargeMoney',
-          label: "马克思主义基本原理概论"
-        }, {
-          prop: 'source',
-          label: "小学生品德发展与道德教育"
-        }, {
-          prop: 'withdrawMoney',
-          label: "小学课程论"
-        }, {
-          prop: 'amount',
-          label: "小学语文课程标准与教材解读"
-        }, {
-          prop: 'sourceName',
-          label: "小学数学课程标准与教材解读"
-        }, {
-          prop: 'rechargeMoney',
-          label: "中国教育史"
-        }, {
-          prop: 'source',
-          label: "小学教师专业发展入门"
-        }, {
-          prop: 'withdrawMoney',
-          label: "教育社会学"
-        }, {
-          prop: 'rechargeMoney',
-          label: "儿童创造教育"
-        }, {
-          prop: 'sourceName',
-          label: "操作"
-        }
-        ],
-        chongzhi: [], //表格内容
+        headers: [],
+        tableList: [], // 表格内容
         currentPage: 1,
         total: 0,
-        pagesize: 10, //表格列表每页显示条数
-        dialogFormVisible: false, //是否现在创建/编辑弹窗
+        pagesize: 10, // 表格列表每页显示条数
+        dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
           name: '',
           region: '',
@@ -187,40 +146,40 @@
         formLabelWidth: '120px'
       }
     },
+    created() {
+      this.getRequireCourses()
+    },
     methods: {
-      /*分页 val（每页显示数据）*/
+      /* 分页 val（每页显示数据）*/
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pagesize = val;
+        this.pagesize = val
       },
-      /*分页 当前显示的页码*/
+      /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.currentPage = val;
+        this.currentPage = val
       },
       /* 学院选择树*/
       handleNodeClick(data) {
-        console.log('点击了树');
-        this.isChoose = false;
+        // this.isChoose = false;
       },
       chooseSchool() {
-        this.isChoose = true;
+        this.isChoose = true
+      },
+      // 方法封装 获取页面全部数据
+      getRequireCourses() {
+        var that = this
+        this.$http.getRequest('getRequireCourses').then(res => {
+          if (res.code === 1) {
+            that.headers = res.headers
+            that.tableList = res.resultList
+            that.total = res.resultList.length
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
       }
     },
-    components: { ElButton, ElInput, TableTools },
-    created() {
-      var that = this;
-      this.$http.getRequest('getSourceCount').then(res => {
-        if (res.code === 1) {
-          console.log(res)
-          that.title = res.recordTime;
-          that.chongzhi = res.resultList;
-          that.total = res.resultList.length;
-        } else {
-          that.title = '暂无数据啊'
-        }
-      })
-    },
+    components: { TableTools },
     name: 'require-and-courses'
   }
 </script>
@@ -230,7 +189,7 @@
   .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
   .el-tree{background: #F8F8F8;}
   }
-  .container{position: relative;min-width: 100%;margin-left: 200px;
+  .container{position: relative;margin-left: 200px;
   .content{padding: 0 30px;
   .el-pagination{
     padding: 30px 15px;text-align: right;}
