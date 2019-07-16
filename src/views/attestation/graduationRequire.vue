@@ -148,7 +148,7 @@
     },
     components: { TableTools },
     created() {
-      this.getGraduationRequire()
+      this.getTableData('getGraduationRequire')
       this.$http.getRequest('getChooseData').then(res => {
         if (res.status === 1) {
           this.treeList = res.schoolData
@@ -198,7 +198,7 @@
       deleteContent() {
         if (this.currentRow) {
           this.operateForm('deleteDialog', this.currentRow.order)
-          this.getGraduationRequire()
+          this.getTableData('getGraduationRequire')
         } else {
           this.$message({
             showClose: true,
@@ -233,16 +233,15 @@
             this.dialogFormVisible = false
             if (this.form.title === '新增毕业要求') {
               this.operateForm('addDialog', this.form)
-              this.getGraduationRequire()
             } else if (this.form.title === '修改毕业要求') {
               this.operateForm('editDialog', this.form)
-              this.getGraduationRequire()
             }
+            this.getTableData('getGraduationRequire')
+            this.resetForm()
           } else {
             return false
           }
         })
-        this.resetForm()
       },
       // 弹窗点击取消重置form表单
       resetForm() {
@@ -250,16 +249,15 @@
         this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
         this.majorList = []
-        console.log(this.currentRow)
       },
       // 弹框选择院校
       selectCollege(data) {
         this.majorList = this.treeList[data].children
       },
       // 方法封装 获取页面全部数据
-      getGraduationRequire() {
+      getTableData(urlName) {
         var that = this
-        this.$http.getRequest('getGraduationRequire').then(res => {
+        this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
             that.headers = res.headers
             that.tableList = res.resultList
