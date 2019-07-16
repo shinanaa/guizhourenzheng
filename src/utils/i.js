@@ -4,6 +4,7 @@
 const i = {
   loginOn: { url: 'login/login', isMock: true }, // 登录
   getGraduationRequire: { url: 'attestation/graduationRequire', isMock: true }, // 获取毕业要求列表
+  getRequireCourses: { url: 'attestation/getRequireCourses', isMock: true }, // 获取要求与课程列表
   addDialog: { url: 'attestation/addDialog', isMock: true }, // 添加表格数据
   editDialog: { url: 'attestation/editDialog', isMock: true }, // 编辑选中表格内容
   deleteDialog: { url: 'attestation/deleteDialog', isMock: true }, // 删除选中表格内容

@@ -1,17 +1,24 @@
 <template>
   <div class="requireAndCourses" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
     <div class="choose-school">
-      <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+      <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick" show-checkbox></el-tree>
     </div>
     <div class="container">
-      <table-tools @dialogFormVisible="dialogFormVisible = true" @chooseSchool="chooseSchool"></table-tools>
+      <table-tools @dialogFormVisible="dialogFormVisible = true"
+                   @chooseSchool="chooseSchool"
+                   @createdContent="createdContent"
+                   @editContent="editContent"
+                   @deleteContent="deleteContent"
+                   @searchData="searchData"
+      ></table-tools>
       <div class="content">
         <!--表格-->
         <el-table
-          :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           highlight-current-row
+          @current-change="handleCurrentRow"
           border
-          style="width: 100%">
+          style="width: 100%;text-align: center;">
           <template v-for="header in headers">
             <el-table-column
               :prop="header.prop"
@@ -29,42 +36,26 @@
           :total="total">
         </el-pagination>
         <!--创建-->
-        <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
-            <el-form-item label="院系" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择学院">
-                <el-option label="文学院" value="shanghai"></el-option>
-                <el-option label="历史与政治" value="beijing"></el-option>
+        <el-dialog :title="this.form.title" :visible.sync="dialogFormVisible" :before-close="resetForm">
+          <el-form :model="form" :rules="rules" ref="dialogForm">
+            <el-form-item label="思想道德修养与法律基础" :label-width="formLabelWidth" prop="kc_sf">
+              <el-select v-model="form.kc_sf" placeholder="难度">
+                <el-option label="H" value="H"></el-option>
+                <el-option label="M" value="M"></el-option>
+                <el-option label="L" value="L"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="专业" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择专业">
-                <el-option label="汉语言文学" value="shanghai"></el-option>
-                <el-option label="汉语国际教育" value="beijing"></el-option>
+            <el-form-item label="小学生品德发展与道德教育" :label-width="formLabelWidth" prop="kc_pd">
+              <el-select v-model="form.kc_pd" placeholder="难度">
+                <el-option label="H" value="H"></el-option>
+                <el-option label="M" value="M"></el-option>
+                <el-option label="L" value="L"></el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="专业毕业要求" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标1" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标2" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标3" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="毕业培养目标4" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="指标点数量" :label-width="formLabelWidth">
-              <el-input type="number" v-model="form.desc"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button @click="resetForm">取 消</el-button>
+            <el-button type="primary" @click="sureDialog">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -73,154 +64,176 @@
 </template>
 
 <script>
-  /* eslint-disable spaced-comment,semi,quotes */
-
-  import ElButton from "element-ui/packages/button/src/button";
-  import ElInput from 'element-ui/packages/input/src/input';
-  import TableTools from '@/components/Guizhou/tableTools';
-
+  import TableTools from '@/components/Guizhou/tableTools'
   export default {
     data: function() {
       return {
-        headers: [{ //表格头内容
-          prop: 'amount',
-          label: "毕业要求"
-        }, {
-          prop: 'sourceName',
-          label: "思想道德修养与法律基础"
-        }, {
-          prop: 'rechargeMoney',
-          label: "马克思主义基本原理概论"
-        }, {
-          prop: 'source',
-          label: "小学生品德发展与道德教育"
-        }, {
-          prop: 'withdrawMoney',
-          label: "小学课程论"
-        }, {
-          prop: 'amount',
-          label: "小学语文课程标准与教材解读"
-        }, {
-          prop: 'sourceName',
-          label: "小学数学课程标准与教材解读"
-        }, {
-          prop: 'rechargeMoney',
-          label: "中国教育史"
-        }, {
-          prop: 'source',
-          label: "小学教师专业发展入门"
-        }, {
-          prop: 'withdrawMoney',
-          label: "教育社会学"
-        }, {
-          prop: 'rechargeMoney',
-          label: "儿童创造教育"
-        }, {
-          prop: 'sourceName',
-          label: "操作"
-        }
-        ],
-        chongzhi: [], //表格内容
+        headers: [],
+        tableList: [], // 表格内容
         currentPage: 1,
         total: 0,
-        pagesize: 10, //表格列表每页显示条数
-        dialogFormVisible: false, //是否现在创建/编辑弹窗
+        pagesize: 10, // 表格列表每页显示条数
+        dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          title: '',
+          kc_sf: '',
+          kc_pd: ''
         },
-        treeList: [{
-          label: '文学院',
-          children: [{
-            label: '汉语言文学',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }, {
-            label: '汉语国际教育',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '历史与政治学院',
-          children: [{
-            label: '思想政治教育',
-            children: [{
-              label: '2018学年'
-            }]
-          }, {
-            label: '历史学',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '教育科学学院',
-          children: [{
-            label: '教育学',
-            children: [{
-              label: '2019学年'
-            }]
-          }, {
-            label: '小学教育',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }],
+        rules: {
+          kc_sf: [
+            { required: true, message: '不能为空', trigger: 'change' }
+          ],
+          kc_pd: [
+            { required: true, message: '不能为空', trigger: 'change' }
+          ]
+        },
+        treeList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
         },
         isChoose: false,
-        formLabelWidth: '120px'
+        formLabelWidth: '220px',
+        currentRow: null
       }
     },
-    methods: {
-      /*分页 val（每页显示数据）*/
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pagesize = val;
-      },
-      /*分页 当前显示的页码*/
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.currentPage = val;
-      },
-      /* 学院选择树*/
-      handleNodeClick(data) {
-        console.log('点击了树');
-        this.isChoose = false;
-      },
-      chooseSchool() {
-        this.isChoose = true;
-      }
-    },
-    components: { ElButton, ElInput, TableTools },
     created() {
-      var that = this;
-      this.$http.getRequest('getSourceCount').then(res => {
-        if (res.code === 1) {
-          console.log(res)
-          that.title = res.recordTime;
-          that.chongzhi = res.resultList;
-          that.total = res.resultList.length;
-        } else {
-          that.title = '暂无数据啊'
+      this.getTableData('getRequireCourses')
+      this.$http.getRequest('getChooseData').then(res => {
+        if (res.status === 1) {
+          this.treeList = res.schoolData
         }
       })
     },
+    methods: {
+      /* 分页 val（每页显示数据）*/
+      handleSizeChange(val) {
+        this.pagesize = val
+      },
+      /* 分页 当前显示的页码*/
+      handleCurrentChange(val) {
+        this.currentPage = val
+      },
+      /* 学院选择树*/
+      handleNodeClick(data) {
+        // this.isChoose = false;
+      },
+      chooseSchool() {
+        this.isChoose = true
+      },
+      /* 点击工具栏创建 */
+      createdContent() {
+        this.dialogFormVisible = true
+        this.form = {}
+        this.form.title = '新增毕业要求'
+      },
+      /* 点击工具栏编辑 */
+      editContent() {
+        if (this.currentRow) {
+          this.dialogFormVisible = true
+          this.form = this.currentRow
+          this.form.title = '修改毕业要求'
+          for (let i = 0; i < this.treeList.length; i++) {
+            if (this.treeList[i].label === this.form.college) {
+              this.majorList = this.treeList[i].children
+              break
+            }
+          }
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请先选择要修改的数据',
+            type: 'warning'
+          })
+        }
+      },
+      // 点击工具栏删除
+      deleteContent() {
+        if (this.currentRow) {
+          this.operateForm('deleteDialog', this.currentRow.order)
+          this.getTableData('getRequireCourses')
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请先选择要删除的数据',
+            type: 'warning'
+          })
+        }
+      },
+      // 点击工具栏查询
+      searchData(param) {
+        if (param) {
+          var that = this
+          this.$http.getRequest('getSearchData', param).then(res => {
+            if (res.code === 1) {
+              that.tableList = res.resultList
+              that.total = res.resultList.length
+              that.emptyText = '无相关内容，请您调整查询内容'
+            }
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '查询内容不可为空',
+            type: 'error'
+          })
+        }
+      },
+      // 获取表格当前行数据
+      handleCurrentRow(val) {
+        this.currentRow = val
+        console.log(val)
+      },
+      // 弹框点击确定按钮
+      sureDialog() {
+        this.$refs.dialogForm.validate(valid => {
+          if (valid) {
+            if (this.form.title === '新增毕业要求') {
+              this.operateForm('addDialog', this.form)
+            } else if (this.form.title === '修改毕业要求') {
+              this.operateForm('editDialog', this.form)
+            }
+            this.resetForm()
+            this.getTableData('getRequireCourses')
+          } else {
+            return false
+          }
+        })
+      },
+      // 弹窗点击取消重置form表单
+      resetForm() {
+        this.dialogFormVisible = false
+        this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.form = {}
+        this.majorList = []
+      },
+      // 方法封装 获取页面全部数据
+      getTableData(urlName) {
+        var that = this
+        this.$http.getRequest(urlName).then(res => {
+          if (res.code === 1) {
+            that.headers = res.headers
+            that.tableList = res.resultList
+            that.total = res.resultList.length
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
+      },
+      // 方法封装 操作（添加/编辑/删除）表单
+      operateForm(url, params) {
+        this.$http.postRequest(url, params).then(res => {
+          if (res.status === 0) {
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: 'success'
+            })
+          }
+        })
+      }
+    },
+    components: { TableTools },
     name: 'require-and-courses'
   }
 </script>
@@ -230,7 +243,7 @@
   .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
   .el-tree{background: #F8F8F8;}
   }
-  .container{position: relative;min-width: 100%;margin-left: 200px;
+  .container{position: relative;margin-left: 200px;
   .content{padding: 0 30px;
   .el-pagination{
     padding: 30px 15px;text-align: right;}
