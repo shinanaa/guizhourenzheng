@@ -18,6 +18,7 @@ import './permission' // permission control
 
 import * as filters from './filters' // global filters
 import myHttp from '@/utils/request2'
+import 'babel-polyfill'
 
 Vue.prototype.$http = myHttp
 
