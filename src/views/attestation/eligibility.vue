@@ -1,15 +1,26 @@
 <template>
     <div class="eligibility" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
       <div class="choose-school">
-        <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+        <el-tree
+          :data="treeList"
+          :props="defaultProps"
+          ref="tree"
+          show-checkbox></el-tree>
       </div>
       <div class="container">
-        <table-tools @dialogFormVisible="dialogFormVisible = true" @chooseSchool="chooseSchool"></table-tools>
+        <table-tools
+          @createdContent="createdContent"
+          @chooseSchool="isChoose = true"
+          @editContent="editContent"
+          @deleteContent="deleteContent"
+          @searchData="searchData"
+        ></table-tools>
         <div class="content">
           <!--表格-->
           <el-table
-            :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
+            @current-change="handleCurrentRow"
             border
             style="width: 100%">
             <template v-for="header in headers">
@@ -29,48 +40,52 @@
             :total="total">
           </el-pagination>
           <!--创建-->
-          <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
-            <el-form :model="form">
-              <el-form-item label="院系" :label-width="formLabelWidth">
-                <el-select v-model="form.region" placeholder="请选择学院">
-                  <el-option label="文学院" value="shanghai"></el-option>
-                  <el-option label="历史与政治" value="beijing"></el-option>
+          <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
+            <el-form :model="form" :rules="rules" ref="dialogForm">
+              <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
+                <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
+                  <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="专业" :label-width="formLabelWidth">
-                <el-select v-model="form.region" placeholder="请选择专业">
-                  <el-option label="汉语言文学" value="shanghai"></el-option>
-                  <el-option label="汉语国际教育" value="beijing"></el-option>
+              <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
+                <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
+                  <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="毕业要求一" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
+                <el-select v-model="form.schoolYear" placeholder="请选择学年">
+                  <el-option label="2018" value="2018"></el-option>
+                  <el-option label="2019" value="2019"></el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item label="毕业要求二" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求一" :label-width="formLabelWidth" prop="require1">
+                <el-input type="number" v-model="form.require1" step="0.1" min="0.1" max="0.9"></el-input>
               </el-form-item>
-              <el-form-item label="毕业要求三" :label-width="formLabelWidth">
-              <el-input type="input" v-model="form.desc"></el-input>
-            </el-form-item>
-              <el-form-item label="毕业要求四" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求二" :label-width="formLabelWidth" prop="require2">
+                <el-input type="number" v-model="form.require2"></el-input>
               </el-form-item>
-              <el-form-item label="毕业要求五" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求三" :label-width="formLabelWidth" prop="require3">
+                <el-input type="number" v-model="form.require3"></el-input>
               </el-form-item>
-              <el-form-item label="毕业要求六" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求四" :label-width="formLabelWidth" prop="require4">
+                <el-input type="number" v-model="form.require4"></el-input>
               </el-form-item>
-              <el-form-item label="毕业要求七" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求五" :label-width="formLabelWidth" prop="require5">
+                <el-input type="number" v-model="form.require5"></el-input>
               </el-form-item>
-              <el-form-item label="毕业要求八" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求六" :label-width="formLabelWidth" prop="require6">
+                <el-input type="number" v-model="form.require6"></el-input>
+              </el-form-item>
+              <el-form-item label="毕业要求七" :label-width="formLabelWidth" prop="require7">
+                <el-input type="number" v-model="form.require7"></el-input>
+              </el-form-item>
+              <el-form-item label="毕业要求八" :label-width="formLabelWidth" prop="require8">
+                <el-input type="number" v-model="form.require8"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+              <el-button @click="resetForm">取 消</el-button>
+              <el-button type="primary" @click="sureDialog">确 定</el-button>
             </div>
           </el-dialog>
         </div>
@@ -79,104 +94,154 @@
 </template>
 
 <script>
-  import ElButton from 'element-ui/packages/button/src/button'
-  import ElInput from 'element-ui/packages/input/src/input'
   import TableTools from '@/components/Guizhou/tableTools'
-
   export default {
     data: function() {
       return {
-        headers: [{ // 表格头内容
-          prop: 'amount',
-          label: '学年'
-        }, {
-          prop: 'sourceName',
-          label: '专业'
-        }, {
-          prop: 'rechargeMoney',
-          label: '毕业要求一'
-        }, {
-          prop: 'source',
-          label: '毕业要求二'
-        }, {
-          prop: 'withdrawMoney',
-          label: '毕业要求三'
-        }, {
-          prop: 'amount',
-          label: '毕业要求四'
-        }, {
-          prop: 'sourceName',
-          label: '毕业要求五'
-        }, {
-          prop: 'rechargeMoney',
-          label: '毕业要求六'
-        }, {
-          prop: 'source',
-          label: '毕业要求七'
-        }, {
-          prop: 'withdrawMoney',
-          label: '毕业要求八'
-        }
-        ],
-        chongzhi: [], // 表格内容
+        headers: [],
+        tableList: [], // 表格内容
         currentPage: 1,
         total: 0,
         pagesize: 10, // 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          college: '',
+          major: '',
+          schoolYear: '',
+          require1: '',
+          require2: '',
+          require3: '',
+          require4: '',
+          require5: '',
+          require6: '',
+          require7: '',
+          require8: ''
         },
-        treeList: [{
-          label: '文学院',
-          children: [{
-            label: '汉语言文学',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }, {
-            label: '汉语国际教育',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '历史与政治学院',
-          children: [{
-            label: '思想政治教育',
-            children: [{
-              label: '2018学年'
-            }]
-          }, {
-            label: '历史学',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '教育科学学院',
-          children: [{
-            label: '教育学',
-            children: [{
-              label: '2019学年'
-            }]
-          }, {
-            label: '小学教育',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }],
+        rules: {
+          college: [
+            { required: true, message: '请选择院系名称', trigger: 'change' }
+          ],
+          major: [
+            { required: true, message: '请选择专业名称', trigger: 'change' }
+          ],
+          schoolYear: [
+            { required: true, message: '请选择所属学年', trigger: 'change' }
+          ],
+          require1: [
+            { required: true, message: '毕业要求一不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require2: [
+            { required: true, message: '毕业要求二不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require3: [
+            { required: true, message: '毕业要求三不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require4: [
+            { required: true, message: '毕业要求四不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require5: [
+            { required: true, message: '毕业要求五不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require6: [
+            { required: true, message: '毕业要求六不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require7: [
+            { required: true, message: '毕业要求七不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          require8: [
+            { required: true, message: '毕业要求八不能为空', trigger: 'blur' },
+            {
+              validator(rule, value, callback) {
+                var reg = /^0\.([1-9]|[0-9][1-9])$/
+                if (reg.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('请输入0~1之间小于两位小数的数字'))
+                }
+              },
+              trigger: 'blur'
+            }
+          ]
+        },
+        treeList: [],
+        majorList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -185,39 +250,145 @@
         formLabelWidth: '120px'
       }
     },
+    created() {
+      this.getTableData('getEligibility')
+      // 获取院系树的数据
+      this.$http.getRequest('getChooseData').then(res => {
+        if (res.status === 1) {
+          this.treeList = res.schoolData
+        }
+      })
+    },
+    components: { TableTools },
     methods: {
       /* 分页 val（每页显示数据）*/
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
         this.pagesize = val
       },
       /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
         this.currentPage = val
       },
       /* 学院选择树*/
       handleNodeClick(data) {
-        console.log('点击了树')
         this.isChoose = false
       },
-      chooseSchool() {
-        this.isChoose = true
-      }
-    },
-    components: { ElButton, ElInput, TableTools },
-    created() {
-      var that = this
-      this.$http.getRequest('getSourceCount').then(res => {
-        if (res.code === 1) {
-          console.log(res)
-          that.title = res.recordTime
-          that.chongzhi = res.resultList
-          that.total = res.resultList.length
+      /* 点击工具栏创建 */
+      createdContent() {
+        this.dialogFormVisible = true
+        this.form = {}
+        this.form.title = '新增毕业要求'
+      },
+      /* 点击工具栏编辑 */
+      editContent() {
+        if (this.currentRow) {
+          this.dialogFormVisible = true
+          this.form = this.currentRow
+          this.form.title = '修改毕业要求'
+          for (let i = 0; i < this.treeList.length; i++) {
+            if (this.treeList[i].label === this.form.college) {
+              this.majorList = this.treeList[i].children
+              break
+            }
+          }
         } else {
-          that.title = '暂无数据啊'
+          this.$message({
+            showClose: true,
+            message: '请先选择要修改的数据',
+            type: 'warning'
+          })
         }
-      })
+      },
+      // 获取表格当前行数据
+      handleCurrentRow(val) {
+        this.currentRow = val
+      },
+      // 点击工具栏删除
+      deleteContent() {
+        if (this.currentRow) {
+          this.operateForm('deleteDialog', this.currentRow.order)
+          this.getTableData('getEligibility')
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请先选择要删除的数据',
+            type: 'warning'
+          })
+        }
+      },
+      // 点击工具栏查询
+      searchData(param) {
+        if (param) {
+          var that = this
+          this.$http.getRequest('getSearchData', param).then(res => {
+            if (res.code === 1) {
+              that.tableList = res.resultList
+              that.total = res.resultList.length
+              that.emptyText = '无相关内容，请您调整查询内容'
+            }
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '查询内容不可为空',
+            type: 'error'
+          })
+        }
+      },
+      // 弹框点击确定按钮
+      sureDialog() {
+        this.$refs.dialogForm.validate(valid => {
+          if (valid) {
+            this.dialogFormVisible = false
+            if (this.form.title === '新增毕业要求') {
+              this.operateForm('addDialog', this.form)
+            } else if (this.form.title === '修改毕业要求') {
+              this.operateForm('editDialog', this.form)
+            }
+            this.getTableData('getEligibility')
+            this.resetForm()
+          } else {
+            return false
+          }
+        })
+      },
+      // 弹窗点击取消重置form表单
+      resetForm() {
+        this.dialogFormVisible = false
+        this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.form = {}
+        this.majorList = []
+      },
+      // 弹框选择院校
+      selectCollege(data) {
+        this.majorList = this.treeList[data].children
+      },
+      // 方法封装 获取页面全部数据
+      getTableData(urlName) {
+        var that = this
+        this.$http.getRequest(urlName).then(res => {
+          if (res.code === 1) {
+            console.log(res)
+            that.headers = res.headers
+            that.tableList = res.resultList
+            that.total = res.resultList.length
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
+      },
+      // 方法封装 操作（添加/编辑/删除）表单
+      operateForm(url, params) {
+        this.$http.postRequest(url, params).then(res => {
+          if (res.status === 0) {
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: 'success'
+            })
+          }
+        })
+      }
     },
     name: 'eligibility'
   }
