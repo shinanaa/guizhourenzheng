@@ -50,7 +50,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader?cacheDirectory',
-        include: [resolve('src'), resolve('static'), resolve('test'), resolve('node_modules/webpack-dev-server/client'),resolve('node_modules/element-ui/packages'),resolve('node_modules/element-ui/src')]
+        include: [resolve('src'), resolve('static'), resolve('test'),resolve('config'),resolve('node_modules/webpack-dev-server/client'),resolve('node_modules/element-ui/packages'),resolve('node_modules/element-ui/src')]
       },
       {
         test: /\.svg$/,
