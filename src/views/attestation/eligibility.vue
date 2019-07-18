@@ -1,5 +1,5 @@
 <template>
-    <div class="eligibility" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
+    <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
       <div class="choose-school">
         <el-tree
           :data="treeList"
@@ -393,21 +393,6 @@
     name: 'eligibility'
   }
 </script>
-
 <style scoped rel="stylesheet/scss" lang="scss">
-  .eligibility{position: relative;width:100%;height:100%;
-    .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
-    .el-tree{background: #F8F8F8;}
-    }
-    .container{position: relative;min-width: 100%;margin-left: 200px;
-      .content{padding: 0 30px;
-      .el-pagination{
-        padding: 30px 15px;text-align: right;}
-      }
-    }
-  }
-  .eligibility.hiddenChoose{
-    .container{margin-left: 0px;}
-    .choose-school{width: 0px;}
-  }
+  @import '../../styles/rightContent.scss';
 </style>

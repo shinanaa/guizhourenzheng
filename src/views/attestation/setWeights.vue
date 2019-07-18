@@ -1,5 +1,5 @@
 <template>
-    <div class="setWeights" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
+    <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
       <div class="choose-school">
         <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
       </div>
@@ -8,8 +8,9 @@
         <div class="content">
           <!--表格-->
           <el-table
-            :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
+            :row-class-name="tableRowClassName"
             border
             style="width: 100%">
             <template v-for="header in headers">
@@ -18,6 +19,11 @@
                 :label="header.label">
               </el-table-column>
             </template>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button type="text">设置权重</el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <!--分页-->
           <el-pagination
@@ -79,8 +85,6 @@
 </template>
 
 <script>
-  import ElButton from 'element-ui/packages/button/src/button'
-  import ElInput from 'element-ui/packages/input/src/input'
   import TableTools from '@/components/Guizhou/tableTools'
 
   export default {
@@ -100,7 +104,7 @@
           label: '操作'
         }
         ],
-        chongzhi: [], // 表格内容
+        tableList: [], // 表格内容
         currentPage: 1,
         total: 0,
         pagesize: 10, // 表格列表每页显示条数
@@ -115,50 +119,7 @@
           resource: '',
           desc: ''
         },
-        treeList: [{
-          label: '文学院',
-          children: [{
-            label: '汉语言文学',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }, {
-            label: '汉语国际教育',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '历史与政治学院',
-          children: [{
-            label: '思想政治教育',
-            children: [{
-              label: '2018学年'
-            }]
-          }, {
-            label: '历史学',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '教育科学学院',
-          children: [{
-            label: '教育学',
-            children: [{
-              label: '2019学年'
-            }]
-          }, {
-            label: '小学教育',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }],
+        treeList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -166,6 +127,15 @@
         isChoose: false,
         formLabelWidth: '120px'
       }
+    },
+    created() {
+      this.getTableData('getSetWeights')
+      // 获取院系树的数据
+      this.$http.getRequest('getChooseData').then(res => {
+        if (res.status === 1) {
+          this.treeList = res.schoolData
+        }
+      })
     },
     methods: {
       /* 分页 val（每页显示数据）*/
@@ -185,40 +155,30 @@
       },
       chooseSchool() {
         this.isChoose = true
+      },
+      tableRowClassName({ row, rowIndex }) {
+        console.log(row)
+        console.log(rowIndex)
+      },
+      // 方法封装 获取页面全部数据
+      getTableData(urlName) {
+        var that = this
+        this.$http.getRequest(urlName).then(res => {
+          if (res.code === 1) {
+            console.log(res)
+            that.headers = res.headers
+            that.tableList = res.resultList
+            that.total = res.resultList.length
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
       }
     },
-    components: { ElButton, ElInput, TableTools },
-    created() {
-      var that = this
-      this.$http.getRequest('getSourceCount').then(res => {
-        if (res.code === 1) {
-          console.log(res)
-          that.title = res.recordTime
-          that.chongzhi = res.resultList
-          that.total = res.resultList.length
-        } else {
-          that.title = '暂无数据啊'
-        }
-      })
-    },
+    components: { TableTools },
     name: 'set-weights'
   }
 </script>
-
 <style scoped rel="stylesheet/scss" lang="scss">
-  .setWeights{position: relative;width:100%;height:100%;
-  .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
-  .el-tree{background: #F8F8F8;}
-  }
-  .container{position: relative;min-width: 100%;margin-left: 200px;
-  .content{padding: 0 30px;
-  .el-pagination{
-    padding: 30px 15px;text-align: right;}
-  }
-  }
-  }
-  .setWeights.hiddenChoose{
-  .container{margin-left: 0px;}
-  .choose-school{width: 0px;}
-  }
+  @import '../../styles/rightContent.scss';
 </style>
