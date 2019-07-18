@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: '',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api':{
+        target:'https://www.easy-mock.com/mock/5cf477f520156326ddbeb251/example/',
+        changeOrigin:true,
+        pathRewrite: {
+          '^/api': '/'   //重写接口
+        }
+      }
+    },
 
     // Various Dev Server settings
 

@@ -10,6 +10,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// 引入依赖
+const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default
+
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -52,7 +55,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       // Setting the following option to `false` will not extract CSS from codesplit chunks.
       // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
       // increasing file size: https://github.com/vuejs-templates/webpack/issues/1110
-      allChunks: false,
+      allChunks: true,
+    }),
+    new CSSSplitWebpackPlugin({
+      size: 4000,
+      filename: utils.assetsPath('css/[name]-[part].[ext]')
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
