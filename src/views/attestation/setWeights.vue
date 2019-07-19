@@ -160,8 +160,11 @@
         this.form.title = '新增毕业要求'
       },
       tableRowClassName({ row, rowIndex }) {
-        // console.log(row)
-        // console.log(rowIndex)
+        if (row.colorflag) {
+          return 'dark'
+        } else {
+          return 'lightDark'
+        }
       },
       setWeights(index, rows) {
         this.dialogWeightsVisible = true
@@ -181,12 +184,23 @@
           if (res.code === 1) {
             console.log(res)
             that.headers = res.headers
-            that.tableList = res.resultList
+            that.tableList = that.smartSort(res.resultList)
             that.total = res.resultList.length
           } else {
             that.emptyText = '暂无数据'
           }
         })
+      },
+      smartSort(arrSimple2) {
+        arrSimple2[0]['colorflag'] = true
+        arrSimple2.sort(function(b, a) {
+          if (a.number === b.number) {
+            b['colorflag'] = a['colorflag']
+          } else {
+            b['colorflag'] = !a['colorflag']
+          }
+        })
+        return arrSimple2
       }
     },
     components: { TableTools },
@@ -194,6 +208,12 @@
   }
 </script>
 <style scoped rel="stylesheet/scss" lang="scss">
+  /deep/ .dark{
+    background-color: #fff!important;
+  }
+  /deep/ .lightDark{
+    background-color: #FAFAFA!important;
+  }
   @import '../../styles/rightContent.scss';
   .customWidth{
     width: 90%;
