@@ -26,7 +26,8 @@
             <template v-for="header in headers">
               <el-table-column
                 :prop="header.prop"
-                :label="header.label">
+                :label="header.label"
+              >
               </el-table-column>
             </template>
             <div slot="empty">
@@ -62,19 +63,32 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
-                <el-input type="textarea" v-model="form.require"></el-input>
+                <el-select v-model="form.require" placeholder="请选择要求">
+                  <el-option label="师德规范" value="2013"></el-option>
+                  <el-option label="教育情怀" value="2014"></el-option>
+                  <el-option label="学科素养" value="2015"></el-option>
+                  <el-option label="教学能力" value="2016"></el-option>
+                  <el-option label="班级指导" value="2017"></el-option>
+                  <el-option label="教育情怀" value="2019"></el-option>
+                  <el-option label="学科素养" value="2018"></el-option>
+                  <el-option label="教学能力" value="2010"></el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item label="毕业培养目标1" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.target1"></el-input>
+              <el-form-item label="活动性质" :label-width="formLabelWidth">
+                <el-checkbox-group v-model="form.target">
+                  <el-checkbox label="毕业培养目标1" name="target"></el-checkbox>
+                  <el-checkbox label="毕业培养目标2" name="target"></el-checkbox>
+                  <el-checkbox label="毕业培养目标3" name="target"></el-checkbox>
+                  <el-checkbox label="毕业培养目标4" name="target"></el-checkbox>
+                </el-checkbox-group>
               </el-form-item>
-              <el-form-item label="毕业培养目标2" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.target2"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业培养目标3" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.target3"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业培养目标4" :label-width="formLabelWidth">
-                <el-input type="textarea" v-model="form.target4"></el-input>
+              <el-form-item label="活动性质" :label-width="formLabelWidth">
+                <el-checkbox-group v-model="form.type">
+                  <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                  <el-checkbox label="地推活动" name="type"></el-checkbox>
+                  <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                  <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+                </el-checkbox-group>
               </el-form-item>
               <el-form-item label="指标点数量" :label-width="formLabelWidth" prop="number">
                 <el-input type="number" v-model="form.number"></el-input>
@@ -111,10 +125,8 @@
           number: '',
           require: '',
           schoolYear: '',
-          target1: '',
-          target2: '',
-          target3: '',
-          target4: ''
+          type: [],
+          target: []
         },
         rules: {
           college: [

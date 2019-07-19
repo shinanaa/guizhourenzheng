@@ -21,9 +21,11 @@
                 :label="header.label">
               </el-table-column>
             </template>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="150">
               <template slot-scope="scope">
-                <el-button type="text" @click="setWeights(scope.$index, tableList)">设置权重</el-button>
+                <el-select v-model="form.region" placeholder="0.0">
+                  <el-option v-for="(item, index) in 9" :label="'0.'+item" :value="item/10" :key="index"></el-option>
+                </el-select>
               </template>
             </el-table-column>
           </el-table>
@@ -129,7 +131,7 @@
       }
     },
     created() {
-      this.getTableData('getSetWeights')
+      this.getTableData('getCourses')
       // 获取院系树的数据
       this.$http.getRequest('getChooseData').then(res => {
         if (res.status === 1) {
