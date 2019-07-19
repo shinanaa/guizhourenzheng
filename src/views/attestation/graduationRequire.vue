@@ -75,19 +75,11 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="活动性质" :label-width="formLabelWidth">
-                <el-checkbox-group v-model="form.target">
+                <el-checkbox-group v-model="target">
                   <el-checkbox label="毕业培养目标1" name="target"></el-checkbox>
                   <el-checkbox label="毕业培养目标2" name="target"></el-checkbox>
                   <el-checkbox label="毕业培养目标3" name="target"></el-checkbox>
                   <el-checkbox label="毕业培养目标4" name="target"></el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-              <el-form-item label="活动性质" :label-width="formLabelWidth">
-                <el-checkbox-group v-model="form.type">
-                  <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                  <el-checkbox label="地推活动" name="type"></el-checkbox>
-                  <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                  <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
               <el-form-item label="指标点数量" :label-width="formLabelWidth" prop="number">
@@ -117,6 +109,7 @@
         total: 0, // 分页 总条数
         pageSize: 10, // 分页 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
+        target: [],
         form: {
           title: '', // 弹窗标题
           order: '',
@@ -124,9 +117,7 @@
           major: '',
           number: '',
           require: '',
-          schoolYear: '',
-          type: [],
-          target: []
+          schoolYear: ''
         },
         rules: {
           college: [

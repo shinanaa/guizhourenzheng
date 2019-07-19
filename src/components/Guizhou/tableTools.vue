@@ -45,12 +45,14 @@
 
 <style scoped rel="stylesheet/scss" lang="scss">
   .tools{
-    display: flex;justify-content: space-between;height:90px;align-items: center;padding: 0 30px;
-  .tools-search{display: flex;}
+    height:90px;padding: 0 30px;line-height: 90px;
+  .tools-search{float: left;}
+  .tools-btn{float: right;}
   .choose{margin-right: 50px;}
   .search-fill{
-    display: flex;
-    .el-input{margin-right: 10px;}
+    display: inline-block;
+    .el-input{margin-right: 10px;
+      width: auto;}
   }
   }
 </style>
