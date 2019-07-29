@@ -75,11 +75,8 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="活动性质" :label-width="formLabelWidth">
-                <el-checkbox-group v-model="target">
-                  <el-checkbox label="毕业培养目标1" name="target"></el-checkbox>
-                  <el-checkbox label="毕业培养目标2" name="target"></el-checkbox>
-                  <el-checkbox label="毕业培养目标3" name="target"></el-checkbox>
-                  <el-checkbox label="毕业培养目标4" name="target"></el-checkbox>
+                <el-checkbox-group v-model="targets">
+                  <el-checkbox v-for="target in targetOptions" :label="target" :key="target"></el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
               <el-form-item label="指标点数量" :label-width="formLabelWidth" prop="number">
@@ -109,7 +106,8 @@
         total: 0, // 分页 总条数
         pageSize: 10, // 分页 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
-        target: [],
+        targetOptions: ['毕业培养目标1', '毕业培养目标2', '毕业培养目标3', '毕业培养目标4'], // 培养目标列表
+        targets: [], // 表单中选中的培养目标
         form: {
           title: '', // 弹窗标题
           order: '',
@@ -175,10 +173,25 @@
       },
       /* 点击工具栏编辑 */
       editContent() {
+        console.log(this.currentRow)
         if (this.currentRow) {
           this.dialogFormVisible = true
           this.form = this.currentRow
           this.form.title = '修改毕业要求'
+          this.targets = []
+          if (this.currentRow.target1 === '√') {
+            this.targets.push('毕业培养目标1')
+          }
+          if (this.currentRow.target2 === '√') {
+            this.targets.push('毕业培养目标2')
+          }
+          if (this.currentRow.target3 === '√') {
+            this.targets.push('毕业培养目标3')
+          }
+          if (this.currentRow.target4 === '√') {
+            this.targets.push('毕业培养目标4')
+          }
+          console.log(this.currentRow.target1)
           for (let i = 0; i < this.treeList.length; i++) {
             if (this.treeList[i].label === this.form.college) {
               this.majorList = this.treeList[i].children
@@ -252,6 +265,7 @@
         this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
         this.majorList = []
+        this.targets = []
       },
       // 弹框选择院校
       selectCollege(data) {

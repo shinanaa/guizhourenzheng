@@ -3,11 +3,19 @@
     <div class="tools-search">
       <el-button type="info" class="choose" @click="chooseSchool">选择院系及专业</el-button>
       <div class="search-fill">
-        <el-input placeholder="请输入..." v-model="search"></el-input>
+        <el-input v-if="!searchInputNotVisible" placeholder="请输入..." v-model="search"></el-input>
+        <el-select v-if="searchInputNotVisible" v-model="requireType" placeholder="请选择毕业要求">
+          <el-option
+            v-for="item in requires"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <el-button type="primary" icon="el-icon-search" @click="searchData">查询</el-button>
       </div>
     </div>
-    <div class="tools-btn">
+    <div class="tools-btn" v-if="!showIf">
       <el-button type="success" icon="el-icon-plus" @click="createdContent">创建</el-button>
       <el-button type="warning" icon="el-icon-edit" @click="editContent">编辑</el-button>
       <el-button type="danger" icon="el-icon-delete" @click="deleteContent">删除</el-button>
@@ -17,9 +25,12 @@
 
 <script>
     export default {
+      props: ['btnNotVisible', 'requires', 'searchInputNotVisible'],
       data() {
         return {
-          'search': ''
+          'search': '',
+          showIf: this.btnNotVisible,
+          requireType: ''
         }
       },
       methods: {

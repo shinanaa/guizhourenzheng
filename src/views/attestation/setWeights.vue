@@ -64,6 +64,7 @@
               <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
             </div>
           </el-dialog>
+         <!--表单形式设置权重-->
           <el-dialog width="90%" title="设置权重" :visible.sync="dialogWeightsVisible">
             <el-table
               :data="setTableList"
@@ -194,6 +195,7 @@
       smartSort(arrSimple2) {
         arrSimple2[0]['colorflag'] = true
         arrSimple2.sort(function(b, a) {
+          console.log(a, b)
           if (a.number === b.number) {
             b['colorflag'] = a['colorflag']
           } else {
