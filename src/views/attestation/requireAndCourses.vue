@@ -13,6 +13,7 @@
       <div class="content">
         <!--表格-->
         <el-table
+          v-loading="loading"
           :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           border
           style="width: 100%;text-align: center;">
@@ -22,11 +23,14 @@
               :label="header.label">
             </el-table-column>
           </template>
-          <el-table-column label="操作" width="100">
+          <el-table-column v-if="tableList.length" label="操作" width="100">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="editContent(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
+          <div slot="empty">
+            <p>{{emptyText}}</p>
+          </div>
         </el-table>
         <!--分页-->
         <el-pagination
@@ -64,6 +68,8 @@
   export default {
     data: function() {
       return {
+        loading: false,
+        emptyText: '请先选择院系及专业，进行查询',
         requires: [], // 毕业要求选项
         currentCourses: [], // 当前专业的所有课程
         headers: [],
@@ -83,7 +89,7 @@
       }
     },
     created() {
-      this.getTableData('getRequireCourses')
+      // this.getTableData('getRequireCourses')
       this.$http.getRequest('getChooseData').then(res => {
         if (res.status === 1) {
           this.treeList = res.schoolData
@@ -108,15 +114,15 @@
       },
       /* 点击工具栏编辑 */
       editContent(row) {
-        console.log(row)
         this.dialogFormVisible = true
-        // this.form = this.currentRow
-        // for (let i = 0; i < this.treeList.length; i++) {
-        //   if (this.treeList[i].label === this.form.college) {
-        //     this.majorList = this.treeList[i].children
-        //     break
-        //   }
-        // }
+        for (let i = 0; i < this.currentCourses.length; i++) {
+          for (const keys in row) {
+            if (this.currentCourses[i].prop === keys) {
+              // this.currentCourses[i].value = row[keys]
+              this.$set(this.currentCourses[i], 'value', row[keys])
+            }
+          }
+        }
       },
       // 点击工具栏查询
       searchData(param) {
@@ -139,7 +145,6 @@
       },
       // 弹框点击确定按钮
       sureDialog() {
-        console.log(this.currentCourses)
         this.operateForm('editDialog', this.currentCourses)
         this.resetForm()
         this.getTableData('getRequireCourses')
@@ -155,7 +160,7 @@
         console.log(values)
       },
       // 方法封装 获取页面全部数据
-      getTableData(urlName) {
+      getTableData(urlName, params) {
         var that = this
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
@@ -164,6 +169,7 @@
             that.total = res.resultList.length
             that.requires = res.requires
             that.currentCourses = res.headers.slice(1)
+            that.loading = false
           } else {
             that.emptyText = '暂无数据'
           }

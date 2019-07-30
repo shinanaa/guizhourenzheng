@@ -5,13 +5,16 @@
       </div>
       <div class="container">
         <table-tools @dialogFormVisible="dialogFormVisible = true"
-                     @createdContent="createdContent"
-                     @chooseSchool="isChoose = true"></table-tools>
+                     @chooseSchool="isChoose = true"
+                     :btn-not-visible="true"
+                     :requires="requires"
+                     :search-input-not-visible="true"
+        ></table-tools>
         <div class="content">
           <!--表格-->
           <el-table
+            v-loading="loading"
             :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-            highlight-current-row
             :row-class-name="tableRowClassName"
             border
             style="width: 100%">
@@ -102,7 +105,9 @@
   export default {
     data: function() {
       return {
+        loading: true,
         headers: [],
+        requires: [], // 毕业要求选项
         setHeaders: [], // 设置权重表格表头（弹窗中）
         tableList: [], // 表格内容
         setTableList: [], // 设置权重表格内容（弹窗中）
@@ -161,7 +166,7 @@
         this.form.title = '新增毕业要求'
       },
       tableRowClassName({ row, rowIndex }) {
-        if (row.colorflag) {
+        if (row.colorflag) { // 根据colorflag给不同组进行class添加
           return 'dark'
         } else {
           return 'lightDark'
@@ -187,15 +192,17 @@
             that.headers = res.headers
             that.tableList = that.smartSort(res.resultList)
             that.total = res.resultList.length
+            that.requires = res.requires
+            console.log(res.requires)
+            that.loading = false
           } else {
             that.emptyText = '暂无数据'
           }
         })
       },
       smartSort(arrSimple2) {
-        arrSimple2[0]['colorflag'] = true
-        arrSimple2.sort(function(b, a) {
-          console.log(a, b)
+        arrSimple2[0]['colorflag'] = true // 为第一组数据添加colorflag属性
+        arrSimple2.sort(function(b, a) { // b为后一组数据，a为前一组数据
           if (a.number === b.number) {
             b['colorflag'] = a['colorflag']
           } else {
@@ -211,10 +218,10 @@
 </script>
 <style scoped rel="stylesheet/scss" lang="scss">
   /deep/ .dark{
-    background-color: #fff!important;
+    background-color: #f0f9eb!important;
   }
   /deep/ .lightDark{
-    background-color: #FAFAFA!important;
+    background-color: #fff!important;
   }
   @import '../../styles/rightContent.scss';
   .customWidth{

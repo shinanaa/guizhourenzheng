@@ -18,6 +18,7 @@
         <div class="content">
           <!--表格-->
           <el-table
+            v-loading="loading"
             :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             highlight-current-row
             @current-change="handleCurrentRow"
@@ -98,6 +99,7 @@
   export default {
     data: function() {
       return {
+        loading: true,
         headers: [],
         tableList: [], // 表格内容
         currentPage: 1,
@@ -372,6 +374,7 @@
             that.headers = res.headers
             that.tableList = res.resultList
             that.total = res.resultList.length
+            that.loading = false
           } else {
             that.emptyText = '暂无数据'
           }

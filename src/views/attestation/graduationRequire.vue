@@ -18,6 +18,7 @@
         <div class="content">
           <!--表格-->
           <el-table
+            v-loading="loading"
             :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
             highlight-current-row
             @current-change="handleCurrentRow"
@@ -99,6 +100,7 @@
     name: 'graduation-require',
     data() {
       return {
+        loading: true,
         emptyText: '暂无数据',
         headers: [], // 表头
         tableList: [], // 表格内容
@@ -115,6 +117,7 @@
           major: '',
           number: '',
           require: '',
+          targets: [],
           schoolYear: ''
         },
         rules: {
@@ -173,12 +176,10 @@
       },
       /* 点击工具栏编辑 */
       editContent() {
-        console.log(this.currentRow)
         if (this.currentRow) {
           this.dialogFormVisible = true
           this.form = this.currentRow
           this.form.title = '修改毕业要求'
-          this.targets = []
           if (this.currentRow.target1 === '√') {
             this.targets.push('毕业培养目标1')
           }
@@ -191,7 +192,9 @@
           if (this.currentRow.target4 === '√') {
             this.targets.push('毕业培养目标4')
           }
-          console.log(this.currentRow.target1)
+          // this.targets = [this.currentRow.target1, this.currentRow.target2, this.currentRow.target3, this.currentRow.target4].filter((t, index) => t === '√' ? ('毕业培养目标' + index) : '')
+          // console.log(this.targets)
+          // new Array(this.currentRow.target1, this.currentRow.target2, this.currentRow.target3, this.currentRow.target4).map((t, index) => t === '√' ? this.targets.push('毕业培养目标' + index) : '')
           for (let i = 0; i < this.treeList.length; i++) {
             if (this.treeList[i].label === this.form.college) {
               this.majorList = this.treeList[i].children
@@ -247,6 +250,7 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
+            this.form.targets = this.targets // 上传后，后台根据targets内容为准，忽略target1234
             if (this.form.title === '新增毕业要求') {
               this.operateForm('addDialog', this.form)
             } else if (this.form.title === '修改毕业要求') {
@@ -279,6 +283,7 @@
             that.headers = res.headers
             that.tableList = res.resultList
             that.total = res.resultList.length
+            that.loading = false
           } else {
             that.emptyText = '暂无数据'
           }
