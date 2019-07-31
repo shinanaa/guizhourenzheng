@@ -4,6 +4,12 @@
 const i = {
   loginOn: { url: 'login/login', isMock: true }, // 登录
   getGraduationRequire: { url: 'attestation/graduationRequire', isMock: true }, // 获取毕业要求列表
+  getRequireCourses: { url: 'attestation/getRequireCourses', isMock: true }, // 获取要求与课程列表
+  getEligibility: { url: 'attestation/getEligibility', isMock: true }, // 获取合格标准列表
+  getSetWeights: { url: 'attestation/getSetWeights', isMock: true }, // 获取设置权重列表
+  getCourses: { url: 'attestation/getCourses', isMock: true }, // 获取设置权重弹框中列表
+  getTrainTarget: { url: 'attestation/getTrainTarget', isMock: true }, // 获取培养目标列表
+  getStandards: { url: 'attestation/getStandards', isMock: true }, // 获取认证标准列表
   addDialog: { url: 'attestation/addDialog', isMock: true }, // 添加表格数据
   editDialog: { url: 'attestation/editDialog', isMock: true }, // 编辑选中表格内容
   deleteDialog: { url: 'attestation/deleteDialog', isMock: true }, // 删除选中表格内容

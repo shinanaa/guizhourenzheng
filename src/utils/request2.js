@@ -6,7 +6,7 @@ import { Message } from 'element-ui'
 // import store from '@/store'
 // import { getToken } from '@/utils/auth'
 import i from './i'
-import { J_API, MOCK_API } from '../../config/dev.env'
+import { J_API } from '../../config/dev.env'
 import qs from 'qs'
 
 // request interceptor
@@ -75,10 +75,10 @@ const myHttp = {
   postRequest: function(url, param) {
     param = param && typeof param === 'object' ? param : {}
     if (i[url].isMock || i[url].isMock === undefined) {
-      console.info('使用mock假数据')
-      url = MOCK_API + i[url].url
+      console.info('post使用mock假数据')
+      url = '/api/' + i[url].url
     } else {
-      console.info('使用real真数据')
+      console.info('post使用real真数据')
       url = J_API + i[url].url
     }
     const config = {
@@ -99,10 +99,10 @@ const myHttp = {
   getRequest: function(url, param) {
     param = param && typeof param === 'object' ? param : {}
     if (i[url].isMock || i[url].isMock === undefined) {
-      console.info('使用mock假数据')
-      url = MOCK_API + i[url].url
+      console.info('get使用mock假数据')
+      url = '/api/' + i[url].url
     } else {
-      console.info('使用real真数据')
+      console.info('get使用real真数据')
       url = J_API + i[url].url
     }
 

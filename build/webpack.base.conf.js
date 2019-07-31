@@ -22,7 +22,9 @@ const createLintingRule = () => ({
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: ['./node_modules/babel-polyfill/dist/polyfill.js','./src/main.js']
+    // app: './src/main.js'
+
   },
   output: {
     path: config.build.assetsRoot,
@@ -48,7 +50,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader?cacheDirectory',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        include: [resolve('src'), resolve('static'), resolve('test'),resolve('config'),resolve('node_modules/webpack-dev-server/client'),resolve('node_modules/element-ui/packages'),resolve('node_modules/element-ui/src')]
       },
       {
         test: /\.svg$/,

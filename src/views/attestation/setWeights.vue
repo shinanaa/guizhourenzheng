@@ -1,15 +1,21 @@
 <template>
-    <div class="setWeights" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
+    <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
       <div class="choose-school">
         <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
       </div>
       <div class="container">
-        <table-tools @dialogFormVisible="dialogFormVisible = true" @chooseSchool="chooseSchool"></table-tools>
+        <table-tools @dialogFormVisible="dialogFormVisible = true"
+                     @chooseSchool="isChoose = true"
+                     :btn-not-visible="true"
+                     :requires="requires"
+                     :search-input-not-visible="true"
+        ></table-tools>
         <div class="content">
           <!--表格-->
           <el-table
-            :data="chongzhi.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            highlight-current-row
+            v-loading="loading"
+            :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+            :row-class-name="tableRowClassName"
             border
             style="width: 100%">
             <template v-for="header in headers">
@@ -18,13 +24,20 @@
                 :label="header.label">
               </el-table-column>
             </template>
+            <el-table-column label="操作" width="150">
+              <template slot-scope="scope">
+                <el-select v-model="form.region" placeholder="0.0">
+                  <el-option v-for="(item, index) in 9" :label="'0.'+item" :value="item/10" :key="index"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
           </el-table>
           <!--分页-->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-size="pagesize"
+            :page-size="pageSize"
             layout="prev, pager, next, jumper"
             :total="total">
           </el-pagination>
@@ -43,31 +56,39 @@
                   <el-option label="汉语国际教育" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="毕业要求一" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求二" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求三" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求四" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求五" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求六" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求七" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
-              </el-form-item>
-              <el-form-item label="毕业要求八" :label-width="formLabelWidth">
-                <el-input type="input" v-model="form.desc"></el-input>
+              <el-form-item label="毕业要求" :label-width="formLabelWidth">
+                <el-select v-model="form.region" placeholder="请选择毕业要求">
+                  <el-option v-for="item in 8" label=`毕业要求${item}` value="item"></el-option>
+                </el-select>
               </el-form-item>
             </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+          </el-dialog>
+         <!--表单形式设置权重-->
+          <el-dialog width="90%" title="设置权重" :visible.sync="dialogWeightsVisible">
+            <el-table
+              :data="setTableList"
+              border
+              style="width: 100%"
+            >
+              <template v-for="header in setHeaders">
+                <el-table-column
+                  :prop="header.prop"
+                  :label="header.label"
+                >
+                </el-table-column>
+              </template>
+              <el-table-column label="操作" width="150">
+                <template slot-scope="scope">
+                  <el-select v-model="form.region" placeholder="0.0">
+                    <el-option v-for="(item, index) in 9" :label="'0.'+item" :value="item/10" :key="index"></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+            </el-table>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
               <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -79,32 +100,23 @@
 </template>
 
 <script>
-  import ElButton from 'element-ui/packages/button/src/button'
-  import ElInput from 'element-ui/packages/input/src/input'
   import TableTools from '@/components/Guizhou/tableTools'
 
   export default {
     data: function() {
       return {
-        headers: [{ // 表格头内容
-          prop: 'amount',
-          label: '学年'
-        }, {
-          prop: 'sourceName',
-          label: '专业'
-        }, {
-          prop: 'rechargeMoney',
-          label: '要求'
-        }, {
-          prop: 'withdrawMoney',
-          label: '操作'
-        }
-        ],
-        chongzhi: [], // 表格内容
+        loading: true,
+        headers: [],
+        requires: [], // 毕业要求选项
+        setHeaders: [], // 设置权重表格表头（弹窗中）
+        tableList: [], // 表格内容
+        setTableList: [], // 设置权重表格内容（弹窗中）
         currentPage: 1,
         total: 0,
-        pagesize: 10, // 表格列表每页显示条数
+        setTotal: 0, // 设置权重表格内容总条数（弹窗中）
+        pageSize: 10, // 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
+        dialogWeightsVisible: false, // 是否显示权重设置弹窗
         form: {
           name: '',
           region: '',
@@ -115,50 +127,7 @@
           resource: '',
           desc: ''
         },
-        treeList: [{
-          label: '文学院',
-          children: [{
-            label: '汉语言文学',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }, {
-            label: '汉语国际教育',
-            children: [{
-              label: '2018学年'
-            }, {
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '历史与政治学院',
-          children: [{
-            label: '思想政治教育',
-            children: [{
-              label: '2018学年'
-            }]
-          }, {
-            label: '历史学',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }, {
-          label: '教育科学学院',
-          children: [{
-            label: '教育学',
-            children: [{
-              label: '2019学年'
-            }]
-          }, {
-            label: '小学教育',
-            children: [{
-              label: '2019学年'
-            }]
-          }]
-        }],
+        treeList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -167,15 +136,22 @@
         formLabelWidth: '120px'
       }
     },
+    created() {
+      this.getTableData('getCourses')
+      // 获取院系树的数据
+      this.$http.getRequest('getChooseData').then(res => {
+        if (res.status === 1) {
+          this.treeList = res.schoolData
+        }
+      })
+    },
     methods: {
       /* 分页 val（每页显示数据）*/
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
-        this.pagesize = val
+        this.pagesSize = val
       },
       /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
         this.currentPage = val
       },
       /* 学院选择树*/
@@ -183,42 +159,72 @@
         console.log('点击了树')
         this.isChoose = false
       },
-      chooseSchool() {
-        this.isChoose = true
+      /* 点击工具栏创建 */
+      createdContent() {
+        this.dialogFormVisible = true
+        this.form = {}
+        this.form.title = '新增毕业要求'
+      },
+      tableRowClassName({ row, rowIndex }) {
+        if (row.colorflag) { // 根据colorflag给不同组进行class添加
+          return 'dark'
+        } else {
+          return 'lightDark'
+        }
+      },
+      setWeights(index, rows) {
+        this.dialogWeightsVisible = true
+        var that = this
+        this.$http.getRequest('getCourses', rows[index]).then(res => {
+          if (res.code === 1) {
+            that.setHeaders = res.headers
+            that.setTableList = res.resultList
+            that.setTotal = res.resultList.length
+          }
+        })
+      },
+      // 方法封装 获取页面全部数据
+      getTableData(urlName) {
+        var that = this
+        this.$http.getRequest(urlName).then(res => {
+          if (res.code === 1) {
+            console.log(res)
+            that.headers = res.headers
+            that.tableList = that.smartSort(res.resultList)
+            that.total = res.resultList.length
+            that.requires = res.requires
+            console.log(res.requires)
+            that.loading = false
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
+      },
+      smartSort(arrSimple2) {
+        arrSimple2[0]['colorflag'] = true // 为第一组数据添加colorflag属性
+        arrSimple2.sort(function(b, a) { // b为后一组数据，a为前一组数据
+          if (a.number === b.number) {
+            b['colorflag'] = a['colorflag']
+          } else {
+            b['colorflag'] = !a['colorflag']
+          }
+        })
+        return arrSimple2
       }
     },
-    components: { ElButton, ElInput, TableTools },
-    created() {
-      var that = this
-      this.$http.getRequest('getSourceCount').then(res => {
-        if (res.code === 1) {
-          console.log(res)
-          that.title = res.recordTime
-          that.chongzhi = res.resultList
-          that.total = res.resultList.length
-        } else {
-          that.title = '暂无数据啊'
-        }
-      })
-    },
+    components: { TableTools },
     name: 'set-weights'
   }
 </script>
-
 <style scoped rel="stylesheet/scss" lang="scss">
-  .setWeights{position: relative;width:100%;height:100%;
-  .choose-school{ width: 200px;height:100%;overflow: auto;border-right:2px solid #999;position: absolute;bottom:0;top:0;left:0;padding: 20px 0;transition:width 0.28s;background: #F8F8F8;
-  .el-tree{background: #F8F8F8;}
+  /deep/ .dark{
+    background-color: #f0f9eb!important;
   }
-  .container{position: relative;min-width: 100%;margin-left: 200px;
-  .content{padding: 0 30px;
-  .el-pagination{
-    padding: 30px 15px;text-align: right;}
+  /deep/ .lightDark{
+    background-color: #fff!important;
   }
-  }
-  }
-  .setWeights.hiddenChoose{
-  .container{margin-left: 0px;}
-  .choose-school{width: 0px;}
+  @import '../../styles/rightContent.scss';
+  .customWidth{
+    width: 90%;
   }
 </style>

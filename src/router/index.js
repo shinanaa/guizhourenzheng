@@ -36,10 +36,22 @@ export const constantRouterMap = [
     alwaysShow: true, // will always show the root menu
     meta: { title: '认证管理', icon: 'form', roles: ['admin', 'editor'] },
     children: [{
+      path: '/attestation/target',
+      component: () => import('@/views/attestation/target'),
+      name: 'trainTarget',
+      meta: { title: '培养目标', icon: 'star', noCache: true }
+    },
+    {
       path: '/attestation/graduationRequire',
       component: () => import('@/views/attestation/graduationRequire'),
       name: 'graduationRequire',
       meta: { title: '毕业要求', icon: 'star', noCache: true }
+    },
+    {
+      path: '/attestation/standards',
+      component: () => import('@/views/attestation/standards'),
+      name: 'standards',
+      meta: { title: '认证标准', icon: 'star', noCache: true }
     },
     {
       path: '/attestation/requireAndCourses',

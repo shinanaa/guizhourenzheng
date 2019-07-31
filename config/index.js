@@ -8,9 +8,17 @@ module.exports = {
   dev: {
 
     // Paths
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: '',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api':{
+        target:'https://www.easy-mock.com/mock/5cf477f520156326ddbeb251/example/',
+        changeOrigin:true,
+        pathRewrite: {
+          '^/api': '/'   //重写接口
+        }
+      }
+    },
 
     // Various Dev Server settings
 
@@ -57,7 +65,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: '',
 
     /**
      * You can set by youself according to actual condition
