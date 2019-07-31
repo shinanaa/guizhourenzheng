@@ -6,7 +6,6 @@
           :props="defaultProps"
           ref="tree"
           show-checkbox
-          accordion
           @node-click="handleCheckChange"></el-tree>
       </div>
       <div class="container">
@@ -233,24 +232,78 @@
           })
         }
       },
+      filterDataIds(ids) {
+        const newIds = []
+        const pidLength1 = []
+        const pidLength2 = []
+        const pidLength3 = []
+        for (let i = 0; i < ids.length; i++) {
+          const item = ids[i]
+          if (item.hasOwnProperty('children')) {
+            const pid = item['id']
+            const pidLength = pid.split('_').length
+            if (pidLength === 1) {
+              pidLength1.push(item)
+            } else {
+              pidLength2.push(item)
+            }
+          } else {
+            pidLength3.push(item)
+          }
+        }
+
+        // 从1里 删 2 和3  删2 用儿子比对删  删3 就得用 id比对删
+        for (let i = 0; i < pidLength1.length; i++) {
+          const item = pidLength1[i]
+          // 删2
+          for (let j = pidLength2.length - 1; j >= 0; j--) {
+            if (item['children'].indexOf(pidLength2[j]) > -1) {
+              pidLength2.splice(j, 1)
+            }
+          }
+          // 删3
+          for (let k = pidLength3.length - 1; k >= 0; k--) {
+            if (pidLength3[k].id.indexOf(item.id) > -1) {
+              pidLength3.splice(k, 1)
+            }
+          }
+        }
+
+        // // 从2 里删 3
+        for (let i = 0; i < pidLength2.length; i++) {
+          const item = pidLength2[i]
+          for (let j = pidLength3.length - 1; j >= 0; j--) {
+            console.info(item)
+            // console.info(pidLength3[j])
+            if (item['children'].indexOf(pidLength3[j]) > -1) {
+              pidLength3.splice(j, 1)
+            }
+          }
+        }
+        //  // 123 合并
+        return newIds.concat(pidLength1, pidLength2, pidLength3)
+      },
       // 搜索查询
       searchData(param) {
-        if (param) {
-          var that = this
-          this.$http.getRequest('getSearchData', param).then(res => {
-            if (res.code === 1) {
-              that.tableList = res.resultList
-              that.total = res.resultList.length
-              that.emptyText = '无相关内容，请您调整查询内容'
-            }
-          })
-        } else {
-          this.$message({
-            showClose: true,
-            message: '查询内容不可为空',
-            type: 'error'
-          })
-        }
+        const oldIds = this.$refs.tree.getCheckedNodes()
+        const newIds = this.filterDataIds(oldIds)
+        console.info(newIds)
+      // if (param) {
+      //   var that = this
+      //   this.$http.getRequest('getSearchData', param).then(res => {
+      //     if (res.code === 1) {
+      //       that.tableList = res.resultList
+      //       that.total = res.resultList.length
+      //       that.emptyText = '无相关内容，请您调整查询内容'
+      //     }
+      //   })
+      // } else {
+      //   this.$message({
+      //     showClose: true,
+      //     message: '查询内容不可为空',
+      //     type: 'error'
+      //   })
+      // }
       },
       handleChange(value) {
         console.log(value)
