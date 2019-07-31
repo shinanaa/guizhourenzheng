@@ -131,7 +131,7 @@
             { required: true, message: '请选择所属学年', trigger: 'change' }
           ],
           require: [
-            { required: true, message: '请输入专业毕业要求', trigger: 'blur' }
+            { required: true, message: '请选择专业毕业要求', trigger: 'change' }
           ],
           number: [
             { required: true, message: '请输入指标点数量', trigger: 'blur' }
@@ -192,9 +192,6 @@
           if (this.currentRow.target4 === '√') {
             this.targets.push('毕业培养目标4')
           }
-          // this.targets = [this.currentRow.target1, this.currentRow.target2, this.currentRow.target3, this.currentRow.target4].filter((t, index) => t === '√' ? ('毕业培养目标' + index) : '')
-          // console.log(this.targets)
-          // new Array(this.currentRow.target1, this.currentRow.target2, this.currentRow.target3, this.currentRow.target4).map((t, index) => t === '√' ? this.targets.push('毕业培养目标' + index) : '')
           for (let i = 0; i < this.treeList.length; i++) {
             if (this.treeList[i].label === this.form.college) {
               this.majorList = this.treeList[i].children
