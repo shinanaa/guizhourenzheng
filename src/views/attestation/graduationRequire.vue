@@ -96,6 +96,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
+  import { filterDataIds } from '@/utils/common'
   export default {
     name: 'graduation-require',
     data() {
@@ -223,65 +224,20 @@
           })
         }
       },
-      filterDataIds(ids) {
-        const newIds = []
-        const pidLength1 = []
-        const pidLength2 = []
-        const pidLength3 = []
-        for (let i = 0; i < ids.length; i++) {
-          const item = ids[i]
-          if (item.hasOwnProperty('children')) {
-            const pid = item['id']
-            const pidLength = pid.split('_').length
-            if (pidLength === 1) {
-              pidLength1.push(item)
-            } else {
-              pidLength2.push(item)
-            }
-          } else {
-            pidLength3.push(item)
-          }
-        }
-
-        // 从1里 删 2 和3  删2 用儿子比对删  删3 就得用 id比对删
-        for (let i = 0; i < pidLength1.length; i++) {
-          const item = pidLength1[i]
-          // 删2
-          for (let j = pidLength2.length - 1; j >= 0; j--) {
-            if (item['children'].indexOf(pidLength2[j]) > -1) {
-              pidLength2.splice(j, 1)
-            }
-          }
-          // 删3
-          for (let k = pidLength3.length - 1; k >= 0; k--) {
-            if (pidLength3[k].id.indexOf(item.id) > -1) {
-              pidLength3.splice(k, 1)
-            }
-          }
-        }
-
-        // // 从2 里删 3
-        for (let i = 0; i < pidLength2.length; i++) {
-          const item = pidLength2[i]
-          for (let j = pidLength3.length - 1; j >= 0; j--) {
-            console.info(item)
-            // console.info(pidLength3[j])
-            if (item['children'].indexOf(pidLength3[j]) > -1) {
-              pidLength3.splice(j, 1)
-            }
-          }
-        }
-        //  // 123 合并
-        return newIds.concat(pidLength1, pidLength2, pidLength3)
-      },
       // 点击工具栏查询
       searchData(param) {
-        const oldIds = this.$refs.tree.getCheckedNodes()
-        const newIds = this.filterDataIds(oldIds)
-        console.info(newIds)
-        if (param) {
+        const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
+        const newIds = filterDataIds(oldIds) // 将重合的子项过滤
+        if (newIds.length) {
+          this.isChoose = false
+          console.log(newIds)
+        }
+        if (param || newIds.length) {
+          const searchRequest = {}
+          searchRequest.inputText = param
+          searchRequest.courses = newIds
           var that = this
-          this.$http.getRequest('getSearchData', param).then(res => {
+          this.$http.getRequest('getSearchData', searchRequest).then(res => {
             if (res.code === 1) {
               that.tableList = res.resultList
               that.total = res.resultList.length
@@ -291,7 +247,7 @@
         } else {
           this.$message({
             showClose: true,
-            message: '查询内容不可为空',
+            message: '请选择院系或输入查询内容',
             type: 'error'
           })
         }
@@ -332,13 +288,27 @@
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
             that.headers = res.headers
-            that.tableList = res.resultList
+            that.tableList = that.targetsFilter(res.resultList)
             that.total = res.resultList.length
             that.loading = false
           } else {
             that.emptyText = '暂无数据'
           }
         })
+      },
+      // 将毕业培养目标为true的显示为✔
+      targetsFilter(dataList) {
+        dataList.map((item) => {
+          for (var i in item.target) {
+            if (item.target[i] === true) {
+              item.target[i] = '√'
+            }
+          }
+          var targets = item.target
+          delete item['target']
+          Object.assign(item, targets)
+        })
+        return dataList
       },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {

@@ -1,11 +1,12 @@
 <template>
   <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
     <div class="choose-school">
-      <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick" show-checkbox></el-tree>
+      <el-tree :data="treeList" :props="defaultProps" ref="tree" show-checkbox></el-tree>
     </div>
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="chooseSchool"
+                   @searchData="searchData"
                    :btn-not-visible="true"
                    :requires="requires"
                    :search-input-not-visible="true"
@@ -65,6 +66,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
+  import { filterDataIds } from '@/utils/common'
   export default {
     data: function() {
       return {
@@ -126,15 +128,16 @@
       },
       // 点击工具栏查询
       searchData(param) {
-        if (param) {
-          var that = this
-          this.$http.getRequest('getSearchData', param).then(res => {
-            if (res.code === 1) {
-              that.tableList = res.resultList
-              that.total = res.resultList.length
-              that.emptyText = '无相关内容，请您调整查询内容'
-            }
-          })
+        const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
+        const newIds = filterDataIds(oldIds) // 将重合的子项过滤
+        if (newIds.length) {
+          this.isChoose = false
+        }
+        if (param || newIds.length) {
+          const searchRequest = {}
+          searchRequest.inputText = param
+          searchRequest.courses = newIds
+          this.getTableData('getRequireCourses')
         } else {
           this.$message({
             showClose: true,
@@ -162,7 +165,7 @@
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
         var that = this
-        this.$http.getRequest(urlName).then(res => {
+        this.$http.getRequest(urlName, params).then(res => {
           if (res.code === 1) {
             that.headers = res.headers
             that.tableList = res.resultList

@@ -1,11 +1,12 @@
 <template>
     <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
       <div class="choose-school">
-        <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+        <el-tree :data="treeList" :props="defaultProps" ref="tree" show-checkbox></el-tree>
       </div>
       <div class="container">
         <table-tools @dialogFormVisible="dialogFormVisible = true"
                      @chooseSchool="isChoose = true"
+                     @searchData="searchData"
                      :btn-not-visible="true"
                      :requires="requires"
                      :search-input-not-visible="true"
@@ -101,7 +102,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-
+  import { filterDataIds } from '@/utils/common'
   export default {
     data: function() {
       return {
@@ -164,6 +165,34 @@
         this.dialogFormVisible = true
         this.form = {}
         this.form.title = '新增毕业要求'
+      },
+      // 点击工具栏查询
+      searchData(param) {
+        const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
+        const newIds = filterDataIds(oldIds) // 将重合的子项过滤
+        if (newIds.length) {
+          this.isChoose = false
+          console.log(newIds)
+        }
+        if (param || newIds.length) {
+          const searchRequest = {}
+          searchRequest.inputText = param
+          searchRequest.courses = newIds
+          var that = this
+          this.$http.getRequest('getSearchData', searchRequest).then(res => {
+            if (res.code === 1) {
+              that.tableList = res.resultList
+              that.total = res.resultList.length
+              that.emptyText = '无相关内容，请您调整查询内容'
+            }
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请选择院系或输入查询内容',
+            type: 'error'
+          })
+        }
       },
       tableRowClassName({ row, rowIndex }) {
         if (row.colorflag) { // 根据colorflag给不同组进行class添加

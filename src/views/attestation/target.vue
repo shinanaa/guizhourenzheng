@@ -1,7 +1,12 @@
 <template>
   <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
     <div class="choose-school">
-      <el-tree :data="treeList" :props="defaultProps"></el-tree>
+      <el-tree
+        :data="treeList"
+        :props="defaultProps"
+        ref="tree"
+        show-checkbox
+      ></el-tree>
     </div>
     <div class="container">
       <table-tools
@@ -84,6 +89,7 @@
 
 <script>
 import TableTools from '@/components/Guizhou/tableTools'
+import { filterDataIds } from '@/utils/common'
 export default {
   name: 'target',
   data() {
@@ -203,7 +209,16 @@ export default {
     },
     // 点击工具栏查询
     searchData(param) {
-      if (param) {
+      const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
+      const newIds = filterDataIds(oldIds) // 将重合的子项过滤
+      if (newIds.length) {
+        this.isChoose = false
+        console.log(newIds)
+      }
+      if (param || newIds.length) {
+        const searchRequest = {}
+        searchRequest.inputText = param
+        searchRequest.courses = newIds
         var that = this
         this.$http.getRequest('getSearchData', param).then(res => {
           if (res.code === 1) {
