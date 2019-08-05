@@ -45,9 +45,9 @@
         <!--创建-->
         <el-dialog title="编辑指标点对应的课程" :visible.sync="dialogFormVisible" :before-close="resetForm">
           <el-form ref="dialogForm">
-            <el-form-item class="formCenter" :class="item.value !== ' ' ? 'selected' : ''" label-position="center" v-for="(item,index) in currentCourses" :label="item.label" :label-width="formLabelWidth" :key="index" ref="formItem">
+            <el-form-item class="formCenter" :class="item.value !== '' ? 'selected' : ''" label-position="center" v-for="(item,index) in currentCourses" :label="item.label" :label-width="formLabelWidth" :key="index" ref="formItem">
               <el-select placeholder="难度" v-model="item.value" @change="chooseCourses(item.value)">
-                <el-option label="不设置" value=" "></el-option>
+                <el-option label="不设置" value=""></el-option>
                 <el-option label="H" value="H"></el-option>
                 <el-option label="M" value="M"></el-option>
                 <el-option label="L" value="L"></el-option>
@@ -96,7 +96,6 @@
         if (res.status === 1) {
           this.treeList = res.schoolData
           this.requires = res.requires
-          console.log(res)
         }
       })
     },
@@ -200,12 +199,11 @@
 <style scoped rel="stylesheet/scss" lang="scss">
   @import '../../styles/rightContent.scss';
   .el-form{text-align: center;}
-</style>
-<style rel="stylesheet/scss" lang="scss">
-  .formCenter{
+  /deep/ .formCenter{
     .el-form-item__label{text-align: center;}
   }
-  .selected{
+  /deep/ .selected{
     .el-form-item__label{background: #f0f9eb;color: #666;border: 1px solid #c2e7b0;}
   }
 </style>
+
