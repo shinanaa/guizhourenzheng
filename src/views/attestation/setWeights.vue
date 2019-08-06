@@ -93,10 +93,8 @@
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         dialogWeightsVisible: false, // 是否显示权重设置弹窗
         form: {
-          name: '',
           region: '',
           delivery: false,
-          type: [],
           resource: '',
           desc: ''
         },
