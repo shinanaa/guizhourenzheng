@@ -1,7 +1,7 @@
 <template>
   <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
     <div class="choose-school">
-      <el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+      <el-tree ref="tree" :data="treeList" :props="defaultProps" show-checkbox></el-tree>
     </div>
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true"
@@ -35,14 +35,14 @@
           :total="total">
         </el-pagination>
         <!--创建-->
-        <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
-            <el-form-item label="院系" :label-width="formLabelWidth">
+        <el-dialog ref="dialog" title="新增毕业要求" :visible.sync="dialogFormVisible">
+          <el-form :model="form" :rules="rules" ref="dialogForm">
+            <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
               <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
                 <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="专业" :label-width="formLabelWidth">
+            <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
               <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
                 <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
               </el-select>
@@ -53,13 +53,13 @@
                 <el-option label="2019" value="2019"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="公共课" :label-width="formLabelWidth">
+            <el-form-item label="公共课" :label-width="formLabelWidth" prop="openClass">
               <el-select v-model="form.openClass" multiple placeholder="请选择课程">
                 <el-option label="思想道德修养与法律基础" value="shanghai"></el-option>
                 <el-option label="马克思主义基本原理概论" value="beijing"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="专业课" :label-width="formLabelWidth">
+            <el-form-item label="专业课" :label-width="formLabelWidth" prop="majorClass">
               <el-select v-model="form.majorClass" multiple placeholder="请选择课程">
                 <el-option label="思想道德修养与法律基础" value="shanghai"></el-option>
                 <el-option label="马克思主义基本原理概论" value="beijing"></el-option>
@@ -68,7 +68,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="primary" @click="sureDialog">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -93,16 +93,29 @@
         pagesize: 10, // 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: '',
+          title: '',
+          college: '',
+          major: '',
+          schoolYear: '',
           openClass: [],
           majorClass: []
+        },
+        rules: {
+          college: [
+            { required: true, message: '请选择院系名称', trigger: 'change' }
+          ],
+          major: [
+            { required: true, message: '请选择专业名称', trigger: 'change' }
+          ],
+          schoolYear: [
+            { required: true, message: '请选择所属学年', trigger: 'change' }
+          ],
+          openClass: [
+            { required: true, message: '请选择公共课', trigger: 'change' }
+          ],
+          majorClass: [
+            { required: true, message: '请输入专业课', trigger: 'change' }
+          ]
         },
         treeList: [],
         majorList: [],
@@ -134,15 +147,10 @@
         console.log(`当前页: ${val}`)
         this.currentPage = val
       },
-      /* 学院选择树*/
-      handleNodeClick(data) {
-        console.log('点击了树')
-        this.isChoose = false
-      },
       /* 点击工具栏创建 */
       createdContent() {
         this.dialogFormVisible = true
-        this.form = {}
+        // this.form = {}
         this.form.title = '新增毕业要求'
       },
       // 获取表格当前行数据
@@ -193,6 +201,30 @@
       // 弹框选择院校
       selectCollege(data) {
         this.majorList = this.treeList[data].children
+      },
+      // 弹框点击确定按钮
+      sureDialog() {
+        this.$refs.dialogForm.validate(valid => {
+          if (valid) {
+            this.dialogFormVisible = false
+            if (this.form.title === '新增毕业要求') {
+              this.operateForm('addDialog', this.form)
+            } else if (this.form.title === '修改毕业要求') {
+              this.operateForm('editDialog', this.form)
+            }
+            this.getTableData('getCourseManage')
+            this.resetForm()
+          } else {
+            return false
+          }
+        })
+      },
+      // 弹窗点击取消重置form表单
+      resetForm() {
+        this.dialogFormVisible = false
+        this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.majorList = []
+        console.log(this.form)
       },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {

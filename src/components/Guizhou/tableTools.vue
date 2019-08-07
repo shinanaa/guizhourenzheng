@@ -18,14 +18,14 @@
     <div class="tools-btn" v-if="!showIf">
       <el-button type="success" icon="el-icon-plus" @click="createdContent">创建</el-button>
       <el-button type="warning" icon="el-icon-edit" @click="editContent" v-if="!btnEditNoShow">编辑</el-button>
-      <el-button type="danger" icon="el-icon-delete" @click="deleteContent">删除</el-button>
+      <el-button type="danger" icon="el-icon-delete" @click="deleteContent" v-if="!btnDelNoShow">删除</el-button>
     </div>
   </div>
 </template>
 
 <script>
     export default {
-      props: ['btnNotVisible', 'requires', 'searchInputNotVisible', 'btnEditNoShow'],
+      props: ['btnNotVisible', 'requires', 'searchInputNotVisible', 'btnEditNoShow', 'btnDelNoShow'],
       data() {
         return {
           'search': '',
