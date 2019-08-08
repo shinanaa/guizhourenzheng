@@ -1,5 +1,5 @@
 <template>
-
+<div>评分标准</div>
 </template>
 
 <script>

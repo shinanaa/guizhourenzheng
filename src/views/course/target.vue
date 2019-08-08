@@ -1,5 +1,5 @@
 <template>
-
+  <div>课程目标</div>
 </template>
 
 <script>

@@ -95,7 +95,7 @@ export const constantRouterMap = [
       path: '/course/indicator',
       component: () => import('@/views/course/indicator'),
       name: 'indicator',
-      meta: { title: '章节指标点', icon: 'example', noCache: true }
+      meta: { title: '对应指标点', icon: 'example', noCache: true }
     },
     {
       path: '/course/target',
@@ -104,8 +104,8 @@ export const constantRouterMap = [
       meta: { title: '课程目标', icon: 'drag', noCache: true }
     },
     {
-      path: '/course/granding',
-      component: () => import('@/views/course/granding'),
+      path: '/course/grading',
+      component: () => import('@/views/course/grading'),
       name: 'granding',
       meta: { title: '课程评分标准', icon: 'drag', noCache: true }
     }
