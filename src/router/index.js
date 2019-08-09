@@ -101,13 +101,13 @@ export const constantRouterMap = [
       path: '/course/target',
       component: () => import('@/views/course/target'),
       name: 'target',
-      meta: { title: '课程目标', icon: 'drag', noCache: true }
+      meta: { title: '课程安排', icon: 'drag', noCache: true }
     },
     {
       path: '/course/grading',
       component: () => import('@/views/course/grading'),
       name: 'granding',
-      meta: { title: '课程评分标准', icon: 'drag', noCache: true }
+      meta: { title: '课程组成', icon: 'drag', noCache: true }
     }
     ]
   },

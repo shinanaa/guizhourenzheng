@@ -18,6 +18,7 @@ const i = {
   getCourseManage: { url: 'course/getCourseManage', isMock: true }, // 获取课程管理页面数据
   getKnowledge: { url: 'course/getKnowledge', isMock: true }, // 获取章节知识点页面数据
   getIndicator: { url: 'course/getIndicator', isMock: true }, // 获取对应指标点页面数据
+  getCoursesTarget: { url: 'course/target/getCoursesTarget', isMock: true }, // 获取课程安排页面课程目标标签页下的内容
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
