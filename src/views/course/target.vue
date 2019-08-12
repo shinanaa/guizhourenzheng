@@ -11,7 +11,7 @@
                    :search-input-not-visible="true"
       ></table-tools>
       <div class="content">
-        <el-tabs v-model="activeName">
+        <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="课程目标" name="first">
             <el-table
               v-loading="loading"
@@ -32,10 +32,30 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="课程模块" name="second">配置管理</el-tab-pane>
+          <el-tab-pane label="课程模块" name="second">
+            <el-table
+              v-loading="loading"
+              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              border
+              style="width: 100%;">
+              <template v-for="header in headers">
+                <el-table-column
+                  :prop="header.prop"
+                  :label="header.label"
+                  :width="header.width">
+                </el-table-column>
+              </template>
+              <el-table-column v-if="tableList.length" label="操作" width="150">
+                <template slot-scope="scope">
+                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
+                  <el-button type="danger" size="small" @click="deleteContent(scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
           <el-tab-pane label="课程内容" name="third">角色管理</el-tab-pane>
           <el-tab-pane label="考核要点" name="fourth">定时任务补偿</el-tab-pane>
-          <el-tab-pane label="评分标准" name="five">
+          <el-tab-pane label="评分标准" name="fifth">
             <h2>123</h2>
           </el-tab-pane>
         </el-tabs>
@@ -116,6 +136,26 @@
       })
     },
     methods: {
+      handleClick(tab) {
+        console.log(tab.paneName)
+        switch (tab.paneName) {
+          case 'first':
+            this.getTableData('getCoursesTarget')
+            break
+          case 'second':
+            this.getTableData('getCoursesModule')
+            break
+          case 'third':
+            this.getTableData('getCoursesModule')
+            break
+          case 'fourth':
+            this.getTableData('getCoursesModule')
+            break
+          case 'fifth':
+            this.getTableData('getCoursesModule')
+            break
+        }
+      },
       // 点击工具栏查询
       searchData(param) {
         this.loading = true
@@ -140,6 +180,19 @@
       /* 点击工具栏编辑 */
       editContent(row) {
         this.dialogFormVisible = true
+      },
+      // 点击工具栏删除
+      deleteContent() {
+        if (this.currentRow) {
+          this.operateForm('deleteDialog', this.currentRow.order)
+          this.getTableData('getTrainTarget')
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请先选择要删除的数据',
+            type: 'warning'
+          })
+        }
       },
       // 弹框点击确定按钮
       sureDialog() {
