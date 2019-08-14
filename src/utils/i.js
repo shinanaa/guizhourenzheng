@@ -20,6 +20,9 @@ const i = {
   getIndicator: { url: 'course/getIndicator', isMock: true }, // 获取对应指标点页面数据
   getCoursesTarget: { url: 'course/target/getCoursesTarget', isMock: true }, // 获取课程安排页面课程目标标签页下的内容
   getCoursesModule: { url: 'course/target/getCoursesModule', isMock: true }, // 获取课程安排页面课程模块标签页下的内容
+  getCoursesContent: { url: 'course/target/getCoursesContent', isMock: true }, // 获取课程安排页面课程内容标签页下的内容
+  getCoursesCheck: { url: 'course/target/getCoursesCheck', isMock: true }, // 获取课程安排页面考核要点标签页下的内容
+  getCoursesStandard: { url: 'course/target/getCoursesStandard', isMock: true }, // 获取课程安排页面考评分标准标签页下的内容
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计

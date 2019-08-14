@@ -53,10 +53,65 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="课程内容" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="考核要点" name="fourth">定时任务补偿</el-tab-pane>
+          <el-tab-pane label="课程内容" name="third">
+            <el-table
+              v-loading="loading"
+              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              border
+              style="width: 100%;">
+              <template v-for="header in headers">
+                <el-table-column
+                  :prop="header.prop"
+                  :label="header.label"
+                  :width="header.width">
+                </el-table-column>
+              </template>
+              <el-table-column v-if="tableList.length" label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="考核要点" name="fourth">
+            <el-table
+              v-loading="loading"
+              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              border
+              style="width: 100%;">
+              <template v-for="header in headers">
+                <el-table-column
+                  :prop="header.prop"
+                  :label="header.label"
+                  :width="header.width">
+                </el-table-column>
+              </template>
+              <el-table-column v-if="tableList.length" label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
           <el-tab-pane label="评分标准" name="fifth">
-            <h2>123</h2>
+            <el-table
+              v-loading="loading"
+              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              border
+              style="width: 100%;">
+              <template v-for="header in headers">
+                <el-table-column
+                  :prop="header.prop"
+                  :label="header.label"
+                  :width="header.width">
+                </el-table-column>
+              </template>
+              <el-table-column v-if="tableList.length" label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-tab-pane>
         </el-tabs>
         <!--编辑-->
@@ -137,7 +192,6 @@
     },
     methods: {
       handleClick(tab) {
-        console.log(tab.paneName)
         switch (tab.paneName) {
           case 'first':
             this.getTableData('getCoursesTarget')
@@ -146,13 +200,13 @@
             this.getTableData('getCoursesModule')
             break
           case 'third':
-            this.getTableData('getCoursesModule')
+            this.getTableData('getCoursesContent')
             break
           case 'fourth':
-            this.getTableData('getCoursesModule')
+            this.getTableData('getCoursesCheck')
             break
           case 'fifth':
-            this.getTableData('getCoursesModule')
+            this.getTableData('getCoursesStandard')
             break
         }
       },

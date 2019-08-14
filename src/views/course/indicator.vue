@@ -39,15 +39,15 @@
         </el-pagination>
         <!--创建-->
         <el-dialog title="编辑指标点对应知识点" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
+          <el-form :model="form" :rules="rules" ref="dialogForm">
             <el-form-item label="课程：" :label-width="formLabelWidth">
               <p>{{form.course}}</p>
             </el-form-item>
             <el-form-item label="指标点：" :label-width="formLabelWidth">
               <p>{{form.indicator}}</p>
             </el-form-item>
-            <el-form-item label="知识点："  :label-width="formLabelWidth">
-              <el-select v-model="form.knowledge" multiple placeholder="请选择">
+            <el-form-item label="知识点："  :label-width="formLabelWidth" prop="knowledge">
+              <el-select v-model="form.knowledge" multiple placeholder="请选择" @change="getSelect">
                 <el-option-group
                   v-for="group in options"
                   :key="group.label"
@@ -64,7 +64,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="primary" @click="sureDialog">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -114,11 +114,15 @@
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         form: {
           course: '',
-          konwledge: [],
-          delivery: ''
+          indicator: '',
+          knowledge: []
+        },
+        rules: {
+          knowledge: [
+            { required: true, message: '知识点不能为空', trigger: 'change' }
+          ]
         },
         treeList: [],
-        majorList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -192,22 +196,19 @@
           })
         }
       },
-      // 弹框选择院校
-      selectCollege(data) {
-        this.majorList = this.treeList[data].children
+      // 获取弹框中所选的知识点
+      getSelect(val) {
+        console.log(this.form.knowledge)
       },
       // 弹框点击确定按钮
       sureDialog() {
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
-            this.dialogFormVisible = false
-            if (this.form.title === '新增毕业要求') {
-              this.operateForm('addDialog', this.form)
-            } else if (this.form.title === '修改毕业要求') {
-              this.operateForm('editDialog', this.form)
-            }
-            this.getTableData('getCourseManage')
+            console.log(this.form)
+            this.operateForm('editDialog', this.form)
+            this.getTableData('getIndicator')
             this.resetForm()
+            console.log(this.form)
           } else {
             return false
           }
@@ -216,9 +217,10 @@
       // 弹窗点击取消重置form表单
       resetForm() {
         this.dialogFormVisible = false
-        this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
-        this.majorList = []
-        console.log(this.form)
+        this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.form.course = ''
+        this.form.indicator = ''
+        this.form.knowledge = []
       },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
