@@ -11,8 +11,8 @@
                    :search-input-not-visible="true"
       ></table-tools>
       <div class="content">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="课程目标" name="first">
+        <el-tabs v-model="activeName" @tab-click="changeTab">
+          <el-tab-pane v-for="(tab, index) in tabs" :label="tab.title" :name="tab.name" :key="index">
             <el-table
               v-loading="loading"
               :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -25,27 +25,12 @@
                   :width="header.width">
                 </el-table-column>
               </template>
-              <el-table-column v-if="tableList.length" label="操作" width="100">
+              <el-table-column v-if="tableList.length && !tab.hasDel" label="操作" width="100">
                 <template slot-scope="scope">
-                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
+                  <el-button type="warning" size="small" @click="editContent(scope.row, index)">编辑</el-button>
                 </template>
               </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="课程模块" name="second">
-            <el-table
-              v-loading="loading"
-              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-              border
-              style="width: 100%;">
-              <template v-for="header in headers">
-                <el-table-column
-                  :prop="header.prop"
-                  :label="header.label"
-                  :width="header.width">
-                </el-table-column>
-              </template>
-              <el-table-column v-if="tableList.length" label="操作" width="150">
+              <el-table-column v-if="tableList.length && tab.hasDel" label="操作" width="150">
                 <template slot-scope="scope">
                   <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
                   <el-button type="danger" size="small" @click="deleteContent(scope.row)">删除</el-button>
@@ -53,75 +38,16 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="课程内容" name="third">
-            <el-table
-              v-loading="loading"
-              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-              border
-              style="width: 100%;">
-              <template v-for="header in headers">
-                <el-table-column
-                  :prop="header.prop"
-                  :label="header.label"
-                  :width="header.width">
-                </el-table-column>
-              </template>
-              <el-table-column v-if="tableList.length" label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="考核要点" name="fourth">
-            <el-table
-              v-loading="loading"
-              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-              border
-              style="width: 100%;">
-              <template v-for="header in headers">
-                <el-table-column
-                  :prop="header.prop"
-                  :label="header.label"
-                  :width="header.width">
-                </el-table-column>
-              </template>
-              <el-table-column v-if="tableList.length" label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="评分标准" name="fifth">
-            <el-table
-              v-loading="loading"
-              :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-              border
-              style="width: 100%;">
-              <template v-for="header in headers">
-                <el-table-column
-                  :prop="header.prop"
-                  :label="header.label"
-                  :width="header.width">
-                </el-table-column>
-              </template>
-              <el-table-column v-if="tableList.length" label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
         </el-tabs>
-        <!--编辑-->
-        <el-dialog title="编辑指标点对应的课程" :visible.sync="dialogFormVisible" :before-close="resetForm">
-          <el-form ref="dialogForm">
+        <!--编辑课程目标-->
+        <el-dialog title="编辑课程目标" :visible.sync="dialogFormVisible" :before-close="resetForm">
+          <!--编辑课程目标-->
+          <el-form ref="dialogForm" v-if='elForm1'>
             <el-form-item label="课程：" :label-width="formLabelWidth">
-              <p>思想道德与法律基础</p>
+              <p>{{form.courseName}}</p>
             </el-form-item>
             <el-form-item label="课程目标观测点：" :label-width="formLabelWidth">
-              <el-input type="textarea"></el-input>
+              <el-input type="textarea" v-model="form.watchPoint"></el-input>
             </el-form-item>
             <el-form-item label="课程权重：" :label-width="formLabelWidth">
               <el-select v-model="form.weight" placeholder="请选择">
@@ -134,10 +60,54 @@
               </el-select>
             </el-form-item>
             <el-form-item label="与指标点支撑关系：" :label-width="formLabelWidth">
-              <el-input type="textarea"></el-input>
+              <el-input type="textarea" v-model="form.relationWidthSupport"></el-input>
             </el-form-item>
             <el-form-item label="一践行三学会：" :label-width="formLabelWidth">
-              <el-input type="text"></el-input>
+              <el-input type="text" v-model="form.toDo"></el-input>
+            </el-form-item>
+          </el-form>
+          <!--编辑课程模块-->
+          <el-form ref="dialogForm" v-if='elForm2'>
+            <el-form-item label="课程模块名称：" :label-width="formLabelWidth">
+              <el-input type="text" v-model="form2.moduleName"></el-input>
+            </el-form-item>
+            <el-divider content-position="left" name="theory">理论教学</el-divider>
+            <el-form-item label="课内学时：" :label-width="formLabelWidth">
+              <el-input type="text" v-model="form2.theoryInClass"></el-input>
+            </el-form-item>
+            <el-form-item label="课外学时：" :label-width="formLabelWidth">
+              <el-input type="text" v-model="form2.theoryOutClass"></el-input>
+            </el-form-item>
+            <el-form-item label="教学手段与方法：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form2.theoryTeachMeansTheory"></el-input>
+            </el-form-item>
+            <el-divider content-position="left" name="practical">实践教学</el-divider>
+            <el-form-item label="课内学时：" :label-width="formLabelWidth">
+              <el-input type="text" v-model="form2.practicalInClass"></el-input>
+            </el-form-item>
+            <el-form-item label="课外学时：" :label-width="formLabelWidth">
+              <el-input type="text" v-model="form2.practicalOutClass"></el-input>
+            </el-form-item>
+            <el-form-item label="教学手段与方法：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form2.practicalTeachMeansPracical"></el-input>
+            </el-form-item>
+          </el-form>
+          <!--编辑课程内容-->
+          <el-form ref="dialogForm" v-if='elForm3'>
+            <el-form-item label="课程：" :label-width="formLabelWidth">
+              <p>课程内容</p>
+            </el-form-item>
+          </el-form>
+          <!--编辑考核要点-->
+          <el-form ref="dialogForm" v-if='elForm4'>
+            <el-form-item label="课程：" :label-width="formLabelWidth">
+              <p>考核要点</p>
+            </el-form-item>
+          </el-form>
+          <!--编辑评分标准-->
+          <el-form ref="dialogForm" v-if='elForm5'>
+            <el-form-item label="课程：" :label-width="formLabelWidth">
+              <p>评分标准</p>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -173,8 +143,48 @@
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         formLabelWidth: '145px',
         form: {
+          courseName: '',
+          watchPoint: '',
+          relationWidthSupport: '',
+          toDo: '',
           weight: 0.1
-        }
+        },
+        form2: {
+          moduleName: '',
+          theoryInClass: '',
+          theoryOutClass: '',
+          theoryTeachMeansTheory: '',
+          practicalInClass: '',
+          practicalOutClass: '',
+          practicalTeachMeansPracical: ''
+        },
+        elForm1: true,
+        elForm2: false,
+        elForm3: false,
+        elForm4: false,
+        elForm5: false,
+        tabs: [{
+          title: '课程目标',
+          name: 'first',
+          hasDel: false
+        }, {
+          title: '课程模块',
+          name: 'second',
+          hasDel: false
+        }, {
+          title: '课程内容',
+          name: 'third',
+          hasDel: false
+        }, {
+          title: '考核要点',
+          name: 'fourth',
+          hasDel: false
+        }, {
+          title: '评分标准',
+          name: 'fifth',
+          hasDel: false
+        }],
+        index: 0
       }
     },
     components: { TableTools },
@@ -191,21 +201,48 @@
       })
     },
     methods: {
-      handleClick(tab) {
+      changeTab(tab) {
+        // console.log(tab)
+        this.index = tab.index
         switch (tab.paneName) {
           case 'first':
+            this.elForm1 = true
+            this.elForm2 = false
+            this.elForm3 = false
+            this.elForm4 = false
+            this.elForm5 = false
             this.getTableData('getCoursesTarget')
             break
           case 'second':
+            this.elForm1 = false
+            this.elForm2 = true
+            this.elForm3 = false
+            this.elForm4 = false
+            this.elForm5 = false
             this.getTableData('getCoursesModule')
             break
           case 'third':
+            this.elForm1 = false
+            this.elForm2 = false
+            this.elForm3 = true
+            this.elForm4 = false
+            this.elForm5 = false
             this.getTableData('getCoursesContent')
             break
           case 'fourth':
+            this.elForm1 = false
+            this.elForm2 = false
+            this.elForm3 = false
+            this.elForm4 = true
+            this.elForm5 = false
             this.getTableData('getCoursesCheck')
             break
           case 'fifth':
+            this.elForm1 = false
+            this.elForm2 = false
+            this.elForm3 = false
+            this.elForm4 = false
+            this.elForm5 = true
             this.getTableData('getCoursesStandard')
             break
         }
@@ -232,8 +269,16 @@
         }
       },
       /* 点击工具栏编辑 */
-      editContent(row) {
+      editContent(row, index) {
         this.dialogFormVisible = true
+        console.log(index)
+        switch (index) {
+          case 0 :
+            this.form.courseName = row.courseName
+            break
+          case 1:
+            console.log(row)
+        }
       },
       // 点击工具栏删除
       deleteContent() {
@@ -250,16 +295,17 @@
       },
       // 弹框点击确定按钮
       sureDialog() {
-        this.operateForm('editDialog', this.currentCourses)
+        console.log(this.form)
+        this.operateForm('editDialog', this.form)
         this.resetForm()
-        this.getTableData('getRequireCourses')
+        console.log(this.form)
+        this.getTableData('getCoursesTarget')
       },
       // 弹窗点击取消重置form表单
       resetForm() {
         this.dialogFormVisible = false
         this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
-        this.majorList = []
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {

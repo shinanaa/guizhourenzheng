@@ -223,7 +223,7 @@
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
         console.log(1)
-        console.log(this.form)
+        console.log(params)
         var that = this
         this.$http.postRequest(url, params).then(res => {
           if (res.status === 0) {
