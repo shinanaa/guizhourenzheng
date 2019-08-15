@@ -202,13 +202,10 @@
       },
       // 弹框点击确定按钮
       sureDialog() {
+        var that = this
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
-            console.log(this.form)
-            this.operateForm('editDialog', this.form)
-            this.getTableData('getIndicator')
-            this.resetForm()
-            console.log(this.form)
+            that.operateForm('editDialog', that.form)
           } else {
             return false
           }
@@ -216,6 +213,7 @@
       },
       // 弹窗点击取消重置form表单
       resetForm() {
+        console.log(3)
         this.dialogFormVisible = false
         this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form.course = ''
@@ -224,8 +222,13 @@
       },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
+        console.log(1)
+        console.log(this.form)
+        var that = this
         this.$http.postRequest(url, params).then(res => {
           if (res.status === 0) {
+            that.getTableData('getIndicator')
+            that.resetForm()
             this.$message({
               showClose: true,
               message: res.msg,
@@ -236,6 +239,7 @@
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
+        console.log(2)
         var that = this
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
