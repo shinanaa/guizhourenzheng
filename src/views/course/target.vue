@@ -32,7 +32,7 @@
               </el-table-column>
               <el-table-column v-if="tableList.length && tab.hasDel" label="操作" width="150">
                 <template slot-scope="scope">
-                  <el-button type="warning" size="small" @click="editContent(scope.row)">编辑</el-button>
+                  <el-button type="warning" size="small" @click="editContent(scope.row, index)">编辑</el-button>
                   <el-button type="danger" size="small" @click="deleteContent(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
@@ -44,13 +44,13 @@
           <!--编辑课程目标-->
           <el-form ref="dialogForm" v-if='elForm1'>
             <el-form-item label="课程：" :label-width="formLabelWidth">
-              <p>{{form.courseName}}</p>
+              <p>{{form1.courseName}}</p>
             </el-form-item>
             <el-form-item label="课程目标观测点：" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.watchPoint"></el-input>
+              <el-input type="textarea" v-model="form1.watchPoint"></el-input>
             </el-form-item>
             <el-form-item label="课程权重：" :label-width="formLabelWidth">
-              <el-select v-model="form.weight" placeholder="请选择">
+              <el-select v-model="form1.weight" placeholder="请选择">
                 <el-option
                   v-for="item in 9"
                   :key="item"
@@ -60,10 +60,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="与指标点支撑关系：" :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.relationWidthSupport"></el-input>
+              <el-input type="textarea" v-model="form1.relationWidthSupport"></el-input>
             </el-form-item>
             <el-form-item label="一践行三学会：" :label-width="formLabelWidth">
-              <el-input type="text" v-model="form.toDo"></el-input>
+              <el-input type="text" v-model="form1.toDo"></el-input>
             </el-form-item>
           </el-form>
           <!--编辑课程模块-->
@@ -71,7 +71,9 @@
             <el-form-item label="课程模块名称：" :label-width="formLabelWidth">
               <el-input type="text" v-model="form2.moduleName"></el-input>
             </el-form-item>
-            <el-divider content-position="left" name="theory">理论教学</el-divider>
+            <div class="line-left-right">
+              <span>理论教学</span>
+            </div>
             <el-form-item label="课内学时：" :label-width="formLabelWidth">
               <el-input type="text" v-model="form2.theoryInClass"></el-input>
             </el-form-item>
@@ -81,7 +83,9 @@
             <el-form-item label="教学手段与方法：" :label-width="formLabelWidth">
               <el-input type="textarea" v-model="form2.theoryTeachMeansTheory"></el-input>
             </el-form-item>
-            <el-divider content-position="left" name="practical">实践教学</el-divider>
+            <div class="line-left-right">
+              <span>实践教学</span>
+            </div>
             <el-form-item label="课内学时：" :label-width="formLabelWidth">
               <el-input type="text" v-model="form2.practicalInClass"></el-input>
             </el-form-item>
@@ -94,14 +98,55 @@
           </el-form>
           <!--编辑课程内容-->
           <el-form ref="dialogForm" v-if='elForm3'>
-            <el-form-item label="课程：" :label-width="formLabelWidth">
-              <p>课程内容</p>
+            <el-form-item label="课程目标：" :label-width="formLabelWidth">
+              <p>{{form3.target}}</p>
+            </el-form-item>
+            <el-form-item label="教育学概述：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form3.module1"></el-input>
+            </el-form-item>
+            <el-form-item label="教育本体论：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form3.module2"></el-input>
+            </el-form-item>
+            <el-form-item label="教育价值论：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form3.module3"></el-input>
+            </el-form-item>
+            <el-form-item label="教育目的论：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form3.module4"></el-input>
             </el-form-item>
           </el-form>
           <!--编辑考核要点-->
           <el-form ref="dialogForm" v-if='elForm4'>
-            <el-form-item label="课程：" :label-width="formLabelWidth">
-              <p>考核要点</p>
+            <div class="line-left-right">
+              <span>考试</span>
+            </div>
+            <el-form-item label="考试：" :label-width="formLabelWidth">
+              <el-checkbox-group v-model="form4.test">
+                <el-checkbox label="期中考试" name="type"></el-checkbox>
+                <el-checkbox label="期末考试" name="type"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <div class="line-left-right">
+              <span>平时</span>
+            </div>
+            <el-form-item label="课后作业：" :label-width="formLabelWidth">
+              <el-checkbox-group v-model="form4.task">
+                <el-checkbox label="课后作业一" name="type"></el-checkbox>
+                <el-checkbox label="课后作业二" name="type"></el-checkbox>
+                <el-checkbox label="课后作业三" name="type"></el-checkbox>
+                <el-checkbox label="课后作业四" name="type"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="实验：" :label-width="formLabelWidth">
+              <el-checkbox-group v-model="form4.experiment">
+                <el-checkbox label="实验一" name="type"></el-checkbox>
+                <el-checkbox label="实验二" name="type"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="课堂讨论：" :label-width="formLabelWidth">
+              <el-checkbox-group v-model="form4.discuss">
+                <el-checkbox label="课堂讨论一" name="type"></el-checkbox>
+                <el-checkbox label="课堂讨论二" name="type"></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-form>
           <!--编辑评分标准-->
@@ -121,6 +166,7 @@
 </template>
 
 <script>
+  // import { ElDivider } from 'element-ui'
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds } from '@/utils/common'
   export default {
@@ -142,7 +188,7 @@
         total: 0,
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         formLabelWidth: '145px',
-        form: {
+        form1: {
           courseName: '',
           watchPoint: '',
           relationWidthSupport: '',
@@ -158,6 +204,19 @@
           practicalOutClass: '',
           practicalTeachMeansPracical: ''
         },
+        form3: {
+          target: '',
+          module1: '',
+          module2: '',
+          module3: '',
+          module4: ''
+        },
+        form4: {
+          test: [],
+          task: [],
+          experiment: [],
+          discuss: []
+        },
         elForm1: true,
         elForm2: false,
         elForm3: false,
@@ -170,7 +229,7 @@
         }, {
           title: '课程模块',
           name: 'second',
-          hasDel: false
+          hasDel: true
         }, {
           title: '课程内容',
           name: 'third',
@@ -274,10 +333,14 @@
         console.log(index)
         switch (index) {
           case 0 :
-            this.form.courseName = row.courseName
+            this.form1 = row
             break
           case 1:
-            console.log(row)
+            this.form2 = row
+            break
+          case 2:
+            this.form3 = row
+            break
         }
       },
       // 点击工具栏删除
@@ -295,17 +358,30 @@
       },
       // 弹框点击确定按钮
       sureDialog() {
-        console.log(this.form)
-        this.operateForm('editDialog', this.form)
-        this.resetForm()
-        console.log(this.form)
-        this.getTableData('getCoursesTarget')
+        if (this.elForm1) {
+          this.submitForm(this.form1, 'getCoursesTarget')
+          this.resetForm(this.form1)
+        }
+        if (this.elForm2) {
+          this.submitForm(this.form2, 'getCoursesModule')
+          this.resetForm(this.form2)
+        }
+        if (this.elForm3) {
+          console.log(this.form3)
+          this.submitForm(this.form3, 'getCoursesContent')
+          this.resetForm(this.form3)
+        }
+      },
+      // 提交
+      submitForm(form, apiUrl) {
+        this.operateForm('editDialog', form)
+        this.getTableData(apiUrl)
       },
       // 弹窗点击取消重置form表单
-      resetForm() {
+      resetForm(form) {
         this.dialogFormVisible = false
-        this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
-        this.form = {}
+        this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        form = {}
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
@@ -341,5 +417,17 @@
   @import '../../styles/rightContent.scss';
   .el-form-item{
     p{margin: 0}
+  }
+  .line-left-right{
+    margin: 35px 0px;
+    line-height: 1px;
+    text-align: center;
+    height: 2px;
+    background: rgb(198, 226, 255);
+    span {
+      padding: 0 40px;
+      background: #ffffff;
+      color: #409EFF;
+    }
   }
 </style>

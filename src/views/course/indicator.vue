@@ -72,8 +72,6 @@
   </div>
 </template>
 <script>
-  import ElButton from 'element-ui/packages/button/src/button'
-  import ElInput from 'element-ui/packages/input/src/input'
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds } from '@/utils/common'
   export default {
@@ -131,7 +129,7 @@
         formLabelWidth: '120px'
       }
     },
-    components: { ElButton, ElInput, TableTools },
+    components: { TableTools },
     created() {
       this.getTableData('getIndicator')
       this.$http.getRequest('getChooseData').then(res => {
