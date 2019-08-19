@@ -151,8 +151,23 @@
           </el-form>
           <!--编辑评分标准-->
           <el-form ref="dialogForm" v-if='elForm5'>
-            <el-form-item label="课程：" :label-width="formLabelWidth">
-              <p>评分标准</p>
+            <el-form-item label="课程目标：" :label-width="formLabelWidth">
+              <p>{{form5.target}}</p>
+            </el-form-item>
+            <el-form-item label="90~100（优）：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form5.excellent"></el-input>
+            </el-form-item>
+            <el-form-item label="80~89（良）：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form5.good"></el-input>
+            </el-form-item>
+            <el-form-item label="90~100（中）：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form5.medium"></el-input>
+            </el-form-item>
+            <el-form-item label="80~89（及格）：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form5.pass"></el-input>
+            </el-form-item>
+            <el-form-item label="90~100（不及格）：" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form5.fail"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -216,6 +231,14 @@
           task: [],
           experiment: [],
           discuss: []
+        },
+        form5: {
+          target: '',
+          excellent: '',
+          good: '',
+          medium: '',
+          pass: '',
+          fail: ''
         },
         elForm1: true,
         elForm2: false,
@@ -341,6 +364,27 @@
           case 2:
             this.form3 = row
             break
+          case 3:
+            this.form4.test = []
+            this.form4.task = []
+            var arr = row.checkWay.split('\n')
+            arr.map((item) => {
+              if (item.indexOf('期末考试') > 0) {
+                this.form4.test.push('期末考试')
+              }
+              if (item.indexOf('期中考试') > 0) {
+                this.form4.test.push('期中考试')
+              }
+              if (item.indexOf('作业一') > 0) {
+                this.form4.task.push('课后作业一')
+              }
+              if (item.indexOf('作业二') > 0) {
+                this.form4.task.push('课后作业二')
+              }
+            })
+            break
+          case 4:
+            this.form5 = row
         }
       },
       // 点击工具栏删除
@@ -367,9 +411,16 @@
           this.resetForm(this.form2)
         }
         if (this.elForm3) {
-          console.log(this.form3)
           this.submitForm(this.form3, 'getCoursesContent')
           this.resetForm(this.form3)
+        }
+        if (this.elForm4) {
+          this.submitForm(this.form4, 'getCoursesCheck')
+          this.resetForm(this.form4)
+        }
+        if (this.elForm5) {
+          this.submitForm(this.form5, 'getCoursesStandard')
+          this.resetForm(this.form5)
         }
       },
       // 提交
@@ -382,6 +433,8 @@
         this.dialogFormVisible = false
         this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         form = {}
+        console.log('reset')
+        console.log(form)
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
