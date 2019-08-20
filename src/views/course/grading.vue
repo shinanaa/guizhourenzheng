@@ -27,7 +27,7 @@
         <el-table-column v-if="tableList.length" label="操作" width="225">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="courseAllocation(scope.row)">课程配置</el-button>
-            <el-button type="text" size="small" @click="deleteContent(scope.row)">课程平时组成</el-button>
+            <el-button type="text" size="small" @click="peaceForm(scope.row)">课程平时组成</el-button>
             <el-button type="text" size="small" @click="editContent(scope.row, index)">查看详情</el-button>
           </template>
         </el-table-column>
@@ -44,14 +44,57 @@
       <!--创建/编辑-->
       <el-dialog title="课程配置" :visible.sync="dialogFormVisible" :before-close="resetForm" >
         <el-form :model="form"  ref="dialogForm">
-          <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
-            <el-select v-model="form.schoolYear" placeholder="请选择学年">
-              <el-option label="2018" value="2018"></el-option>
+          <el-form-item label="课程：" :label-width="formLabelWidth" prop="target1">
+            <p>思想道德修养与法律基础</p>
+          </el-form-item>
+          <el-form-item label="期末考试占比：" :label-width="formLabelWidth" prop="schoolYear">
+            <el-select v-model="form.final">
+              <el-option v-for="(num, index) in 9" :label="num/10" :value="num/9" :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="培养目标一" :label-width="formLabelWidth" prop="target1">
-            <el-input type="text" v-model="form.target1"></el-input>
+          <el-form-item label="平时成绩占比：" :label-width="formLabelWidth" prop="target1">
+            <el-select v-model="form.peacetime">
+              <el-option v-for="(num, index) in 9" :label="num/10" :value="num/9" :key="index"></el-option>
+            </el-select>
           </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="resetForm">取 消</el-button>
+          <el-button type="primary" @click="sureDialog">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="课程平时组成" :visible.sync="peacetimeForm" :before-close="resetForm" >
+        <el-form :model="form"  ref="dialogForm">
+          <el-form-item label="课程：" :label-width="formLabelWidth" prop="target1">
+            <p>思想道德修养与法律基础</p>
+          </el-form-item>
+          <el-form-item label="平时成绩组成：" :label-width="formLabelWidth" prop="target1">
+            <el-checkbox-group v-model="form.form">
+              <el-checkbox label="期中考试" name="type"></el-checkbox>
+              <el-checkbox label="实验" name="type"></el-checkbox>
+              <el-checkbox label="课堂讨论" name="type"></el-checkbox>
+              <el-checkbox label="活动" name="type"></el-checkbox>
+              <el-checkbox label="实践" name="type"></el-checkbox>
+              <el-checkbox label="作业" name="type"></el-checkbox>
+              <el-checkbox label="出勤" name="type"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <div class="peaceForm" v-for="(peaceItem, index) in form.form" :key="index">
+            <div class="line-left-right">
+              <span>{{peaceItem}}</span>
+            </div>
+            <el-form-item label="占比：" :label-width="formLabelWidth" prop="schoolYear">
+              <el-select v-model="form.final">
+                <el-option v-for="(num, index) in 9" :label="num/10" :value="num/9" :key="index"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="分值：" :label-width="formLabelWidth" prop="target1">
+              <el-input type="num"></el-input>
+            </el-form-item>
+            <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="次数：" :label-width="formLabelWidth" prop="target1">
+              <el-input type="num"></el-input>
+            </el-form-item>
+          </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="resetForm">取 消</el-button>
@@ -83,8 +126,13 @@
         currentPage: 1,
         total: 0,
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
+        peacetimeForm: false,
         formLabelWidth: '145px',
-        form: []
+        form: {
+          final: null,
+          peacetime: null,
+          form: []
+        }
       }
     },
     components: { TableTools },
@@ -131,6 +179,10 @@
         this.dialogFormVisible = true
         console.log(row)
       },
+      peaceForm(row) {
+        this.peacetimeForm = true
+        console.log(row)
+      },
       // 弹框点击确定按钮
       sureDialog() {
         if (this.elForm1) {
@@ -157,6 +209,7 @@
       // 弹窗点击取消重置form表单
       resetForm(form) {
         this.dialogFormVisible = false
+        this.peacetimeForm = false
         this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         form = {}
         console.log('reset')
@@ -181,4 +234,19 @@
 </script>
 <style scoped rel="stylesheet/scss" lang="scss">
   @import '../../styles/rightContent.scss';
+  .el-form-item{
+    p{margin: 0}
+  }
+  .line-left-right{
+    margin: 35px 0px;
+    line-height: 1px;
+    text-align: center;
+    height: 2px;
+    background: rgb(198, 226, 255);
+    span {
+      padding: 0 40px;
+      background: #ffffff;
+      color: #409EFF;
+    }
+  }
 </style>

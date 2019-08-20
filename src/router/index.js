@@ -111,6 +111,32 @@ export const constantRouterMap = [
     }
     ]
   },
+  {
+    path: '/statistics',
+    component: Layout,
+    redirect: '/statistics/graduationRequirementsAchievement',
+    alwaysShow: true, // will always show the root menu
+    meta: { title: '认证统计', icon: 'form', roles: ['admin', 'editor'] },
+    children: [{
+      path: '/statistics/graduationRequirementsAchievement',
+      component: () => import('@/views/statistics/graduationRequirementsAchievement'),
+      name: 'graduationRequirementsAchievement',
+      meta: { title: '毕业要求达成度', icon: 'star', noCache: true }
+    },
+    {
+      path: '/statistics/achievementTable',
+      component: () => import('@/views/statistics/achievementTable'),
+      name: 'achievementTable',
+      meta: { title: '要求达成度计算表', icon: 'star', noCache: true }
+    },
+    {
+      path: '/statistics/courseAchievement',
+      component: () => import('@/views/statistics/courseAchievement'),
+      name: 'courseAchievement',
+      meta: { title: '课程达成度', icon: 'star', noCache: true }
+    }
+    ]
+  },
   /* {
     path: '',
     component: Layout,
