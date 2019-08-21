@@ -14,15 +14,45 @@
           v-loading="loading"
           :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
           border
+          @cell-click="showDetails"
           style="width: 100%;">
           <template v-for="header in headers">
             <el-table-column
               :prop="header.prop"
-              :label="header.label"
-              :width="header.width">
+              :label="header.label">
+              <template slot-scope="scope">
+                <span v-if="header.prop.indexOf('require') < 0">{{scope.row[header.prop]}}</span>
+                <el-button v-if="header.prop.indexOf('require') >= 0" type="text">{{scope.row[header.prop]}}</el-button>
+          </template>
             </el-table-column>
           </template>
         </el-table>
+        <!--分页-->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-size="pageSize"
+          layout="prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+        <!--弹窗-->
+        <el-dialog width="80%" title="毕业要求详情" :visible.sync="dialogFormVisible">
+          <el-table
+            v-loading="loading"
+            :data="detailTableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+            border
+            show-summary
+            style="width: 100%;">
+            <template v-for="header in detailHeaders">
+              <el-table-column
+                :prop="header.prop"
+                :width="header.width"
+                :label="header.label">
+              </el-table-column>
+            </template>
+          </el-table>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -45,7 +75,10 @@
         headers: [],
         pageSize: 10,
         currentPage: 1,
-        total: 0
+        total: 0,
+        dialogFormVisible: false,
+        detailHeaders: [],
+        detailTableList: []
       }
     },
     components: { TableTools },
@@ -58,6 +91,34 @@
       })
     },
     methods: {
+      /* 分页 val（每页显示数据）*/
+      handleSizeChange(val) {
+        this.pageSize = val
+      },
+      /* 分页 当前显示的页码*/
+      handleCurrentChange(val) {
+        this.currentPage = val
+      },
+      showDetails(row, column) {
+        var showInfo = {
+          schoolYear: row.schoolYear,
+          major: row.major,
+          require: column.property,
+          requireLabel: column.label
+        }
+        console.log(showInfo)
+        var that = this
+        this.$http.getRequest('getRequireDetails', showInfo).then(res => {
+          if (res.code === 1) {
+            that.detailHeaders = res.headers
+            that.detailTableList = res.resultList
+            that.loading = false
+            this.dialogFormVisible = true
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
+      },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
         var that = this

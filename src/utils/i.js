@@ -25,6 +25,7 @@ const i = {
   getCoursesStandard: { url: 'course/target/getCoursesStandard', isMock: true }, // 获取课程安排页面考评分标准标签页下的内容
   getCoursesForm: { url: 'course/getCoursesForm', isMock: true }, // 获取课程组成页面数据
   getRequireAchievement: { url: 'statistics/getRequireAchievement', isMock: true }, // 获取毕业要求达成度页面数据
+  getRequireDetails: { url: 'statistics/getRequireDetails', isMock: true }, // 获取毕业要求达成度页面中每一个毕业要求对应的数据
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计

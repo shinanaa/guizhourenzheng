@@ -1,8 +1,8 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-
-    <breadcrumb class="breadcrumb-container"></breadcrumb>
+    <!-- 显示当前页面位置-->
+    <!--<breadcrumb class="breadcrumb-container"></breadcrumb>-->
 
     <div class="right-menu">
       <error-log class="errLog-container right-menu-item"></error-log>
