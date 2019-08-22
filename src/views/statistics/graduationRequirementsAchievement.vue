@@ -43,6 +43,7 @@
             :data="detailTableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
             border
             show-summary
+            sum-text="评价结果"
             style="width: 100%;">
             <template v-for="header in detailHeaders">
               <el-table-column

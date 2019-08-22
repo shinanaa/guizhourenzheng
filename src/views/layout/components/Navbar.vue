@@ -1,5 +1,7 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
+    <img src="./images/logo.jpg" class="logo" alt="">
+    <p class="name">贵州师范大学认证系统</p>
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <!-- 显示当前页面位置-->
     <!--<breadcrumb class="breadcrumb-container"></breadcrumb>-->
@@ -70,6 +72,19 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   min-width: 1120px;
+  position: fixed;top:0;right:0;left:0; // 修改layout添加
+  .logo{ // 修改layout添加
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    outline: none;
+    vertical-align: middle;
+    margin-left: 15px;
+  }
+  .name{ // 修改layout添加
+    display: inline-block;line-height: 50px;margin: 0;
+    padding: 0 15px;font-size: 16px;;
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px;

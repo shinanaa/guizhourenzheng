@@ -29,6 +29,7 @@ export default {
   position: relative;
   overflow: auto;
   min-width: 1120px;
+  background: #F8F8F8;
 }
 </style>
 
