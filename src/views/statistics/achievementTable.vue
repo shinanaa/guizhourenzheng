@@ -70,8 +70,8 @@
       },
       // 合并同一指标点的指标点达成度
       mergeCell({ row, column, rowIndex, columnIndex }) {
-        console.log(row.indicator)
         if (column.property === 'indicatorAchievement') {
+          console.log(row.indicator)
           if (rowIndex % 2 === 0) {
             return {
               rowspan: 2,

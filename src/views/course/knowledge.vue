@@ -26,6 +26,11 @@
             :width="header.width">
           </el-table-column>
         </template>
+        <el-table-column v-if="tableList.length" label="操作" width="90">
+          <template slot-scope="scope">
+            <el-button type="warning" size="small" @click="showDetails(scope.row)">查看</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <!--分页-->
       <el-pagination
@@ -138,23 +143,6 @@ export default {
       this.dialogFormVisible = true
       this.form = {}
       this.form.title = '新增毕业要求'
-    },
-    // 获取表格当前行数据
-    handleCurrentRow(val) {
-      this.currentRow = val
-    },
-    // 点击工具栏删除
-    deleteContent() {
-      if (this.currentRow) {
-        this.operateForm('deleteDialog', this.currentRow.order)
-        this.getTableData('getCourseManage')
-      } else {
-        this.$message({
-          showClose: true,
-          message: '请先选择要删除的数据',
-          type: 'warning'
-        })
-      }
     },
     // 点击工具栏查询
     searchData(param) {

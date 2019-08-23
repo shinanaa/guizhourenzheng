@@ -27,6 +27,8 @@ const i = {
   getRequireAchievement: { url: 'statistics/getRequireAchievement', isMock: true }, // 获取毕业要求达成度页面数据
   getRequireDetails: { url: 'statistics/getRequireDetails', isMock: true }, // 获取毕业要求达成度页面中每一个毕业要求对应的数据
   getAchievementTable: { url: 'statistics/getAchievementTable', isMock: true }, // 获取要求达成度计算表页面数据
+  getCourseAchievement: { url: 'statistics/getCourseAchievement', isMock: true }, // 获取课程达成度页面表格数据
+  getCourseAchievementDetails: { url: 'statistics/getCourseAchievementDetails', isMock: true }, // 获取课程达成度详情表格数据
   mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
