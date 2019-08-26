@@ -27,8 +27,8 @@
             </template>
             <el-table-column label="操作" width="150">
               <template slot-scope="scope">
-                <el-select v-model="form.region" placeholder="0.0">
-                  <el-option v-for="(item, index) in 9" :label="'0.'+item" :value="item/10" :key="index"></el-option>
+                <el-select v-model="scope.row.weight" placeholder="0.0">
+                  <el-option v-for="(item, index) in 9" :label="'0.'+item" :value="'0.'+item" :key="index"></el-option>
                 </el-select>
               </template>
             </el-table-column>
@@ -93,10 +93,7 @@
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         dialogWeightsVisible: false, // 是否显示权重设置弹窗
         form: {
-          region: '',
-          delivery: false,
-          resource: '',
-          desc: ''
+          region: ''
         },
         treeList: [],
         defaultProps: {

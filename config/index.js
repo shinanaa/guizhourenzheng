@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{
-        target:'http://47.97.46.201:7300/mock/5d477f3658e3b27a57d8a95b/gzrz/',
+        target:' http://localhost:7300/mock/5d477f3658e3b27a57d8a95b/gzrz',
         changeOrigin:true,
         pathRewrite: {
           '^/api': '/'   //重写接口

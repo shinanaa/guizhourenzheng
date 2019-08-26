@@ -7,7 +7,7 @@
     <!--<breadcrumb class="breadcrumb-container"></breadcrumb>-->
 
     <div class="right-menu">
-      <error-log class="errLog-container right-menu-item"></error-log>
+      <!--<error-log class="errLog-container right-menu-item"></error-log>-->
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
           <img class="user-avatar" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3809442943,2036280987&fm=27&gp=0.jpg">

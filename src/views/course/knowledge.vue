@@ -8,7 +8,6 @@
                  @chooseSchool="isChoose = true"
                  :btn-edit-no-show="true"
                  :btn-del-no-show="true"
-                 @deleteContent="deleteContent"
                  @searchData="searchData"
                  @createdContent="createdContent"></table-tools>
     <div class="content">
@@ -16,7 +15,6 @@
       <el-table
         :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         highlight-current-row
-        @current-change="handleCurrentRow"
         border
         style="width: 100%">
         <template v-for="header in headers">
@@ -26,9 +24,9 @@
             :width="header.width">
           </el-table-column>
         </template>
-        <el-table-column v-if="tableList.length" label="操作" width="90">
+        <el-table-column v-if="tableList.length" label="操作" width="110">
           <template slot-scope="scope">
-            <el-button type="warning" size="small" @click="showDetails(scope.row)">查看</el-button>
+            <el-button type="warning" size="small" @click="editDetails(scope.row)">编辑详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -63,7 +61,7 @@
           <el-form-item label="课程章节" :label-width="formLabelWidth" prop="courseSelect">
             <el-input type="number" v-model="form.chapter" placeholder="请输入章节数量" />
           </el-form-item>
-          <el-form-item label="课程知识点" :label-width="formLabelWidth" prop="courseSelect">
+          <el-form-item label="章节知识点数" :label-width="formLabelWidth" prop="courseSelect">
             <el-input type="number" v-model="form.konwledge" placeholder="请输入知识点数量" />
           </el-form-item>
         </el-form>
@@ -171,6 +169,9 @@ export default {
           type: 'error'
         })
       }
+    },
+    editDetails(row) {
+      console.log(row)
     },
     // 弹框选择院校
     selectCollege(data) {

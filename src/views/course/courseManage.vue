@@ -67,7 +67,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm">取 消</el-button>
             <el-button type="primary" @click="sureDialog">确 定</el-button>
           </div>
         </el-dialog>
@@ -174,12 +174,12 @@
         const newIds = filterDataIds(oldIds) // 将重合的子项过滤
         if (newIds.length) {
           this.isChoose = false
-          console.log(newIds)
         }
         if (param || newIds.length) {
           const searchRequest = {}
           searchRequest.inputText = param
           searchRequest.courses = newIds
+          console.log(searchRequest)
           var that = this
           this.$http.getRequest('getSearchData', searchRequest).then(res => {
             if (res.code === 1) {
