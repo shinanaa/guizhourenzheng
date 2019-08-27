@@ -181,7 +181,6 @@
 </template>
 
 <script>
-  // import { ElDivider } from 'element-ui'
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds } from '@/utils/common'
   export default {
@@ -284,7 +283,6 @@
     },
     methods: {
       changeTab(tab) {
-        // console.log(tab)
         this.index = tab.index
         switch (tab.paneName) {
           case 'first':
@@ -341,7 +339,8 @@
           const searchRequest = {}
           searchRequest.inputText = param
           searchRequest.courses = newIds
-          this.getTableData('getRequireCourses')
+          console.log(searchRequest)
+          this.getTableData('getRequireCourses', searchRequest)
         } else {
           this.$message({
             showClose: true,
@@ -353,16 +352,15 @@
       /* 点击工具栏编辑 */
       editContent(row, index) {
         this.dialogFormVisible = true
-        console.log(index)
         switch (index) {
           case 0 :
-            this.form1 = row
+            this.form1 = JSON.parse(JSON.stringify(row))
             break
           case 1:
-            this.form2 = row
+            this.form2 = JSON.parse(JSON.stringify(row))
             break
           case 2:
-            this.form3 = row
+            this.form3 = JSON.parse(JSON.stringify(row))
             break
           case 3:
             this.form4.test = []
@@ -384,29 +382,25 @@
             })
             break
           case 4:
-            this.form5 = row
+            this.form5 = JSON.parse(JSON.stringify(row))
         }
       },
       // 点击工具栏删除
-      deleteContent() {
-        if (this.currentRow) {
-          this.operateForm('deleteDialog', this.currentRow.order)
-          this.getTableData('getTrainTarget')
-        } else {
-          this.$message({
-            showClose: true,
-            message: '请先选择要删除的数据',
-            type: 'warning'
-          })
-        }
+      deleteContent(row) {
+        console.log(row.order)
+        this.operateForm('deleteDialog', row.order)
+        this.getTableData('getCoursesModule')
       },
       // 弹框点击确定按钮
       sureDialog() {
         if (this.elForm1) {
+          console.log(1)
+          console.log(this.form1)
           this.submitForm(this.form1, 'getCoursesTarget')
           this.resetForm(this.form1)
         }
         if (this.elForm2) {
+          console.log(this.form2)
           this.submitForm(this.form2, 'getCoursesModule')
           this.resetForm(this.form2)
         }
@@ -425,6 +419,8 @@
       },
       // 提交
       submitForm(form, apiUrl) {
+        console.log(2)
+        console.log(form)
         this.operateForm('editDialog', form)
         this.getTableData(apiUrl)
       },

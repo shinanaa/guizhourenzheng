@@ -24,9 +24,9 @@
             :width="header.width">
           </el-table-column>
         </template>
-        <el-table-column v-if="tableList.length" label="操作" width="110">
+        <el-table-column v-if="tableList.length" label="操作" width="80">
           <template slot-scope="scope">
-            <el-button type="warning" size="small" @click="editDetails(scope.row)">编辑详情</el-button>
+            <el-button type="warning" size="small" @click="editDetails(scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -41,13 +41,13 @@
       </el-pagination>
       <!--创建-->
       <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
-        <el-form :model="form">
-          <el-form-item label="院系" :label-width="formLabelWidth">
+        <el-form :model="form" :rules="rules" ref="dialogForm">
+          <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
             <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
               <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="专业" :label-width="formLabelWidth">
+          <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
             <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
               <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
             </el-select>
@@ -58,16 +58,16 @@
               <el-option label="小学课程论" value="2019"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="课程章节" :label-width="formLabelWidth" prop="courseSelect">
+          <el-form-item label="课程章节" :label-width="formLabelWidth" prop="chapter">
             <el-input type="number" v-model="form.chapter" placeholder="请输入章节数量" />
           </el-form-item>
-          <el-form-item label="章节知识点数" :label-width="formLabelWidth" prop="courseSelect">
-            <el-input type="number" v-model="form.konwledge" placeholder="请输入知识点数量" />
+          <el-form-item label="章节知识点数" :label-width="formLabelWidth" prop="knowledge">
+            <el-input type="number" v-model="form.knowledge" placeholder="请输入知识点数量" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button type="primary" @click="sureDialog">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -92,19 +92,29 @@ export default {
       pagesize: 10, // 表格列表每页显示条数
       dialogFormVisible: false, // 是否现在创建/编辑弹窗
       form: {
-        name: '',
+        title: '',
+        college: '',
+        major: '',
         courseSelect: '',
         chapter: '',
-        konwledge: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: '',
-        openClass: [],
-        majorClass: []
+        knowledge: ''
+      },
+      rules: {
+        college: [
+          { required: true, message: '院系不能为空', trigger: 'change' }
+        ],
+        major: [
+          { required: true, message: '专业不能为空', trigger: 'change' }
+        ],
+        courseSelect: [
+          { required: true, message: '课程不能为空', trigger: 'change' }
+        ],
+        chapter: [
+          { required: true, message: '章节不能为空', trigger: 'blur' }
+        ],
+        knowledge: [
+          { required: true, message: '知识点不能为空', trigger: 'blur' }
+        ]
       },
       treeList: [],
       majorList: [],
@@ -148,12 +158,12 @@ export default {
       const newIds = filterDataIds(oldIds) // 将重合的子项过滤
       if (newIds.length) {
         this.isChoose = false
-        console.log(newIds)
       }
       if (param || newIds.length) {
         const searchRequest = {}
         searchRequest.inputText = param
         searchRequest.courses = newIds
+        console.log(searchRequest)
         var that = this
         this.$http.getRequest('getSearchData', searchRequest).then(res => {
           if (res.code === 1) {
@@ -179,10 +189,13 @@ export default {
     },
     // 弹框点击确定按钮
     sureDialog() {
+      console.log(1)
+      console.log(this.form)
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
           if (this.form.title === '新增毕业要求') {
+            console.log(this.form)
             this.operateForm('addDialog', this.form)
           } else if (this.form.title === '修改毕业要求') {
             this.operateForm('editDialog', this.form)

@@ -162,7 +162,6 @@
       /* 点击工具栏编辑 */
       editContent(row) {
         this.dialogFormVisible = true
-        console.log(row)
         this.form.course = row.course
         this.form.indicator = row.indicator
       },
@@ -172,12 +171,12 @@
         const newIds = filterDataIds(oldIds) // 将重合的子项过滤
         if (newIds.length) {
           this.isChoose = false
-          console.log(newIds)
         }
         if (param || newIds.length) {
           const searchRequest = {}
           searchRequest.inputText = param
           searchRequest.courses = newIds
+          console.log(searchRequest)
           var that = this
           this.$http.getRequest('getSearchData', searchRequest).then(res => {
             if (res.code === 1) {
@@ -203,6 +202,9 @@
         var that = this
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
+            console.log(123)
+            console.log(that.form)
+            console.log(that.form.knowledge)
             that.operateForm('editDialog', that.form)
           } else {
             return false
@@ -221,7 +223,7 @@
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
         console.log(1)
-        console.log(params)
+        console.log(params.konwledge)
         var that = this
         this.$http.postRequest(url, params).then(res => {
           if (res.status === 0) {
