@@ -102,22 +102,6 @@
       </div>
     </el-dialog>
       <el-dialog title="课程组成详情" :visible.sync="courseFormDetails" :before-close="resetForm" >
-        <el-form :model="formPeace"  ref="formPeace">
-          <el-form-item label="课程：" :label-width="formLabelWidth" prop="target1">
-            <p>{{formPeace.course}}</p>
-          </el-form-item>
-          <el-form-item label="平时成绩组成：" :label-width="formLabelWidth" prop="target1">
-            <el-checkbox-group v-model="formPeace.form">
-              <el-checkbox label="期中考试" name="type"></el-checkbox>
-              <el-checkbox label="实验" name="type"></el-checkbox>
-              <el-checkbox label="课堂讨论" name="type"></el-checkbox>
-              <el-checkbox label="活动" name="type"></el-checkbox>
-              <el-checkbox label="实践" name="type"></el-checkbox>
-              <el-checkbox label="作业" name="type"></el-checkbox>
-              <el-checkbox label="出勤" name="type"></el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-        </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="resetForm">取 消</el-button>
           <el-button type="primary" @click="sureDialog">确 定</el-button>
@@ -168,7 +152,10 @@
             task: null,
             attendance: null // 出勤
           }
-        }
+        },
+        courseDetailsTable: [],
+        spanArr: [],
+        position: 0
       }
     },
     components: { TableTools },
@@ -231,10 +218,15 @@
         this.formPeace.course = row.course
         console.log(row)
       },
+      // 课程详情获取数据
       courseDetails(row) {
-        this.courseFormDetails = true
-        // this.getTableData('getCourseDetails', row)
         console.log(row)
+        this.$router.push({
+          path: '/course/grading/details',
+          query: {
+            course: row
+          }
+        })
       },
       // 弹框点击确定按钮
       sureDialog() {

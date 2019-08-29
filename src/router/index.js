@@ -108,6 +108,12 @@ export const constantRouterMap = [
       component: () => import('@/views/course/grading'),
       name: 'granding',
       meta: { title: '课程组成', icon: 'drag', noCache: true }
+    },
+    {
+      path: '/course/grading/details',
+      component: () => import('@/views/course/courseFormDetails'),
+      name: 'courseFormDetails',
+      meta: { title: '课程组成详情', icon: 'star', noCache: true }
     }
     ]
   },
