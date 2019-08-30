@@ -2,6 +2,9 @@
   <div class="rightContent">
     <div class="container">
       <div class="content">
+        <div class="detailsText">
+          <p>{{this.msg.class}} > {{this.msg.course}}</p>
+        </div>
         <el-table
           v-loading="loading"
           :data="courseDetailsTable"
@@ -16,6 +19,10 @@
             <el-table-column
               prop="allForm"
               label="组成内容">
+              <template slot-scope="scope">
+                <span v-if="scope.row.timeNumber < 2">{{scope.row.allForm}}</span>
+                <el-button v-if="scope.row.timeNumber > 1" type="text" @click="showPeaseDetails(scope.row)">{{scope.row.allForm}}</el-button>
+              </template>
             </el-table-column>
           </el-table-column>
           <el-table-column
@@ -51,23 +58,41 @@
       return {
         courseDetailsTable: [],
         loading: false,
-        msg: {}
+        msg: {},
+        spanArr: [],
+        position: 0
       }
     },
     created() {
-      this.msg = this.$router.query
-      console.log(11111111111)
-      console.log(this.msg)
-      // var that = this
-      // this.$http.getRequest('getCourseDetails', this.msg).then(res => {
-      //   if (res.code === 1) {
-      //     that.courseDetailsTable = res.resultList
-      //     that.loading = false
-      //     that.rowspan()
-      //   } else {
-      //     that.emptyText = '暂无数据'
-      //   }
-      // })
+      this.msg = this.$route.query.course
+      var that = this
+      this.$http.getRequest('getCourseDetails', this.msg).then(res => {
+        if (res.code === 1) {
+          that.courseDetailsTable = res.resultList
+          that.loading = false
+          that.rowspan()
+        } else {
+          that.emptyText = '暂无数据'
+        }
+      })
+    },
+    watch: {
+      '$route': {
+        handler: function() {
+          console.log('luyoubianle')
+          this.msg = this.$route.query.course
+          var that = this
+          this.$http.getRequest('getCourseDetails', this.msg).then(res => {
+            if (res.code === 1) {
+              that.courseDetailsTable = res.resultList
+              that.loading = false
+              that.rowspan()
+            } else {
+              that.emptyText = '暂无数据'
+            }
+          })
+        }
+      }
     },
     methods: {
       rowspan() {
@@ -97,6 +122,24 @@
             colspan: _col
           }
         }
+      },
+      // 查看平时成绩详情
+      showPeaseDetails(row) {
+        var getInfo = {
+          class: this.msg.class,
+          course: this.msg.course,
+          allForm: row.allForm
+        }
+        var that = this
+        this.$http.getRequest('getCourseDetails', getInfo).then(res => {
+          if (res.code === 1) {
+            that.courseDetailsTable = res.resultList
+            that.loading = false
+            that.rowspan()
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
       }
     }
   }
@@ -104,5 +147,9 @@
 
 <style scoped rel="stylesheet/scss" lang="scss">
   @import '../../styles/rightContent.scss';
-  .container{margin-left: 0 !important;}
+  .container{margin-left: 0 !important;
+    .detailsText{
+      color: #666;background: #FFFFFF;
+      padding: 3px 10px;margin: 20px 0px;font-size: 14px;}
+  }
 </style>
