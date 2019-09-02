@@ -101,12 +101,6 @@
         <el-button type="primary" @click="sureDialog">确 定</el-button>
       </div>
     </el-dialog>
-      <el-dialog title="课程组成详情" :visible.sync="courseFormDetails" :before-close="resetForm" >
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="resetForm">取 消</el-button>
-          <el-button type="primary" @click="sureDialog">确 定</el-button>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </div>

@@ -46,6 +46,25 @@
             label="总分">
           </el-table-column>
         </el-table>
+        <el-dialog title="课程组成详情" :visible.sync="courseFormDetails" width="60%">
+          <el-table
+          v-loading="loading"
+          :data="peaseDetails"
+          border
+          style="width: 100%;">
+          <template v-for="header in peaseDetailsHead">
+            <el-table-column
+              :prop="header.prop"
+              :label="header.label"
+              :width="header.width">
+            </el-table-column>
+          </template>
+        </el-table>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="courseFormDetails = false">取 消</el-button>
+            <el-button type="primary" @click="courseFormDetails = false">确 定</el-button>
+          </div>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -60,7 +79,10 @@
         loading: false,
         msg: {},
         spanArr: [],
-        position: 0
+        position: 0,
+        peaseDetails: [],
+        peaseDetailsHead: [],
+        courseFormDetails: false
       }
     },
     created() {
@@ -131,11 +153,13 @@
           allForm: row.allForm
         }
         var that = this
-        this.$http.getRequest('getCourseDetails', getInfo).then(res => {
+        this.$http.getRequest('getPeaseDetails', getInfo).then(res => {
           if (res.code === 1) {
-            that.courseDetailsTable = res.resultList
+            console.log(res)
+            that.courseFormDetails = true
+            that.peaseDetailsHead = res.headers
+            that.peaseDetails = res.resultList
             that.loading = false
-            that.rowspan()
           } else {
             that.emptyText = '暂无数据'
           }

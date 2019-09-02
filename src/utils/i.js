@@ -26,6 +26,7 @@ const i = {
   getCoursesForm: { url: 'course/getCoursesForm', isMock: true }, // 获取课程组成页面数据
   setCourseDispose: { url: 'course/setCourseDispose', isMock: true }, // 课程组成页面设置课程配置
   getCourseDetails: { url: 'course/getCourseDetails', isMock: true }, // 获取课程组成页面查看详情的数据内容
+  getPeaseDetails: { url: 'statistics/getPeaseDetails', isMock: true }, // 获取课程组成详情页的平时成绩详情内容
   getRequireAchievement: { url: 'statistics/getRequireAchievement', isMock: true }, // 获取毕业要求达成度页面数据
   getRequireDetails: { url: 'statistics/getRequireDetails', isMock: true }, // 获取毕业要求达成度页面中每一个毕业要求对应的数据
   getAchievementTable: { url: 'statistics/getAchievementTable', isMock: true }, // 获取要求达成度计算表页面数据
