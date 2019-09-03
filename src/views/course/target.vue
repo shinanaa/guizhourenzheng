@@ -8,6 +8,7 @@
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
                    :btn-not-visible="true"
+                   :search-course="true"
                    :search-input-not-visible="true"
       ></table-tools>
       <div class="content">

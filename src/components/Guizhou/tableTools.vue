@@ -4,7 +4,15 @@
       <el-button type="info" class="choose" @click="chooseSchool">选择院系及专业</el-button>
       <div class="search-fill">
         <el-input v-if="!searchInputNotVisible" placeholder="请输入..." v-model="search"></el-input>
-        <el-select v-if="searchInputNotVisible" v-model="requireType" placeholder="请选择毕业要求">
+        <el-select v-if="searchRequire" v-model="requireType" placeholder="请选择毕业要求">
+          <el-option
+            v-for="item in requires"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-if="searchCourse" v-model="requireType" placeholder="请选择课程">
           <el-option
             v-for="item in requires"
             :key="item.value"
@@ -25,7 +33,7 @@
 
 <script>
     export default {
-      props: ['btnNotVisible', 'requires', 'searchInputNotVisible', 'btnEditNoShow', 'btnDelNoShow'],
+      props: ['btnNotVisible', 'requires', 'searchInputNotVisible', 'btnEditNoShow', 'btnDelNoShow', 'searchCourse', 'searchRequire'],
       data() {
         return {
           'search': '',

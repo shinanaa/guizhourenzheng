@@ -142,7 +142,7 @@ export const constantRouterMap = [
       meta: { title: '课程达成度', icon: 'star', noCache: true }
     }
     ]
-  },
+  }
   /* {
     path: '',
     component: Layout,
@@ -175,39 +175,39 @@ export const constantRouterMap = [
     }
     ]
   },*/
-  {
-    path: '/operationDepartment',
-    component: Layout,
-    redirect: '/operationDepartment/daishouZX',
-    alwaysShow: true, // will always show the root menu
-    meta: { title: '分析决策', icon: 'dashboard' },
-    children: [
-      {
-        path: '/operationDepartment/daishouZX',
-        component: () => import('@/views/allPointDiscount/index'),
-        name: 'daishouZX',
-        meta: { title: '整点报数对比图', icon: 'dashboard', noCache: true }
-      },
-      {
-        path: '/operationDepartment/daishouCZ',
-        component: () => import('@/views/userNew/index'),
-        name: 'daishouCZ',
-        meta: { title: '充值提现信息', icon: 'dashboard', noCache: true }
-      },
-      {
-        path: '/operationDepartment/daishouCA',
-        component: () => import('@/views/userRecharge/index'),
-        name: 'daishouCA',
-        meta: { title: '应收本金收益', icon: 'dashboard', noCache: true }
-      },
-      {
-        path: '/operationDepartment/daishouDQ',
-        component: () => import('@/views/userDqmx/index'),
-        name: 'daishouDQ',
-        meta: { title: '到期统计', icon: 'dashboard', noCache: true }
-      }
-    ]
-  }
+  // {
+  //   path: '/operationDepartment',
+  //   component: Layout,
+  //   redirect: '/operationDepartment/daishouZX',
+  //   alwaysShow: true, // will always show the root menu
+  //   meta: { title: '分析决策', icon: 'dashboard' },
+  //   children: [
+  //     {
+  //       path: '/operationDepartment/daishouZX',
+  //       component: () => import('@/views/allPointDiscount/index'),
+  //       name: 'daishouZX',
+  //       meta: { title: '整点报数对比图', icon: 'dashboard', noCache: true }
+  //     },
+  //     {
+  //       path: '/operationDepartment/daishouCZ',
+  //       component: () => import('@/views/userNew/index'),
+  //       name: 'daishouCZ',
+  //       meta: { title: '充值提现信息', icon: 'dashboard', noCache: true }
+  //     },
+  //     {
+  //       path: '/operationDepartment/daishouCA',
+  //       component: () => import('@/views/userRecharge/index'),
+  //       name: 'daishouCA',
+  //       meta: { title: '应收本金收益', icon: 'dashboard', noCache: true }
+  //     },
+  //     {
+  //       path: '/operationDepartment/daishouDQ',
+  //       component: () => import('@/views/userDqmx/index'),
+  //       name: 'daishouDQ',
+  //       meta: { title: '到期统计', icon: 'dashboard', noCache: true }
+  //     }
+  //   ]
+  // }
   // {
   //   path: 'menu1',
   //   component: () => import('@/views/nested/menu1/index'), // Parent router-view

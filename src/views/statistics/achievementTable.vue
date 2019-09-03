@@ -101,7 +101,6 @@
       },
       //  查询
       searchData(param) {
-        console.log(123)
         this.loading = true
         const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
         const newIds = filterDataIds(oldIds) // 将重合的子项过滤

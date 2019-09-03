@@ -6,6 +6,7 @@
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
+                   @searchData="searchData"
                    :btn-not-visible="true"
                    :search-input-not-visible="true"
       ></table-tools>
@@ -60,6 +61,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
+  import { filterDataIds } from '@/utils/common'
   export default {
     name: 'course-achievement',
     data() {
@@ -98,6 +100,27 @@
       /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
         this.currentPage = val
+      },
+      //  查询
+      searchData(param) {
+        this.loading = true
+        const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
+        const newIds = filterDataIds(oldIds) // 将重合的子项过滤
+        if (newIds.length) {
+          this.isChoose = false
+        }
+        if (param || newIds.length) {
+          const searchRequest = {}
+          searchRequest.inputText = param
+          searchRequest.courses = newIds
+          this.getTableData('getRequireCourses')
+        } else {
+          this.$message({
+            showClose: true,
+            message: '查询内容不可为空',
+            type: 'error'
+          })
+        }
       },
       showDetails(row) {
         var showInfo = {
