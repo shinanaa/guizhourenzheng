@@ -17,6 +17,7 @@ const i = {
   getChooseData: { url: 'attestation/getChooseData', isMock: true }, // 获取学校/专业/学年列表
   getCourseManage: { url: 'course/getCourseManage', isMock: true }, // 获取课程管理页面数据
   getKnowledge: { url: 'course/getKnowledge', isMock: true }, // 获取章节知识点页面数据
+  getKnowledgeDetails: { url: '/course/knowledge/setKnowledge', isMock: true }, // 获取章节知识点下知识点详情的数据
   getIndicator: { url: 'course/getIndicator', isMock: true }, // 获取对应指标点页面数据
   getCoursesTarget: { url: 'course/target/getCoursesTarget', isMock: true }, // 获取课程安排页面课程目标标签页下的内容
   getCoursesModule: { url: 'course/target/getCoursesModule', isMock: true }, // 获取课程安排页面课程模块标签页下的内容

@@ -92,6 +92,12 @@ export const constantRouterMap = [
       meta: { title: '章节知识点', icon: 'message', noCache: true }
     },
     {
+      path: '/course/knowledge/setKnowledge',
+      component: () => import('@/views/course/setKnowledgeDetails'),
+      name: 'setKnowledgeDetails',
+      meta: { title: '知识点详情', icon: 'message', noCache: true }
+    },
+    {
       path: '/course/indicator',
       component: () => import('@/views/course/indicator'),
       name: 'indicator',

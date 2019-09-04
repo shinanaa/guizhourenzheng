@@ -9,6 +9,7 @@
                    @searchData="searchData"
                    :btn-not-visible="true"
                    :search-input-not-visible="true"
+                   :download-report="true"
       ></table-tools>
       <div class="content">
         <el-table

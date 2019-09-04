@@ -182,6 +182,12 @@ export default {
     },
     editDetails(row) {
       console.log(row)
+      this.$router.push({
+        path: '/course/knowledge/setKnowledge',
+        query: {
+          course: row
+        }
+      })
     },
     // 弹框选择院校
     selectCollege(data) {

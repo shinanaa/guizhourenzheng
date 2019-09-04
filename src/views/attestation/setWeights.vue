@@ -10,6 +10,7 @@
                      :btn-not-visible="true"
                      :requires="requires"
                      :search-input-not-visible="true"
+                     :search-require="true"
         ></table-tools>
         <div class="content">
           <!--表格-->
@@ -192,14 +193,17 @@
         })
       },
       smartSort(arrSimple2) {
-        arrSimple2[0]['colorflag'] = true // 为第一组数据添加colorflag属性
-        arrSimple2.sort(function(b, a) { // b为后一组数据，a为前一组数据
-          if (a.number === b.number) {
-            b['colorflag'] = a['colorflag']
+        for (let i = 0; i < arrSimple2.length; i++) {
+          if (i === 0) {
+            arrSimple2[0]['colorflag'] = true // 为第一组数据添加colorflag属性
           } else {
-            b['colorflag'] = !a['colorflag']
+            if (arrSimple2[i].number === arrSimple2[i - 1].number) {
+              arrSimple2[i]['colorflag'] = arrSimple2[i - 1]['colorflag']
+            } else {
+              arrSimple2[i]['colorflag'] = !arrSimple2[i - 1]['colorflag']
+            }
           }
-        })
+        }
         return arrSimple2
       }
     },

@@ -214,7 +214,6 @@
       },
       // 课程详情获取数据
       courseDetails(row) {
-        console.log(row)
         this.$router.push({
           path: '/course/grading/details',
           query: {
