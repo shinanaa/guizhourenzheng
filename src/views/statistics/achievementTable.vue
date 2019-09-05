@@ -7,8 +7,8 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
-                   :btn-not-visible="true"
-                   :search-input-not-visible="true"
+                   :select-college-and-major="true"
+                   :search-require="true"
                    :download-report="true"
       ></table-tools>
       <div class="content">
@@ -76,11 +76,11 @@
       rowspan() {
         this.tableList.forEach((item, index) => {
           if (index === 0) {
-            this.spanArr.push(1)
+            this.spanArr.push(1) // index=0 [1]
             this.position = 0
           } else {
             if (this.tableList[index].indicator === this.tableList[index - 1].indicator) {
-              this.spanArr[this.position] += 1
+              this.spanArr[this.position] += 1 // spanArr[0] = spanArr[0] + 1
               this.spanArr.push(0)
             } else {
               this.spanArr.push(1)
@@ -92,7 +92,9 @@
       // 合并同一指标点的指标点达成度
       mergeCell({ row, column, rowIndex, columnIndex }) {
         if (column.property === 'indicatorAchievement') {
+          console.log('rowIndex' + rowIndex)
           const _row = this.spanArr[rowIndex]
+          console.log('row' + _row)
           const _col = _row > 0 ? 1 : 0
           return {
             rowspan: _row,

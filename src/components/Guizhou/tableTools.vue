@@ -1,9 +1,9 @@
 <template>
   <div class="tools">
     <div class="tools-search">
-      <el-button type="info" class="choose" @click="chooseSchool">选择院系及专业</el-button>
+      <el-button type="info" class="choose" @click="chooseSchool" v-if="selectCollegeAndMajor">选择院系及专业</el-button>
       <div class="search-fill">
-        <el-input v-if="!searchInputNotVisible" placeholder="请输入..." v-model="search"></el-input>
+        <el-input v-if="searchCondition" placeholder="请输入..." v-model="search"></el-input>
         <el-select v-if="searchRequire" v-model="requireType" placeholder="请选择毕业要求">
           <el-option
             v-for="item in requires"
@@ -12,7 +12,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-select v-if="searchCourse" v-model="requireType" placeholder="请选择课程">
+        <el-select v-if="searchCourse" v-model="courseSelected" placeholder="请选择课程">
           <el-option
             v-for="item in requires"
             :key="item.value"
@@ -20,13 +20,13 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-button type="primary" icon="el-icon-search" @click="searchData">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="searchData" v-if="selectCollegeAndMajor">查询</el-button>
       </div>
     </div>
-    <div class="tools-btn" v-if="showIf">
+    <div class="tools-btn">
       <el-button type="success" icon="el-icon-plus" @click="createdContent" v-if="btnCreateShow">创建</el-button>
-      <el-button type="warning" icon="el-icon-edit" @click="editContent" v-if="btnEditNoShow">编辑</el-button>
-      <el-button type="danger" icon="el-icon-delete" @click="deleteContent" v-if="btnDelNoShow">删除</el-button>
+      <el-button type="warning" icon="el-icon-edit" @click="editContent" v-if="btnEditShow">编辑</el-button>
+      <el-button type="danger" icon="el-icon-delete" @click="deleteContent" v-if="btnDelShow">删除</el-button>
       <el-button type="primary" icon="el-icon-download" @click="deleteContent" v-if="downloadReport">报表下载</el-button>
     </div>
   </div>
@@ -34,12 +34,49 @@
 
 <script>
     export default {
-      props: ['btnNotVisible', 'requires', 'searchInputNotVisible', 'btnEditNoShow', 'btnDelNoShow', 'searchCourse', 'searchRequire', 'downloadReport', 'btnCreateShow'],
+      props: {
+        selectCollegeAndMajor: {
+          type: Boolean,
+          default: false
+        },
+        searchCondition: {
+          type: Boolean,
+          default: false
+        },
+        searchRequire: {
+          type: Boolean,
+          default: false
+        },
+        searchCourse: {
+          type: Boolean,
+          default: false
+        },
+        btnCreateShow: {
+          type: Boolean,
+          default: false
+        },
+        btnEditShow: {
+          type: Boolean,
+          default: false
+        },
+        btnDelShow: {
+          type: Boolean,
+          default: false
+        },
+        downloadReport: {
+          type: Boolean,
+          default: false
+        },
+        requires: {
+          type: Array,
+          default: () => []
+        }
+      },
       data() {
         return {
           'search': '',
-          showIf: this.btnNotVisible,
-          requireType: ''
+          requireType: '',
+          courseSelected: ''
         }
       },
       methods: {

@@ -15,6 +15,10 @@
         @editContent="editContent"
         @deleteContent="deleteContent"
         @searchData="searchData"
+        :select-college-and-major="true"
+        :btn-create-show="true"
+        :btn-edit-show="true"
+        :btn-del-show="true"
       ></table-tools>
       <div class="content">
         <!--表格-->

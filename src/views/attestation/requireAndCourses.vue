@@ -7,9 +7,9 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="chooseSchool"
                    @searchData="searchData"
-                   :btn-not-visible="true"
                    :requires="requires"
-                   :search-input-not-visible="true"
+                   :select-college-and-major="true"
+                   :search-require="true"
       ></table-tools>
       <div class="content">
         <!--表格-->

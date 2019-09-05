@@ -23,7 +23,27 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-dialog title="课程组成详情" :visible.sync="courseFormDetails">
+        <el-dialog title="知识点详情" :visible.sync="knowledgeDetails">
+          <el-form :model="form" ref="dialogForm">
+            <el-form-item label="章节：" :label-width="formLabelWidth">
+              <p>{{form.chapter}}</p>
+            </el-form-item>
+            <el-form-item label="章节名：" :label-width="formLabelWidth">
+              <p>{{form.chapterName}}</p>
+            </el-form-item>
+            <el-form-item label="知识点1："  :label-width="formLabelWidth" prop="knowledge">
+              <el-input type="textarea"></el-input>
+            </el-form-item>
+            <el-form-item label="知识点2："  :label-width="formLabelWidth" prop="knowledge">
+              <el-input type="textarea"></el-input>
+            </el-form-item>
+            <el-form-item label="知识点3："  :label-width="formLabelWidth" prop="knowledge">
+              <el-input type="textarea"></el-input>
+            </el-form-item>
+            <el-form-item label="知识点4："  :label-width="formLabelWidth" prop="knowledge">
+              <el-input type="textarea"></el-input>
+            </el-form-item>
+          </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="courseFormDetails = false">取 消</el-button>
             <el-button type="primary" @click="courseFormDetails = false">确 定</el-button>
@@ -43,7 +63,12 @@ export default {
       loading: false,
       courseDetailsTable: [],
       headers: [],
-      courseFormDetails: false
+      knowledgeDetails: false,
+      form: {
+        chapter: '',
+        chapterName: ''
+      },
+      formLabelWidth: '120px'
     }
   },
   created() {
@@ -51,7 +76,6 @@ export default {
     var that = this
     this.$http.getRequest('getKnowledgeDetails', this.msg).then(res => {
       if (res.code === 1) {
-        console.log(res)
         that.headers = res.headers
         that.courseDetailsTable = res.resultList
         that.loading = false
@@ -60,7 +84,31 @@ export default {
       }
     })
   },
-  methods: {}
+  watch: {
+    '$route': {
+      handler: function() {
+        this.msg = this.$route.query.course
+        // var that = this
+        // this.$http.getRequest('getCourseDetails', this.msg).then(res => {
+        //   if (res.code === 1) {
+        //     that.courseDetailsTable = res.resultList
+        //     that.loading = false
+        //     that.rowspan()
+        //   } else {
+        //     that.emptyText = '暂无数据'
+        //   }
+        // })
+      }
+    }
+  },
+  methods: {
+    editDetails(row) {
+      console.log(row)
+      this.form.chapter = row.chapter
+      this.form.chapterName = row.chapterName
+      this.knowledgeDetails = true
+    }
+  }
 }
 </script>
 
@@ -70,5 +118,8 @@ export default {
     .detailsText{
       color: #666;background: #FFFFFF;
       padding: 3px 10px;margin: 20px 0px;font-size: 14px;}
+    .el-form-item{
+      p{margin: 0}
+    }
   }
 </style>

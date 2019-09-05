@@ -8,8 +8,7 @@
     <table-tools @dialogFormVisible="dialogFormVisible = true"
                  @chooseSchool="isChoose = true"
                  @searchData="searchData"
-                 :btn-not-visible="true"
-                 :search-input-not-visible="true"
+                 :select-college-and-major="true"
     ></table-tools>
     <div class="content">
       <el-table

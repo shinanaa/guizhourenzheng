@@ -7,9 +7,8 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
-                   :btn-not-visible="true"
+                   :select-college-and-major="true"
                    :search-course="true"
-                   :search-input-not-visible="true"
       ></table-tools>
       <div class="content">
         <el-tabs v-model="activeName" @tab-click="changeTab">
@@ -465,6 +464,14 @@
 
 <style scoped rel="stylesheet/scss" lang="scss">
   @import '../../styles/rightContent.scss';
+  /*解决el-tabs的选项卡在ie/火狐/safari等浏览器中只显示一半并靠右显示的问题*/
+  /deep/ .el-tabs__nav-wrap{
+    width: 100% !important;}
+  /*切换浏览器窗口tabs选项卡出现蓝色边框的问题解决*/
+  .el-tabs__item:focus.is-active.is-focus:not(:active) {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+  }
   .el-form-item{
     p{margin: 0}
   }

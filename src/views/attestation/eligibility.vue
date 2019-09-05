@@ -9,9 +9,9 @@
       </div>
       <div class="container">
         <!--图表-->
-        <el-card class="box-card" style="margin: 0 30px;">
-          <div class="myChart" id="myChart" style=""></div>
-        </el-card>
+        <!--<el-card class="box-card" style="margin: 0 30px;">-->
+          <!--<div class="myChart" id="myChart" style=""></div>-->
+        <!--</el-card>-->
         <!--操作工具栏-->
         <table-tools
           @createdContent="createdContent"
@@ -19,6 +19,10 @@
           @editContent="editContent"
           @deleteContent="deleteContent"
           @searchData="searchData"
+          :select-college-and-major="true"
+          :btn-create-show="true"
+          :btn-edit-show="true"
+          :btn-del-show="true"
         ></table-tools>
         <div class="content">
           <!--表格-->

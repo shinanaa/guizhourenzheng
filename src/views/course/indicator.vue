@@ -7,7 +7,7 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
-                   :btn-not-visible="true"></table-tools>
+                   :select-college-and-major="true"></table-tools>
       <div class="content">
         <!--表格-->
         <el-table

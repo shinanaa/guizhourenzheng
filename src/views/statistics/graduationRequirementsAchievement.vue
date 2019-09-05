@@ -7,8 +7,7 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
-                   :btn-not-visible="true"
-                   :search-input-not-visible="true"
+                   :select-college-and-major="true"
                    :download-report="true"
       ></table-tools>
       <div class="content">

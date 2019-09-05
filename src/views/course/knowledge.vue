@@ -6,8 +6,8 @@
   <div class="container">
     <table-tools @dialogFormVisible="dialogFormVisible = true"
                  @chooseSchool="isChoose = true"
-                 :btn-edit-no-show="true"
-                 :btn-del-no-show="true"
+                 :select-college-and-major="true"
+                 :btn-create-show="true"
                  @searchData="searchData"
                  @createdContent="createdContent"></table-tools>
     <div class="content">
