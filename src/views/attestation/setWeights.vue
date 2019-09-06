@@ -34,42 +34,10 @@
               </template>
             </el-table-column>
           </el-table>
-          <!--分页-->
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="pageSize"
-            layout="prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
-         <!--表单形式设置权重-->
-          <!--<el-dialog width="90%" title="设置权重" :visible.sync="dialogWeightsVisible">-->
-            <!--<el-table-->
-              <!--:data="setTableList"-->
-              <!--border-->
-              <!--style="width: 100%"-->
-            <!--&gt;-->
-              <!--<template v-for="header in setHeaders">-->
-                <!--<el-table-column-->
-                  <!--:prop="header.prop"-->
-                  <!--:label="header.label"-->
-                <!--&gt;-->
-                <!--</el-table-column>-->
-              <!--</template>-->
-              <!--<el-table-column label="操作" width="150">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<el-select v-model="form.region" placeholder="0.0">-->
-                    <!--<el-option v-for="(item, index) in 9" :label="'0.'+item" :value="item/10" :key="index"></el-option>-->
-                  <!--</el-select>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-            <!--</el-table>-->
-            <!--<div slot="footer" class="dialog-footer">-->
-              <!--<el-button @click="dialogFormVisible = false">取 消</el-button>-->
-              <!--<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-            <!--</div>-->
-          <!--</el-dialog>-->
+          <div class="setWeightButton">
+            <el-button>重置设置</el-button>
+            <el-button type="primary">提交权重</el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -219,7 +187,5 @@
     background-color: #fff!important;
   }
   @import '../../styles/rightContent.scss';
-  .customWidth{
-    width: 90%;
-  }
+  .setWeightButton{padding: 25px 15px;text-align: right; }
 </style>

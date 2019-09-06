@@ -31,20 +31,13 @@
             <el-form-item label="章节名：" :label-width="formLabelWidth">
               <p>{{form.chapterName}}</p>
             </el-form-item>
-            <el-form-item label="知识点1："  :label-width="formLabelWidth" prop="knowledge">
-              <el-input type="textarea"></el-input>
-            </el-form-item>
-            <el-form-item label="知识点2："  :label-width="formLabelWidth" prop="knowledge">
-              <el-input type="textarea"></el-input>
-            </el-form-item>
-            <el-form-item label="知识点3："  :label-width="formLabelWidth" prop="knowledge">
-              <el-input type="textarea"></el-input>
-            </el-form-item>
-            <el-form-item label="知识点4："  :label-width="formLabelWidth" prop="knowledge">
-              <el-input type="textarea"></el-input>
+            <el-form-item v-for="(item,index) in knowledges" :label="item.label + '：'"  :label-width="formLabelWidth" :prop="item.prop" :key="index">
+              <el-input type="textarea" v-model="item.knowledge"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
+            <el-button type="success" @click="addKnowledeg" style="float: left;">添加知识点</el-button>
+            <el-button type="success" @click="delKnowledeg" style="float: left;">删除知识点</el-button>
             <el-button @click="courseFormDetails = false">取 消</el-button>
             <el-button type="primary" @click="courseFormDetails = false">确 定</el-button>
           </div>
@@ -66,8 +59,10 @@ export default {
       knowledgeDetails: false,
       form: {
         chapter: '',
-        chapterName: ''
+        chapterName: '',
+        knowledge1: ''
       },
+      knowledges: [],
       formLabelWidth: '120px'
     }
   },
@@ -76,6 +71,7 @@ export default {
     var that = this
     this.$http.getRequest('getKnowledgeDetails', this.msg).then(res => {
       if (res.code === 1) {
+        console.log(res)
         that.headers = res.headers
         that.courseDetailsTable = res.resultList
         that.loading = false
@@ -88,25 +84,48 @@ export default {
     '$route': {
       handler: function() {
         this.msg = this.$route.query.course
-        // var that = this
-        // this.$http.getRequest('getCourseDetails', this.msg).then(res => {
-        //   if (res.code === 1) {
-        //     that.courseDetailsTable = res.resultList
-        //     that.loading = false
-        //     that.rowspan()
-        //   } else {
-        //     that.emptyText = '暂无数据'
-        //   }
-        // })
+        var that = this
+        this.$http.getRequest('getKnowledgeDetails', this.msg).then(res => {
+          if (res.code === 1) {
+            that.headers = res.headers
+            that.courseDetailsTable = res.resultList
+            that.loading = false
+          } else {
+            that.emptyText = '暂无数据'
+          }
+        })
       }
     }
   },
   methods: {
     editDetails(row) {
-      console.log(row)
-      this.form.chapter = row.chapter
-      this.form.chapterName = row.chapterName
+      this.knowledges = []
+      this.headers.map((item) => {
+        if (item.prop.indexOf('knowledge') >= 0) {
+          this.knowledges.push(item)
+        }
+      })
+      this.courseDetailsTable.map((item) => {
+        if (item.chapter === row.chapter) {
+          for (let i = 0; i < this.knowledges.length; i++) {
+            this.knowledges[i].knowledge = item[`knowledge` + (i + 1)]
+          }
+        }
+      })
+      this.form = row
       this.knowledgeDetails = true
+    },
+    // 添加知识点
+    addKnowledeg() {
+      console.log(this.knowledges)
+      const newKnowledeg = {
+        label: `知识点${this.knowledges.length + 1}`
+      }
+      this.knowledges.push(newKnowledeg)
+    },
+    // 删除知识点
+    delKnowledeg() {
+      this.knowledges.pop()
     }
   }
 }
