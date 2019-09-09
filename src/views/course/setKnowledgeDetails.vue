@@ -37,9 +37,9 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button type="success" @click="addKnowledeg" style="float: left;">添加知识点</el-button>
-            <el-button type="success" @click="delKnowledeg" style="float: left;">删除知识点</el-button>
+            <el-button type="danger" @click="delKnowledeg" style="float: left;">删除知识点</el-button>
             <el-button @click="courseFormDetails = false">取 消</el-button>
-            <el-button type="primary" @click="courseFormDetails = false">确 定</el-button>
+            <el-button type="primary" @click="sureDialog">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -59,8 +59,7 @@ export default {
       knowledgeDetails: false,
       form: {
         chapter: '',
-        chapterName: '',
-        knowledge1: ''
+        chapterName: ''
       },
       knowledges: [],
       formLabelWidth: '120px'
@@ -100,11 +99,13 @@ export default {
   methods: {
     editDetails(row) {
       this.knowledges = []
+      // 获取知识点列表的label
       this.headers.map((item) => {
         if (item.prop.indexOf('knowledge') >= 0) {
           this.knowledges.push(item)
         }
       })
+      // 获取知识点
       this.courseDetailsTable.map((item) => {
         if (item.chapter === row.chapter) {
           for (let i = 0; i < this.knowledges.length; i++) {
@@ -126,6 +127,30 @@ export default {
     // 删除知识点
     delKnowledeg() {
       this.knowledges.pop()
+    },
+    // 提交设置的知识点详情
+    sureDialog() {
+      const info = {}
+      info.chapter = this.form.chapter
+      info.chapterName = this.form.chapterName
+      for (let i = 0; i < this.knowledges.length; i++) {
+        info['knowledge' + (i + 1)] = this.knowledges[i].knowledge
+      }
+      console.log(info)
+      this.operateForm('editKnowledge', info)
+    },
+    // 方法封装 操作（添加/编辑/删除）表单
+    operateForm(url, params) {
+      this.$http.postRequest(url, params).then(res => {
+        if (res.status === 0) {
+          this.knowledgeDetails = false
+          this.$message({
+            showClose: true,
+            message: res.msg,
+            type: 'success'
+          })
+        }
+      })
     }
   }
 }

@@ -7,8 +7,10 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
+                   @createdContent="createdContent"
                    :select-college-and-major="true"
                    :search-course="true"
+                   :btnCreateShow="addCreate"
       ></table-tools>
       <div class="content">
         <el-tabs v-model="activeName" @tab-click="changeTab">
@@ -42,7 +44,7 @@
         <!--编辑课程目标-->
         <el-dialog title="编辑课程目标" :visible.sync="dialogFormVisible" :before-close="resetForm">
           <!--编辑课程目标-->
-          <el-form ref="dialogForm" v-if='elForm1'>
+          <el-form :model="form1" ref="dialogForm" v-if='elForm1'>
             <el-form-item label="课程：" :label-width="formLabelWidth">
               <p>{{form1.courseName}}</p>
             </el-form-item>
@@ -67,8 +69,8 @@
             </el-form-item>
           </el-form>
           <!--编辑课程模块-->
-          <el-form ref="dialogForm" v-if='elForm2'>
-            <el-form-item label="课程模块名称：" :label-width="formLabelWidth">
+          <el-form :model="form2" ref="dialogForm" v-if='elForm2' :rules="rules2">
+            <el-form-item label="课程模块名称：" :label-width="formLabelWidth" prop="moduleName">
               <el-input type="text" v-model="form2.moduleName"></el-input>
             </el-form-item>
             <div class="line-left-right">
@@ -97,7 +99,7 @@
             </el-form-item>
           </el-form>
           <!--编辑课程内容-->
-          <el-form ref="dialogForm" v-if='elForm3'>
+          <el-form :model="form3" ref="dialogForm" v-if='elForm3'>
             <el-form-item label="课程目标：" :label-width="formLabelWidth">
               <p>{{form3.target}}</p>
             </el-form-item>
@@ -115,7 +117,7 @@
             </el-form-item>
           </el-form>
           <!--编辑考核要点-->
-          <el-form ref="dialogForm" v-if='elForm4'>
+          <el-form :model="form4" ref="dialogForm" v-if='elForm4'>
             <div class="line-left-right">
               <span>考试</span>
             </div>
@@ -150,7 +152,7 @@
             </el-form-item>
           </el-form>
           <!--编辑评分标准-->
-          <el-form ref="dialogForm" v-if='elForm5'>
+          <el-form :model="form5" ref="dialogForm" v-if='elForm5'>
             <el-form-item label="课程目标：" :label-width="formLabelWidth">
               <p>{{form5.target}}</p>
             </el-form-item>
@@ -218,6 +220,11 @@
           practicalOutClass: '',
           practicalTeachMeansPracical: ''
         },
+        rules2: {
+          moduleName: [
+            { required: true, message: '请输入模块名称', trigger: 'blur' }
+          ]
+        },
         form3: {
           target: '',
           module1: '',
@@ -265,7 +272,9 @@
           name: 'fifth',
           hasDel: false
         }],
-        index: 0
+        index: 0,
+        addCreate: false,
+        isAdd: false
       }
     },
     components: { TableTools },
@@ -283,6 +292,7 @@
     },
     methods: {
       changeTab(tab) {
+        this.addCreate = false
         this.index = tab.index
         switch (tab.paneName) {
           case 'first':
@@ -300,6 +310,7 @@
             this.elForm4 = false
             this.elForm5 = false
             this.getTableData('getCoursesModule')
+            this.addCreate = true
             break
           case 'third':
             this.elForm1 = false
@@ -352,6 +363,7 @@
       /* 点击工具栏编辑 */
       editContent(row, index) {
         this.dialogFormVisible = true
+        this.isAdd = false
         switch (index) {
           case 0 :
             this.form1 = JSON.parse(JSON.stringify(row))
@@ -385,6 +397,13 @@
             this.form5 = JSON.parse(JSON.stringify(row))
         }
       },
+      // 创建新的课程模块
+      createdContent() {
+        this.form2 = {}
+        console.log(this.form2)
+        this.dialogFormVisible = true
+        this.isAdd = true
+      },
       // 点击工具栏删除
       deleteContent(row) {
         console.log(row.order)
@@ -393,36 +412,37 @@
       },
       // 弹框点击确定按钮
       sureDialog() {
-        if (this.elForm1) {
-          console.log(1)
-          console.log(this.form1)
-          this.submitForm(this.form1, 'getCoursesTarget')
-          this.resetForm(this.form1)
-        }
-        if (this.elForm2) {
-          console.log(this.form2)
-          this.submitForm(this.form2, 'getCoursesModule')
-          this.resetForm(this.form2)
-        }
-        if (this.elForm3) {
-          this.submitForm(this.form3, 'getCoursesContent')
-          this.resetForm(this.form3)
-        }
-        if (this.elForm4) {
-          this.submitForm(this.form4, 'getCoursesCheck')
-          this.resetForm(this.form4)
-        }
-        if (this.elForm5) {
-          this.submitForm(this.form5, 'getCoursesStandard')
-          this.resetForm(this.form5)
-        }
+        this.$refs.dialogForm.validate(valid => {
+          if (valid) {
+            if (this.elForm1) {
+              this.submitForm(this.form1, 'getCoursesTarget')
+            }
+            if (this.elForm2) {
+              this.submitForm(this.form2, 'getCoursesModule')
+            }
+            if (this.elForm3) {
+              this.submitForm(this.form3, 'getCoursesContent')
+            }
+            if (this.elForm4) {
+              this.submitForm(this.form4, 'getCoursesCheck')
+            }
+            if (this.elForm5) {
+              this.submitForm(this.form5, 'getCoursesStandard')
+            }
+          } else {
+            return false
+          }
+        })
       },
       // 提交
       submitForm(form, apiUrl) {
-        console.log(2)
-        console.log(form)
-        this.operateForm('editDialog', form)
+        if (this.isAdd) {
+          this.operateForm('addDialog', form)
+        } else {
+          this.operateForm('editDialog', form)
+        }
         this.getTableData(apiUrl)
+        this.resetForm(form)
       },
       // 弹窗点击取消重置form表单
       resetForm(form) {
@@ -468,7 +488,7 @@
   /deep/ .el-tabs__nav-wrap{
     width: 100% !important;}
   /*切换浏览器窗口tabs选项卡出现蓝色边框的问题解决*/
-  .el-tabs__item:focus.is-active.is-focus:not(:active) {
+  /deep/ .el-tabs__item:focus.is-active.is-focus:not(:active) {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
   }
