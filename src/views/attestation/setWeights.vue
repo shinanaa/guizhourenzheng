@@ -16,7 +16,7 @@
           <!--表格-->
           <el-table
             v-loading="loading"
-            :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+            :data="tableList"
             :row-class-name="tableRowClassName"
             border
             style="width: 100%">
@@ -36,7 +36,7 @@
           </el-table>
           <div class="setWeightButton">
             <el-button>重置设置</el-button>
-            <el-button type="primary">提交权重</el-button>
+            <el-button type="primary" @click="submitWeight">提交权重</el-button>
           </div>
         </div>
       </div>
@@ -56,9 +56,7 @@
         tableList: [], // 表格内容
         setTableList: [], // 设置权重表格内容（弹窗中）
         currentPage: 1,
-        total: 0,
         setTotal: 0, // 设置权重表格内容总条数（弹窗中）
-        pageSize: 10, // 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
         dialogWeightsVisible: false, // 是否显示权重设置弹窗
         form: {
@@ -70,7 +68,9 @@
           label: 'label'
         },
         isChoose: false,
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        position: 0,
+        sumArr: []
       }
     },
     created() {
@@ -90,11 +90,6 @@
       /* 分页 当前显示的页码*/
       handleCurrentChange(val) {
         this.currentPage = val
-      },
-      /* 学院选择树*/
-      handleNodeClick(data) {
-        console.log('点击了树')
-        this.isChoose = false
       },
       // 点击工具栏查询
       searchData(param) {
@@ -131,6 +126,40 @@
           return 'lightDark'
         }
       },
+      submitWeight() {
+        // 遍历数据，确保所有权重值均已设置
+        this.tableList.map((item, index) => {
+          if (item.weight === null) {
+            this.$message({
+              message: '权重设置不能为空',
+              center: true
+            })
+            return false
+          } else {
+            if (index === 0) {
+              this.sumArr[this.position] = this.tableList[0].weight
+            } else if (this.tableList[index].number === this.tableList[index - 1].number) {
+              this.sumArr[this.position] = (parseFloat(this.sumArr[this.position]) * 10 + parseFloat(this.tableList[index].weight) * 10) / 10
+            } else {
+              this.position += 1
+              this.sumArr[this.position] = this.tableList[index].weight
+            }
+          }
+        })
+        // 判断每组的权重之和是否为1
+        this.sumArr.map((val, index) => {
+          if (val === 1) {
+            return
+          } else {
+            this.$message({
+              message: '同一指标点的权重值和为1',
+              center: true
+            })
+            console.log(index)
+          }
+        })
+        console.log(this.sumArr)
+      },
       // 弹窗形式，显示弹窗内容
       // setWeights(index, rows) {
       //   this.dialogWeightsVisible = true
@@ -153,7 +182,6 @@
             that.tableList = that.smartSort(res.resultList)
             that.total = res.resultList.length
             that.requires = res.requires
-            console.log(res.requires)
             that.loading = false
           } else {
             that.emptyText = '暂无数据'

@@ -13,7 +13,7 @@
       <div class="content">
         <el-table
           v-loading="loading"
-          :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+          :data="tableList"
           border
           @cell-click="showDetails"
           style="width: 100%;">
@@ -22,26 +22,17 @@
               :prop="header.prop"
               :label="header.label">
               <template slot-scope="scope">
-                <span v-if="header.prop.indexOf('require') < 0">{{scope.row[header.prop]}}</span>
-                <el-button v-if="header.prop.indexOf('require') >= 0" type="text">{{scope.row[header.prop]}}</el-button>
+                <span v-if="header.prop.indexOf('achievement') < 0">{{scope.row[header.prop]}}</span>
+                <el-button v-if="header.prop.indexOf('achievement') >= 0" type="text">{{scope.row[header.prop]}}</el-button>
           </template>
             </el-table-column>
           </template>
         </el-table>
-        <!--分页-->
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="pageSize"
-          layout="prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
         <!--弹窗-->
         <el-dialog width="80%" title="毕业要求详情" :visible.sync="dialogFormVisible">
           <el-table
             v-loading="loading"
-            :data="detailTableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+            :data="detailTableList"
             border
             show-summary
             sum-text="评价结果"
@@ -76,9 +67,7 @@
         loading: false,
         tableList: [],
         headers: [],
-        pageSize: 10,
         currentPage: 1,
-        total: 0,
         dialogFormVisible: false,
         detailHeaders: [],
         detailTableList: []
@@ -94,14 +83,6 @@
       })
     },
     methods: {
-      /* 分页 val（每页显示数据）*/
-      handleSizeChange(val) {
-        this.pageSize = val
-      },
-      /* 分页 当前显示的页码*/
-      handleCurrentChange(val) {
-        this.currentPage = val
-      },
       //  查询
       searchData(param) {
         this.loading = true
@@ -124,30 +105,35 @@
         }
       },
       showDetails(row, column) {
-        var showInfo = {
-          schoolYear: row.schoolYear,
-          major: row.major,
-          require: column.property,
-          requireLabel: column.label
-        }
-        console.log(showInfo)
-        var that = this
-        this.$http.getRequest('getRequireDetails', showInfo).then(res => {
-          if (res.code === 1) {
-            that.detailHeaders = res.headers
-            that.detailTableList = res.resultList
-            that.loading = false
-            this.dialogFormVisible = true
-          } else {
-            that.emptyText = '暂无数据'
+        if (column.property.indexOf('achievement') >= 0) {
+          var showInfo = {
+            major: row.major,
+            require: row.require,
+            achievement: column.property,
+            schoolYear: column.label
           }
-        })
+          console.log(showInfo)
+          var that = this
+          this.$http.getRequest('getRequireDetails', showInfo).then(res => {
+            if (res.code === 1) {
+              that.detailHeaders = res.headers
+              that.detailTableList = res.resultList
+              that.loading = false
+              this.dialogFormVisible = true
+            } else {
+              that.emptyText = '暂无数据'
+            }
+          })
+        } else {
+          return false
+        }
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
         var that = this
         this.$http.getRequest(urlName, params).then(res => {
           if (res.code === 1) {
+            console.log(res)
             that.headers = res.headers
             that.tableList = res.resultList
             that.total = res.resultList.length
