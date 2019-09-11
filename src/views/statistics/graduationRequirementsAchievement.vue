@@ -4,8 +4,7 @@
       <el-tree :data="treeList" :props="defaultProps" ref="tree" show-checkbox></el-tree>
     </div>
     <div class="container">
-      <table-tools @dialogFormVisible="dialogFormVisible = true"
-                   @chooseSchool="isChoose = true"
+      <table-tools @chooseSchool="isChoose = true"
                    @searchData="searchData"
                    :select-college-and-major="true"
                    :download-report="true"

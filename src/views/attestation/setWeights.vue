@@ -35,7 +35,7 @@
             </el-table-column>
           </el-table>
           <div class="setWeightButton">
-            <el-button>重置设置</el-button>
+            <el-button @click="resetWeight">重置设置</el-button>
             <el-button type="primary" @click="submitWeight">提交权重</el-button>
           </div>
         </div>
@@ -70,7 +70,8 @@
         isChoose: false,
         formLabelWidth: '120px',
         position: 0,
-        sumArr: []
+        sumArr: [],
+        setAll: false
       }
     },
     created() {
@@ -126,16 +127,20 @@
           return 'lightDark'
         }
       },
+      // 提交权重
       submitWeight() {
+        this.sumArr = []
+        this.position = 0
         // 遍历数据，确保所有权重值均已设置
         this.tableList.map((item, index) => {
           if (item.weight === null) {
+            this.setAll = false
             this.$message({
               message: '权重设置不能为空',
               center: true
             })
-            return false
           } else {
+            this.setAll = true
             if (index === 0) {
               this.sumArr[this.position] = this.tableList[0].weight
             } else if (this.tableList[index].number === this.tableList[index - 1].number) {
@@ -146,19 +151,24 @@
             }
           }
         })
-        // 判断每组的权重之和是否为1
-        this.sumArr.map((val, index) => {
-          if (val === 1) {
-            return
-          } else {
-            this.$message({
-              message: '同一指标点的权重值和为1',
-              center: true
-            })
-            console.log(index)
-          }
+        if (this.setAll) {
+          // 判断每组的权重之和是否为1
+          this.sumArr.map((val, index) => {
+            if (val !== 1) {
+              console.log(val)
+              this.$message({
+                message: '同一指标点的权重值和为1',
+                center: true
+              })
+            }
+          })
+        }
+      },
+      // 重置权重
+      resetWeight() {
+        this.tableList.map((item) => {
+          item.weight = null
         })
-        console.log(this.sumArr)
       },
       // 弹窗形式，显示弹窗内容
       // setWeights(index, rows) {

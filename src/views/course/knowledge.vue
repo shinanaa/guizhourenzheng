@@ -4,8 +4,7 @@
     <el-tree ref="tree" :data="treeList" :props="defaultProps" show-checkbox></el-tree>
   </div>
   <div class="container">
-    <table-tools @dialogFormVisible="dialogFormVisible = true"
-                 @chooseSchool="isChoose = true"
+    <table-tools @chooseSchool="isChoose = true"
                  :select-college-and-major="true"
                  :btn-create-show="true"
                  @searchData="searchData"
@@ -123,7 +122,8 @@ export default {
         label: 'label'
       },
       isChoose: false,
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      sureFlag: true // 弹窗提交时区分是创建数据还是修改数据  true 创建 false修改
     }
   },
   components: { ElButton, ElInput, TableTools },
@@ -149,8 +149,6 @@ export default {
     /* 点击工具栏创建 */
     createdContent() {
       this.dialogFormVisible = true
-      this.form = {}
-      this.form.title = '新增毕业要求'
     },
     // 点击工具栏查询
     searchData(param) {
@@ -195,15 +193,14 @@ export default {
     },
     // 弹框点击确定按钮
     sureDialog() {
-      console.log(1)
       console.log(this.form)
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
-          if (this.form.title === '新增毕业要求') {
+          if (this.sureFlag) {
             console.log(this.form)
             this.operateForm('addDialog', this.form)
-          } else if (this.form.title === '修改毕业要求') {
+          } else {
             this.operateForm('editDialog', this.form)
           }
           this.getTableData('getCourseManage')
@@ -216,9 +213,10 @@ export default {
     // 弹窗点击取消重置form表单
     resetForm() {
       this.dialogFormVisible = false
-      this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+      this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
       this.majorList = []
-      console.log(this.form)
+      this.form = {}
+      // console.log(this.form)
     },
     // 方法封装 操作（添加/编辑/删除）表单
     operateForm(url, params) {
