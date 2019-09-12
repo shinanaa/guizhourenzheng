@@ -9,9 +9,9 @@
       </div>
       <div class="container">
         <!--图表-->
-        <!--<el-card class="box-card" style="margin: 0 30px;">-->
-          <!--<div class="myChart" id="myChart" style=""></div>-->
-        <!--</el-card>-->
+        <el-card class="box-card" style="margin: 0 30px;">
+          <div class="myChart" id="myChart" style="height: 360px;"></div>
+        </el-card>
         <!--操作工具栏-->
         <table-tools
           @createdContent="createdContent"
@@ -106,7 +106,7 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds } from '@/utils/common'
-  // import echarts from 'echarts'
+  import echarts from 'echarts'
   export default {
     data: function() {
       return {
@@ -260,7 +260,8 @@
           label: 'label'
         },
         isChoose: false,
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        require: [0.8, 0.7, 0.7, 0.6, 0.7, 0.8, 0.9, 0.9]
       }
     },
     created() {
@@ -271,6 +272,9 @@
           this.treeList = res.schoolData
         }
       })
+    },
+    mounted() {
+      this.drawLine()
     },
     components: { TableTools },
     methods: {
@@ -312,9 +316,16 @@
           })
         }
       },
-      // 获取表格当前行数据
+      // 点击表格行
       handleCurrentRow(val) {
+        this.require = []
         this.currentRow = val
+        for (const i in val) {
+          if (i.indexOf('require') >= 0) {
+            this.require.push(val[i])
+          }
+        }
+        this.drawLine()
       },
       // 点击工具栏删除
       deleteContent() {
@@ -411,96 +422,35 @@
             })
           }
         })
+      },
+      drawLine() {
+        // 基于准备好的dom，初始化echarts实例
+        const myChart = echarts.init(document.getElementById('myChart'))
+        // 绘制图表
+        myChart.setOption({
+          title: { text: '合格标准' },
+          tooltip: {},
+          xAxis: {
+            type: 'category',
+            data: ['毕业要求一', '毕业要求二', '毕业要求三', '毕业要求四', '毕业要求五', '毕业要求六', '毕业要求七', '毕业要求八']
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            type: 'line',
+            itemStyle: {
+              normal: {
+                color: '#2ec7c9',
+                lineStyle: {
+                  color: '#1890ff'
+                }
+              }
+            },
+            data: this.require
+          }]
+        })
       }
-      // 初始化图表
-      // initChart() {
-      //   // const that = this
-      //   var myChart = echarts.init(document.getElementById('myChart'))
-      //   var option = {
-      //     title: {
-      //       text: '未来一周气温变化',
-      //       subtext: '纯属虚构'
-      //     },
-      //     tooltip: {
-      //       trigger: 'axis'
-      //     },
-      //     legend: {
-      //       data: ['最高气温', '最低气温']
-      //     },
-      //     toolbox: {
-      //       show: true,
-      //       feature: {
-      //         dataZoom: {
-      //           yAxisIndex: 'none'
-      //         },
-      //         dataView: { readOnly: false },
-      //         magicType: { type: ['line', 'bar'] },
-      //         restore: {},
-      //         saveAsImage: {}
-      //       }
-      //     },
-      //     xAxis: {
-      //       type: 'category',
-      //       boundaryGap: false,
-      //       data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-      //     },
-      //     yAxis: {
-      //       type: 'value',
-      //       axisLabel: {
-      //         formatter: '{value} °C'
-      //       }
-      //     },
-      //     series: [
-      //       {
-      //         name: '最高气温',
-      //         type: 'line',
-      //         data: [11, 11, 15, 13, 12, 13, 10],
-      //         markPoint: {
-      //           data: [
-      //             { type: 'max', name: '最大值' },
-      //             { type: 'min', name: '最小值' }
-      //           ]
-      //         },
-      //         markLine: {
-      //           data: [
-      //             { type: 'average', name: '平均值' }
-      //           ]
-      //         }
-      //       },
-      //       {
-      //         name: '最低气温',
-      //         type: 'line',
-      //         data: [1, -2, 2, 5, 3, 2, 0],
-      //         markPoint: {
-      //           data: [
-      //             { name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }
-      //           ]
-      //         },
-      //         markLine: {
-      //           data: [
-      //             { type: 'average', name: '平均值' },
-      //             [{
-      //               symbol: 'none',
-      //               x: '90%',
-      //               yAxis: 'max'
-      //             }, {
-      //               symbol: 'circle',
-      //               label: {
-      //                 normal: {
-      //                   position: 'start',
-      //                   formatter: '最大值'
-      //                 }
-      //               },
-      //               type: 'max',
-      //               name: '最高点'
-      //             }]
-      //           ]
-      //         }
-      //       }
-      //     ]
-      //   }
-      //   myChart.setOption(option)
-      // }
     },
     name: 'eligibility'
   }

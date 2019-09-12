@@ -47,7 +47,7 @@
               <p>{{form.indicator}}</p>
             </el-form-item>
             <el-form-item label="知识点："  :label-width="formLabelWidth" prop="knowledge">
-              <el-select v-model="form.knowledge" multiple placeholder="请选择" @change="getSelect">
+              <el-select v-model="form.knowledge" multiple placeholder="请选择">
                 <el-option-group
                   v-for="group in options"
                   :key="group.label"
@@ -193,19 +193,12 @@
           })
         }
       },
-      // 获取弹框中所选的知识点
-      getSelect(val) {
-        console.log(this.form.knowledge)
-      },
       // 弹框点击确定按钮
       sureDialog() {
-        var that = this
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
-            console.log(123)
-            console.log(that.form)
-            console.log(that.form.knowledge)
-            that.operateForm('editDialog', that.form)
+            const info = JSON.parse(JSON.stringify(this.form))
+            this.operateForm('editDialog', info)
           } else {
             return false
           }
@@ -213,22 +206,15 @@
       },
       // 弹窗点击取消重置form表单
       resetForm() {
-        console.log(3)
         this.dialogFormVisible = false
-        this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
-        this.form.course = ''
-        this.form.indicator = ''
-        this.form.knowledge = []
+        this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
       },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
-        console.log(1)
-        console.log(params.konwledge)
-        var that = this
         this.$http.postRequest(url, params).then(res => {
           if (res.status === 0) {
-            that.getTableData('getIndicator')
-            that.resetForm()
+            this.getTableData('getIndicator')
+            this.resetForm()
             this.$message({
               showClose: true,
               message: res.msg,
@@ -239,11 +225,9 @@
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
-        console.log(2)
         var that = this
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
-            console.log(res)
             that.headers = res.headers
             that.tableList = res.resultList
             that.total = res.resultList.length

@@ -193,12 +193,9 @@ export default {
     },
     // 弹框点击确定按钮
     sureDialog() {
-      console.log(this.form)
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
-          this.dialogFormVisible = false
           if (this.sureFlag) {
-            console.log(this.form)
             this.operateForm('addDialog', this.form)
           } else {
             this.operateForm('editDialog', this.form)

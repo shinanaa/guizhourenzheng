@@ -42,6 +42,7 @@
         </el-table>
         <!--分页-->
         <el-pagination
+          v-if="total > 10"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
@@ -144,7 +145,6 @@ export default {
         children: 'children',
         label: 'label'
       },
-      chooseTree: [], // 树形控件搜索
       isChoose: false,
       formLabelWidth: '120px',
       currentRow: null
