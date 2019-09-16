@@ -34,24 +34,24 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/attestation/graduationRequire',
     alwaysShow: true, // will always show the root menu
-    meta: { title: '认证管理', icon: 'form', roles: ['admin', 'editor'] },
+    meta: { title: '认证管理', icon: 'component', roles: ['admin', 'editor'] },
     children: [{
       path: '/attestation/target',
       component: () => import('@/views/attestation/target'),
       name: 'trainTarget',
-      meta: { title: '培养目标', icon: 'star', noCache: true }
+      meta: { title: '培养目标', icon: 'chart', noCache: true }
     },
     {
       path: '/attestation/graduationRequire',
       component: () => import('@/views/attestation/graduationRequire'),
       name: 'graduationRequire',
-      meta: { title: '毕业要求', icon: 'star', noCache: true }
+      meta: { title: '毕业要求', icon: 'clipboard', noCache: true }
     },
     {
       path: '/attestation/standards',
       component: () => import('@/views/attestation/standards'),
       name: 'standards',
-      meta: { title: '认证标准', icon: 'star', noCache: true }
+      meta: { title: '认证标准', icon: 'form', noCache: true }
     },
     {
       path: '/attestation/requireAndCourses',
@@ -78,48 +78,48 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/course/courseManage',
     alwaysShow: true, // will always show the root menu
-    meta: { title: '课程管理', icon: 'form', roles: ['admin', 'editor'] },
+    meta: { title: '课程管理', icon: 'dashboard', roles: ['admin', 'editor'] },
     children: [{
       path: '/course/courseManage',
       component: () => import('@/views/course/courseManage'),
       name: 'courseManage',
-      meta: { title: '课程管理', icon: 'star', noCache: true }
+      meta: { title: '课程管理', icon: 'documentation', noCache: true }
     },
     {
       path: '/course/knowledge',
       component: () => import('@/views/course/knowledge'),
       name: 'knowledge',
-      meta: { title: '章节知识点', icon: 'message', noCache: true }
+      meta: { title: '章节知识点', icon: 'edit', noCache: true }
     },
     {
       path: '/course/knowledge/setKnowledge',
       component: () => import('@/views/course/setKnowledgeDetails'),
       name: 'setKnowledgeDetails',
-      meta: { title: '知识点详情', icon: 'message', noCache: true }
+      meta: { title: '知识点详情', icon: 'email', noCache: true }
     },
     {
       path: '/course/indicator',
       component: () => import('@/views/course/indicator'),
       name: 'indicator',
-      meta: { title: '对应指标点', icon: 'example', noCache: true }
+      meta: { title: '对应指标点', icon: 'excel', noCache: true }
     },
     {
       path: '/course/target',
       component: () => import('@/views/course/target'),
       name: 'target',
-      meta: { title: '课程安排', icon: 'drag', noCache: true }
+      meta: { title: '课程安排', icon: 'nested', noCache: true }
     },
     {
       path: '/course/grading',
       component: () => import('@/views/course/grading'),
       name: 'granding',
-      meta: { title: '课程组成', icon: 'drag', noCache: true }
+      meta: { title: '课程组成', icon: 'guide', noCache: true }
     },
     {
       path: '/course/grading/details',
       component: () => import('@/views/course/courseFormDetails'),
       name: 'courseFormDetails',
-      meta: { title: '课程组成详情', icon: 'star', noCache: true }
+      meta: { title: '课程组成详情', icon: 'icon', noCache: true }
     }
     ]
   },
@@ -128,24 +128,24 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/statistics/graduationRequirementsAchievement',
     alwaysShow: true, // will always show the root menu
-    meta: { title: '认证统计', icon: 'form', roles: ['admin', 'editor'] },
+    meta: { title: '认证统计', icon: 'table', roles: ['admin', 'editor'] },
     children: [{
       path: '/statistics/graduationRequirementsAchievement',
       component: () => import('@/views/statistics/graduationRequirementsAchievement'),
       name: 'graduationRequirementsAchievement',
-      meta: { title: '毕业要求达成度', icon: 'star', noCache: true }
+      meta: { title: '毕业要求达成度', icon: 'tab', noCache: true }
     },
     {
       path: '/statistics/achievementTable',
       component: () => import('@/views/statistics/achievementTable'),
       name: 'achievementTable',
-      meta: { title: '要求达成度计算表', icon: 'star', noCache: true }
+      meta: { title: '要求达成度计算表', icon: 'list', noCache: true }
     },
     {
       path: '/statistics/courseAchievement',
       component: () => import('@/views/statistics/courseAchievement'),
       name: 'courseAchievement',
-      meta: { title: '课程达成度', icon: 'star', noCache: true }
+      meta: { title: '课程达成度', icon: 'international', noCache: true }
     }
     ]
   }
