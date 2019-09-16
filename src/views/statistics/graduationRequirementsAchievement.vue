@@ -6,7 +6,7 @@
     <div class="container">
       <table-tools @chooseSchool="isChoose = true"
                    @searchData="searchData"
-                   @downloadExcel="downloadExcel('#graTable')"
+                   @downloadExcel="download"
                    :select-college-and-major="true"
                    :download-report="true"
       ></table-tools>
@@ -54,9 +54,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
-  import XLSX from 'xlsx'
-  import FileSaver from 'file-saver'
+  import { filterDataIds, downloadExcel } from '@/utils/common'
   export default {
     name: 'graduation-requirements-achievement',
     data() {
@@ -107,27 +105,8 @@
           })
         }
       },
-      downloadExcel(tableID) {
-        const wb = XLSX.utils.table_to_book(document.querySelector(tableID))
-        const wbout = XLSX.write(wb, {
-          bookType: 'xlsx',
-          bookSST: true,
-          type: 'array'
-        })
-        try {
-          FileSaver.saveAs(
-            // Blob 对象表示一个不可变、原始数据的类文件对象。
-            // Blob 表示的不一定是JavaScript原生格式的数据。
-            // File 接口基于Blob，继承了 blob 的功能并将其扩展使其支持用户系统上的文件。
-            // 返回一个新创建的 Blob 对象，其内容由参数中给定的数组串联组成。
-            new Blob([wbout], { type: 'application/octet-stream' }),
-            // 设置导出文件名称
-            'sheetjs.xlsx'
-          )
-        } catch (e) {
-          if (typeof console !== 'undefined') console.log(e, wbout)
-        }
-        return wbout
+      download() {
+        downloadExcel('#graTable')
       },
       showDetails(row, column) {
         if (column.property.indexOf('achievement') >= 0) {
