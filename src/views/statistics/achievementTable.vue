@@ -7,6 +7,7 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
+                   @downloadExcel="download"
                    :select-college-and-major="true"
                    :search-require="true"
                    :download-report="true"
@@ -16,6 +17,7 @@
           v-loading="loading"
           :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
           border
+          id="ratTable"
           :span-method="mergeCell"
           style="width: 100%;">
           <template v-for="header in headers">
@@ -33,7 +35,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, downloadExcel } from '@/utils/common'
   export default {
     name: 'achievement-table',
     data() {
@@ -122,6 +124,9 @@
             type: 'error'
           })
         }
+      },
+      download() {
+        downloadExcel('#ratTable')
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {

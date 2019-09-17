@@ -89,14 +89,22 @@ export const constantRouterMap = [
       path: '/course/knowledge',
       component: () => import('@/views/course/knowledge'),
       name: 'knowledge',
-      meta: { title: '章节知识点', icon: 'edit', noCache: true }
+      meta: { title: '章节知识点', icon: 'edit', noCache: true },
+      children: [
+        {
+          path: ':id',
+          component: () => import('@/views/course/setKnowledgeDetails'),
+          name: 'setKnowledgeDetails',
+          meta: { title: '知识点详情', icon: 'email', noCache: true }
+        }
+      ]
     },
-    {
-      path: '/course/knowledge/setKnowledge',
-      component: () => import('@/views/course/setKnowledgeDetails'),
-      name: 'setKnowledgeDetails',
-      meta: { title: '知识点详情', icon: 'email', noCache: true }
-    },
+    // {
+    //   path: '/course/knowledge/setKnowledge',
+    //   component: () => import('@/views/course/setKnowledgeDetails'),
+    //   name: 'setKnowledgeDetails',
+    //   meta: { title: '知识点详情', icon: 'email', noCache: true }
+    // },
     {
       path: '/course/indicator',
       component: () => import('@/views/course/indicator'),

@@ -65,7 +65,7 @@ export function downloadExcel(tableID) {
       // 返回一个新创建的 Blob 对象，其内容由参数中给定的数组串联组成。
       new Blob([wbout], { type: 'application/octet-stream' }),
       // 设置导出文件名称
-      'sheetjs.xlsx'
+      `${tableID.substr(1)}.xlsx`
     )
   } catch (e) {
     if (typeof console !== 'undefined') console.log(e, wbout)

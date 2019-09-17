@@ -7,6 +7,7 @@
       <table-tools @dialogFormVisible="dialogFormVisible = true"
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
+                   @downloadExcel="download"
                    :select-college-and-major="true"
                    :download-report="true"
       ></table-tools>
@@ -15,6 +16,7 @@
           v-loading="loading"
           :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
           border
+          id="caTable"
           style="width: 100%;">
           <template v-for="header in headers">
             <el-table-column
@@ -61,7 +63,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, downloadExcel } from '@/utils/common'
   export default {
     name: 'course-achievement',
     data() {
@@ -121,6 +123,9 @@
             type: 'error'
           })
         }
+      },
+      download() {
+        downloadExcel('#caTable')
       },
       showDetails(row) {
         var showInfo = {

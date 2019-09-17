@@ -1,77 +1,80 @@
 <template>
-<div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
-  <div class="choose-school">
-    <el-tree ref="tree" :data="treeList" :props="defaultProps" show-checkbox></el-tree>
-  </div>
-  <div class="container">
-    <table-tools @chooseSchool="isChoose = true"
-                 :select-college-and-major="true"
-                 :btn-create-show="true"
-                 @searchData="searchData"
-                 @createdContent="createdContent"></table-tools>
-    <div class="content">
-      <!--表格-->
-      <el-table
-        :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        highlight-current-row
-        border
-        style="width: 100%">
-        <template v-for="header in headers">
-          <el-table-column
-            :prop="header.prop"
-            :label="header.label"
-            :width="header.width">
-          </el-table-column>
-        </template>
-        <el-table-column v-if="tableList.length" label="操作" width="80">
-          <template slot-scope="scope">
-            <el-button type="warning" size="small" @click="editDetails(scope.row)">查看</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!--分页-->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-size="pagesize"
-        layout="prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
-      <!--创建-->
-      <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
-        <el-form :model="form" :rules="rules" ref="dialogForm">
-          <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
-            <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
-              <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
-            <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
-              <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="课程选择" :label-width="formLabelWidth" prop="courseSelect">
-            <el-select v-model="form.courseSelect" placeholder="请选择课程">
-              <el-option label="中国教育史" value="2018"></el-option>
-              <el-option label="小学课程论" value="2019"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="课程章节" :label-width="formLabelWidth" prop="chapter">
-            <el-input type="number" v-model="form.chapter" placeholder="请输入章节数量" />
-          </el-form-item>
-          <el-form-item label="章节知识点数" :label-width="formLabelWidth" prop="knowledge">
-            <el-input type="number" v-model="form.knowledge" placeholder="请输入知识点数量" />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="sureDialog">确 定</el-button>
+  <div>
+    <div class="rightContent" v-bind:class=" !isChoose ? 'hiddenChoose' :''">
+      <div class="choose-school">
+        <el-tree ref="tree" :data="treeList" :props="defaultProps" show-checkbox></el-tree>
+      </div>
+      <div class="container">
+        <table-tools @chooseSchool="isChoose = true"
+                     :select-college-and-major="true"
+                     :btn-create-show="true"
+                     @searchData="searchData"
+                     @createdContent="createdContent"></table-tools>
+        <div class="content">
+          <!--表格-->
+          <el-table
+            :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            highlight-current-row
+            border
+            style="width: 100%">
+            <template v-for="header in headers">
+              <el-table-column
+                :prop="header.prop"
+                :label="header.label"
+                :width="header.width">
+              </el-table-column>
+            </template>
+            <el-table-column v-if="tableList.length" label="操作" width="80">
+              <template slot-scope="scope">
+                <el-button type="warning" size="small" @click="editDetails(scope.row)">查看</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页-->
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-size="pagesize"
+            layout="prev, pager, next, jumper"
+            :total="total">
+          </el-pagination>
+          <!--创建-->
+          <el-dialog title="新增毕业要求" :visible.sync="dialogFormVisible">
+            <el-form :model="form" :rules="rules" ref="dialogForm">
+              <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
+                <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
+                  <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
+                <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
+                  <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="课程选择" :label-width="formLabelWidth" prop="courseSelect">
+                <el-select v-model="form.courseSelect" placeholder="请选择课程">
+                  <el-option label="中国教育史" value="2018"></el-option>
+                  <el-option label="小学课程论" value="2019"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="课程章节" :label-width="formLabelWidth" prop="chapter">
+                <el-input type="number" v-model="form.chapter" placeholder="请输入章节数量" />
+              </el-form-item>
+              <el-form-item label="章节知识点数" :label-width="formLabelWidth" prop="knowledge">
+                <el-input type="number" v-model="form.knowledge" placeholder="请输入知识点数量" />
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="sureDialog">确 定</el-button>
+            </div>
+          </el-dialog>
         </div>
-      </el-dialog>
+      </div>
     </div>
+    <router-view></router-view>
   </div>
-</div>
 </template>
 
 
@@ -181,7 +184,7 @@ export default {
     editDetails(row) {
       console.log(row)
       this.$router.push({
-        path: '/course/knowledge/setKnowledge',
+        path: `/course/knowledge/${row.course}`,
         query: {
           course: row
         }
