@@ -293,7 +293,7 @@
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
             that.headers = res.headers
-            that.tableList = that.targetsFilter(res.resultList)
+            that.tableList = res.resultList
             that.total = res.resultList.length
             that.loading = false
           } else {
@@ -302,19 +302,19 @@
         })
       },
       // 将毕业培养目标为true的显示为✔
-      targetsFilter(dataList) {
-        dataList.map((item) => {
-          for (var i in item.target) {
-            if (item.target[i] === true) {
-              item.target[i] = '√'
-            }
-          }
-          var targets = item.target
-          delete item['target']
-          Object.assign(item, targets)
-        })
-        return dataList
-      },
+      // targetsFilter(dataList) {
+      //   dataList.map((item) => {
+      //     for (var i in item.target) {
+      //       if (item.target[i] === true) {
+      //         item.target[i] = '√'
+      //       }
+      //     }
+      //     var targets = item.target
+      //     delete item['target']
+      //     Object.assign(item, targets)
+      //   })
+      //   return dataList
+      // },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
         this.$http.postRequest(url, params).then(res => {

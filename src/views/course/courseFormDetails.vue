@@ -3,6 +3,7 @@
     <div class="container">
       <div class="content">
         <div class="detailsText">
+          <el-button type="primary">返回</el-button>
           <p>{{this.msg.class}} > {{this.msg.course}}</p>
         </div>
         <el-table
@@ -174,6 +175,9 @@
   .container{margin-left: 0 !important;
     .detailsText{
       color: #666;background: #FFFFFF;
-      padding: 3px 10px;margin: 20px 0px;font-size: 14px;}
+      padding: 3px 10px;margin: 20px 0px;font-size: 14px;
+      p{display: inline-block;}
+      button{margin-right: 15px;}
+    }
   }
 </style>

@@ -73,7 +73,6 @@
         </div>
       </div>
     </div>
-    <router-view></router-view>
   </div>
 </template>
 
@@ -184,7 +183,7 @@ export default {
     editDetails(row) {
       console.log(row)
       this.$router.push({
-        path: `/course/knowledge/${row.course}`,
+        path: `/course/knowledge/setKnowledge`,
         query: {
           course: row
         }
