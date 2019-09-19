@@ -3,7 +3,7 @@
     <div class="container">
       <div class="content">
         <div class="detailsText">
-          <el-button type="primary">返回</el-button>
+          <el-button type="primary" @click="backPage">返回</el-button>
           <p>{{this.msg.major}} > {{this.msg.course}}</p>
         </div>
         <el-table
@@ -98,6 +98,9 @@ export default {
     }
   },
   methods: {
+    backPage() {
+      console.log('点击了返回')
+    },
     editDetails(row) {
       this.knowledges = []
       // 获取知识点列表的label
