@@ -3,7 +3,7 @@
 
     <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
       <div class="title-container">
-        <h3 class="title">贵州师范大学认证系统</h3>
+        <h3 class="title">专业认证系统</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">

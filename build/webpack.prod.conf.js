@@ -75,8 +75,8 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: config.build.index,
       template: 'index.html',
       inject: true,
-      favicon: resolve('favicon.ico'),
-      title: '贵州师范大学认证系统',
+      // favicon: resolve('favicon.ico'),
+      title: '专业认证系统',
       path: config.build.assetsPublicPath + config.build.assetsSubDirectory,
       minify: {
         removeComments: true,

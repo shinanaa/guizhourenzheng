@@ -1,7 +1,7 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <img src="./images/logo.jpg" class="logo" alt="">
-    <p class="name">贵州师范大学认证系统</p>
+    <!--<img src="./images/logo.jpg" class="logo" alt="">-->
+    <p class="name">专业认证系统</p>
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <!-- 显示当前页面位置-->
     <!--<breadcrumb class="breadcrumb-container"></breadcrumb>-->
@@ -10,7 +10,8 @@
       <!--<error-log class="errLog-container right-menu-item"></error-log>-->
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img class="user-avatar" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3809442943,2036280987&fm=27&gp=0.jpg">
+          <!--<img class="user-avatar" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3809442943,2036280987&fm=27&gp=0.jpg">-->
+            当前用户
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
