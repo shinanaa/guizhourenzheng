@@ -183,7 +183,7 @@ export default {
     editDetails(row) {
       console.log(row)
       this.$router.push({
-        path: `/course/knowledge/setKnowledge`,
+        path: `/course/knowledge/details`,
         query: {
           course: row
         }

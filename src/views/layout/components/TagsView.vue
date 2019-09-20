@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     visitedViews() {
-      return this.$store.state.tagsView.visitedViews
+      return this.$store.state.tagsView.visitedViews.filter((item) => item.path.indexOf('details') < 0)
     }
   },
   watch: {
