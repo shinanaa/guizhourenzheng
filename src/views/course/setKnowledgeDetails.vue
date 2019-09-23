@@ -68,15 +68,14 @@ export default {
   },
   created() {
     this.msg = this.$route.query.course
-    var that = this
     this.$http.getRequest('getKnowledgeDetails', this.msg).then(res => {
       if (res.code === 1) {
         console.log(res)
-        that.headers = res.headers
-        that.courseDetailsTable = res.resultList
-        that.loading = false
+        this.headers = res.headers
+        this.courseDetailsTable = res.resultList
+        this.loading = false
       } else {
-        that.emptyText = '暂无数据'
+        this.emptyText = '暂无数据'
       }
     })
   },
@@ -99,7 +98,7 @@ export default {
   },
   methods: {
     backPage() {
-      console.log('点击了返回')
+      this.$router.back()
     },
     editDetails(row) {
       this.knowledges = []

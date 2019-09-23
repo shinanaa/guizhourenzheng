@@ -3,7 +3,7 @@
     <div class="container">
       <div class="content">
         <div class="detailsText">
-          <el-button type="primary">返回</el-button>
+          <el-button type="primary" @click="backPage">返回</el-button>
           <p>{{this.msg.class}} > {{this.msg.course}}</p>
         </div>
         <el-table
@@ -88,14 +88,17 @@
     },
     created() {
       this.msg = this.$route.query.course
-      var that = this
+      if (!this.msg.class) {
+        this.$router.push('/course/grading')
+        return
+      }
       this.$http.getRequest('getCourseDetails', this.msg).then(res => {
         if (res.code === 1) {
-          that.courseDetailsTable = res.resultList
-          that.loading = false
-          that.rowspan()
+          this.courseDetailsTable = res.resultList
+          this.loading = false
+          this.rowspan()
         } else {
-          that.emptyText = '暂无数据'
+          this.emptyText = '暂无数据'
         }
       })
     },
@@ -118,6 +121,9 @@
       }
     },
     methods: {
+      backPage() {
+        this.$router.back()
+      },
       rowspan() {
         this.courseDetailsTable.forEach((item, index) => {
           if (index === 0) {
@@ -138,7 +144,6 @@
       mergeSpan({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0 || columnIndex === 2) {
           const _row = this.spanArr[rowIndex]
-          console.log(_row)
           const _col = _row > 0 ? 1 : 0
           return {
             rowspan: _row,
@@ -156,7 +161,6 @@
         var that = this
         this.$http.getRequest('getPeaseDetails', getInfo).then(res => {
           if (res.code === 1) {
-            console.log(res)
             that.courseFormDetails = true
             that.peaseDetailsHead = res.headers
             that.peaseDetails = res.resultList

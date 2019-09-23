@@ -153,15 +153,31 @@
         })
         if (this.setAll) {
           // 判断每组的权重之和是否为1
-          this.sumArr.map((val, index) => {
-            if (val !== 1) {
-              console.log(val)
-              this.$message({
-                message: '同一指标点的权重值和为1',
-                center: true
-              })
-            }
-          })
+          const allPass = this.sumArr.every((val, index) => val === 1)
+          if (allPass) {
+            this.$http.postRequest('setWeights', this.tableList).then(res => {
+              if (res.status === 0) {
+                this.$message({
+                  showClose: true,
+                  message: res.msg,
+                  type: 'success'
+                })
+              }
+            })
+          } else {
+            this.$message({
+              message: '同一指标点的权重值和为1',
+              center: true
+            })
+          }
+          // this.sumArr.map((val, index) => {
+          //   if (val !== 1) {
+          //     this.$message({
+          //       message: '同一指标点的权重值和为1',
+          //       center: true
+          //     })
+          //   }
+          // })
         }
       },
       // 重置权重

@@ -7,6 +7,7 @@ const i = {
   getRequireCourses: { url: 'attestation/getRequireCourses', isMock: false }, // 获取要求与课程列表
   getEligibility: { url: 'attestation/getEligibility', isMock: false }, // 获取合格标准列表
   getSetWeights: { url: 'attestation/getSetWeights', isMock: false }, // 获取设置权重列表
+  setWeights: { url: 'attestation/setWeights', isMock: false }, // 提交设置的权重
   getCourses: { url: 'attestation/getCourses', isMock: false }, // 获取设置权重弹框中列表
   getTrainTarget: { url: 'attestation/getTrainTarget', isMock: false }, // 获取培养目标列表
   getStandards: { url: 'attestation/getStandards', isMock: false }, // 获取认证标准列表
@@ -17,8 +18,8 @@ const i = {
   getChooseData: { url: 'attestation/getChooseData', isMock: false }, // 获取学校/专业/学年列表
   getCourseManage: { url: 'course/getCourseManage', isMock: false }, // 获取课程管理页面数据
   getKnowledge: { url: 'course/getKnowledge', isMock: false }, // 获取章节知识点页面数据
-  getKnowledgeDetails: { url: '/course/knowledge/setKnowledge', isMock: false }, // 获取章节知识点下知识点详情的数据
-  editKnowledge: { url: '/course/knowledge/editKnowledge', isMock: false }, // 修改知识点详情数据
+  getKnowledgeDetails: { url: 'course/knowledge/setKnowledge', isMock: false }, // 获取章节知识点下知识点详情的数据
+  editKnowledge: { url: 'course/knowledge/editKnowledge', isMock: false }, // 修改知识点详情数据
   getIndicator: { url: 'course/getIndicator', isMock: false }, // 获取对应指标点页面数据
   getCoursesTarget: { url: 'course/target/getCoursesTarget', isMock: false }, // 获取课程安排页面课程目标标签页下的内容
   getCoursesModule: { url: 'course/target/getCoursesModule', isMock: false }, // 获取课程安排页面课程模块标签页下的内容

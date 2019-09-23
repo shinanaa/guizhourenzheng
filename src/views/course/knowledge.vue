@@ -180,6 +180,7 @@ export default {
         })
       }
     },
+    // 查看知识点详情
     editDetails(row) {
       console.log(row)
       this.$router.push({
