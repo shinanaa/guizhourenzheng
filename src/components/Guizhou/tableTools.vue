@@ -93,7 +93,17 @@
           this.$emit('deleteContent')
         },
         searchData() {
-          this.$emit('searchData', this.search)
+          let searchParams = ''
+          if (this.search) {
+            searchParams = this.search
+          }
+          if (this.requireType) {
+            searchParams = this.requireType
+          }
+          if (this.courseSelected) {
+            searchParams = this.courseSelected
+          }
+          this.$emit('searchData', searchParams)
         },
         downloadExcel() {
           this.$emit('downloadExcel')

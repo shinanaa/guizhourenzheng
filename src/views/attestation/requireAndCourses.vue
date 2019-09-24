@@ -139,6 +139,7 @@
           const searchRequest = {}
           searchRequest.inputText = param
           searchRequest.courses = newIds
+          console.log(searchRequest)
           this.getTableData('getRequireCourses')
         } else {
           this.$message({

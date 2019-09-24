@@ -170,14 +170,6 @@
               center: true
             })
           }
-          // this.sumArr.map((val, index) => {
-          //   if (val !== 1) {
-          //     this.$message({
-          //       message: '同一指标点的权重值和为1',
-          //       center: true
-          //     })
-          //   }
-          // })
         }
       },
       // 重置权重

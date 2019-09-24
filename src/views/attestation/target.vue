@@ -217,24 +217,22 @@ export default {
       const newIds = filterDataIds(oldIds) // 将重合的子项过滤
       if (newIds.length) {
         this.isChoose = false
-        console.log(newIds)
       }
       if (param || newIds.length) {
         const searchRequest = {}
         searchRequest.inputText = param
         searchRequest.courses = newIds
-        var that = this
         this.$http.getRequest('getSearchData', param).then(res => {
           if (res.code === 1) {
-            that.tableList = res.resultList
-            that.total = res.resultList.length
-            that.emptyText = '无相关内容，请您调整查询内容'
+            this.tableList = res.resultList
+            this.total = res.resultList.length
+            this.emptyText = '无相关内容，请您调整查询内容'
           }
         })
       } else {
         this.$message({
           showClose: true,
-          message: '查询内容不可为空',
+          message: '请选择要查询的院系专业',
           type: 'error'
         })
       }

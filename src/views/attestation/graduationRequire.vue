@@ -235,18 +235,17 @@
         const newIds = filterDataIds(oldIds) // 将重合的子项过滤
         if (newIds.length) {
           this.isChoose = false
-          console.log(newIds)
         }
         if (param || newIds.length) {
           const searchRequest = {}
           searchRequest.inputText = param
           searchRequest.courses = newIds
-          var that = this
+          console.log(searchRequest)
           this.$http.getRequest('getSearchData', searchRequest).then(res => {
             if (res.code === 1) {
-              that.tableList = res.resultList
-              that.total = res.resultList.length
-              that.emptyText = '无相关内容，请您调整查询内容'
+              this.tableList = res.resultList
+              this.total = res.resultList.length
+              this.emptyText = '无相关内容，请您调整查询内容'
             }
           })
         } else {
@@ -293,7 +292,7 @@
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
             that.headers = res.headers
-            that.tableList = res.resultList
+            that.tableList = this.targetsFilter(res.resultList)
             that.total = res.resultList.length
             that.loading = false
           } else {
@@ -302,19 +301,30 @@
         })
       },
       // 将毕业培养目标为true的显示为✔
-      // targetsFilter(dataList) {
-      //   dataList.map((item) => {
-      //     for (var i in item.target) {
-      //       if (item.target[i] === true) {
-      //         item.target[i] = '√'
-      //       }
-      //     }
-      //     var targets = item.target
-      //     delete item['target']
-      //     Object.assign(item, targets)
-      //   })
-      //   return dataList
-      // },
+      targetsFilter(dataList) {
+        // 单个值形式
+        console.log(dataList)
+        dataList.map((obj) => {
+          const change = Object.keys(obj).filter((item) => item.indexOf('target') >= 0)
+          change.filter((item) => {
+            if (obj[item]) {
+              obj[item] = '✔'
+            }
+          })
+        })
+        // 数组形式
+        // dataList.map((item) => {
+        //   for (var i in item.target) {
+        //     if (item.target[i] === true) {
+        //       item.target[i] = '√'
+        //     }
+        //   }
+        //   var targets = item.target
+        //   delete item['target']
+        //   Object.assign(item, targets)
+        // })
+        return dataList
+      },
       // 方法封装 操作（添加/编辑/删除）表单
       operateForm(url, params) {
         this.$http.postRequest(url, params).then(res => {

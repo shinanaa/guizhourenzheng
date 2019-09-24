@@ -7,7 +7,7 @@
           ref="tree"
           show-checkbox></el-tree>
       </div>
-      <div class="container">
+      <div class="container" style="padding-top: 20px;">
         <!--图表-->
         <el-card class="box-card" style="margin: 0 30px;">
           <div slot="header" class="clearfix">
@@ -469,7 +469,7 @@
 </script>
 <style scoped rel="stylesheet/scss" lang="scss">
   @import '../../styles/rightContent.scss';
-  .box-card{margin-top: 20px !important;
+  .box-card{
     span{margin-right: 20px;display: inline-block;
       svg{vertical-align: text-bottom;margin-right: 3px;}
     }
