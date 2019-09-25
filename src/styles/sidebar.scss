@@ -11,7 +11,7 @@
   .sidebar-container {
     transition: width 0.28s;
     width: 220px !important;
-    height: 100%;
+    height: calc(100% - 49px); // 由于top为49，需再次剪去使得内容可全部显示
     position: fixed;
     font-size: 0px;
     top: 49px; // 修改layout添加

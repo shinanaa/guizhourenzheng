@@ -8,6 +8,7 @@
                    @chooseSchool="isChoose = true"
                    @searchData="searchData"
                    @createdContent="createdContent"
+                   :search-course-data="courseData"
                    :select-college-and-major="true"
                    :search-course="true"
                    :btnCreateShow="addCreate"
@@ -274,7 +275,8 @@
         }],
         index: 0,
         addCreate: false,
-        isAdd: false
+        isAdd: false,
+        courseData: []
       }
     },
     components: { TableTools },
@@ -282,6 +284,11 @@
       switch (this.activeName) {
         case 'first':
           this.getTableData('getCoursesTarget')
+          this.$http.getRequest('getCourseData').then(res => {
+            if (res.status === 1) {
+              this.courseData = res.resultList
+            }
+          })
           break
       }
       this.$http.getRequest('getChooseData').then(res => {

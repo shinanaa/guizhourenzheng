@@ -29,6 +29,7 @@ export default {
     }
   },
   computed: {
+    // 过滤掉知识点详情与课程组成详情
     visitedViews() {
       return this.$store.state.tagsView.visitedViews.filter((item) => item.path.indexOf('details') < 0)
     }

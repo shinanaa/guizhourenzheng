@@ -95,7 +95,8 @@ export const constantRouterMap = [
       path: '/course/knowledge/details',
       component: () => import('@/views/course/setKnowledgeDetails'),
       name: 'setKnowledgeDetails',
-      meta: { title: '知识点详情', icon: 'email', noCache: true }
+      meta: { title: '知识点详情', icon: 'email', noCache: true },
+      hidden: true
     },
     {
       path: '/course/indicator',
@@ -114,20 +115,13 @@ export const constantRouterMap = [
       component: () => import('@/views/course/grading'),
       name: 'granding',
       meta: { title: '课程组成', icon: 'guide', noCache: true }
-      // children: [
-      //   {
-      //     path: 'details',
-      //     component: () => import('@/views/course/courseFormDetails'),
-      //     name: 'courseFormDetails',
-      //     meta: { title: '课程组成详情', icon: 'icon', noCache: true }
-      //   }
-      // ]
     },
     {
       path: '/course/grading/details',
       component: () => import('@/views/course/courseFormDetails'),
       name: 'courseFormDetails',
-      meta: { title: '课程组成详情', icon: 'icon', noCache: true }
+      meta: { title: '课程组成详情', icon: 'icon', noCache: true },
+      hidden: true
     }
     ]
   },

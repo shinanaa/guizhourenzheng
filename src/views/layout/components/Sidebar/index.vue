@@ -9,7 +9,7 @@
       text-color="#bfcbd9"
       active-text-color="#409EFF"
     >
-      <sidebar-item v-for="route in filterDetails" :key="route.name" :item="route" :base-path="route.path"></sidebar-item>
+      <sidebar-item v-for="route in permission_routers" :key="route.name" :item="route" :base-path="route.path"></sidebar-item>
     </el-menu>
   </el-scrollbar>
 </template>
@@ -25,15 +25,6 @@ export default {
       'permission_routers',
       'sidebar'
     ]),
-    /* 过滤章节知识点详情与课程组成详情,在列表上不显示*/
-    filterDetails() {
-      this.permission_routers.map((item) => {
-        if (item.children !== undefined) {
-          item.children = item.children.filter((route) => route.name.indexOf('Details') < 0)
-        }
-      })
-      return this.permission_routers
-    },
     isCollapse() {
       return !this.sidebar.opened
     }

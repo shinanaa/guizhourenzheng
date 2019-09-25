@@ -21,6 +21,7 @@ const i = {
   getKnowledgeDetails: { url: 'course/knowledge/setKnowledge', isMock: false }, // 获取章节知识点下知识点详情的数据
   editKnowledge: { url: 'course/knowledge/editKnowledge', isMock: false }, // 修改知识点详情数据
   getIndicator: { url: 'course/getIndicator', isMock: false }, // 获取对应指标点页面数据
+  getCourseData: { url: 'course/target/getCourseData', isMock: false }, // 获取课程安排页面课程选择列表
   getCoursesTarget: { url: 'course/target/getCoursesTarget', isMock: false }, // 获取课程安排页面课程目标标签页下的内容
   getCoursesModule: { url: 'course/target/getCoursesModule', isMock: false }, // 获取课程安排页面课程模块标签页下的内容
   getCoursesContent: { url: 'course/target/getCoursesContent', isMock: false }, // 获取课程安排页面课程内容标签页下的内容

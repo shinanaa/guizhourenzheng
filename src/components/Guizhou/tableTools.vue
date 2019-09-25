@@ -14,7 +14,7 @@
         </el-select>
         <el-select v-if="searchCourse" v-model="courseSelected" placeholder="请选择课程">
           <el-option
-            v-for="item in requires"
+            v-for="item in searchCourseData"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -70,6 +70,10 @@
         requires: {
           type: Array,
           default: () => []
+        },
+        searchCourseData: {
+          type: Array,
+          default: () => {}
         }
       },
       data() {

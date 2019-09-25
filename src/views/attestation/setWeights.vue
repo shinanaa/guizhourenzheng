@@ -133,13 +133,14 @@
         this.position = 0
         // 遍历数据，确保所有权重值均已设置
         this.tableList.map((item, index) => {
-          if (item.weight === null) {
+          if (item.weight === null) { // 当权重有空值的时候
             this.setAll = false
             this.$message({
               message: '权重设置不能为空',
               center: true
             })
           } else {
+            // 当全部填写时，将每组的权重值相加
             this.setAll = true
             if (index === 0) {
               this.sumArr[this.position] = this.tableList[0].weight
@@ -162,6 +163,7 @@
                   message: res.msg,
                   type: 'success'
                 })
+                this.getTableData('getCourses')
               }
             })
           } else {
