@@ -53,21 +53,10 @@
         <!--创建/编辑-->
         <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
           <el-form :model="form" :rules="rules" ref="dialogForm">
-            <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
-              <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
-                <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
-              <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
-                <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
-              <el-select v-model="form.schoolYear" placeholder="请选择学年">
-                <el-option label="2018" value="2018"></el-option>
-                <el-option label="2019" value="2019"></el-option>
-              </el-select>
+            <el-form-item label="院系信息" :label-width="formLabelWidth" prop="collegeInfo">
+              <el-cascader
+                v-model="form.collegeInfo"
+                :options="treeList"></el-cascader>
             </el-form-item>
             <el-form-item label="培养目标一" :label-width="formLabelWidth" prop="target1">
               <el-input type="text" v-model="form.target1"></el-input>
@@ -108,7 +97,7 @@ export default {
       pageSize: 10, // 分页 表格列表每页显示条数
       dialogFormVisible: false, // 是否现在创建/编辑弹窗
       form: {
-        college: '',
+        collegeInfo: [],
         major: '',
         schoolYear: '',
         target1: '',
@@ -117,14 +106,8 @@ export default {
         target4: ''
       },
       rules: {
-        college: [
-          { required: true, message: '请选择院系名称', trigger: 'change' }
-        ],
-        major: [
-          { required: true, message: '请选择专业名称', trigger: 'change' }
-        ],
-        schoolYear: [
-          { required: true, message: '请选择所属学年', trigger: 'change' }
+        collegeInfo: [
+          { required: true, message: '请选择院系相关信息', trigger: 'change' }
         ],
         target1: [
           { required: true, message: '培养目标不能为空', trigger: 'blur' }
@@ -147,7 +130,9 @@ export default {
       },
       isChoose: false,
       formLabelWidth: '120px',
-      currentRow: null
+      currentRow: null,
+      newCollegeInfo: [],
+      newCollegeValue: []
     }
   },
   components: { TableTools },
@@ -155,6 +140,7 @@ export default {
     this.getTableData('getTrainTarget')
     this.$http.getRequest('getChooseData').then(res => {
       if (res.status === 1) {
+        console.log(res)
         this.treeList = res.schoolData
       }
     })
@@ -178,14 +164,27 @@ export default {
     editContent() {
       if (this.currentRow) {
         this.dialogFormVisible = true
-        this.form = this.currentRow
-        this.form.title = '修改培养目标'
-        for (let i = 0; i < this.treeList.length; i++) {
-          if (this.treeList[i].label === this.form.college) {
-            this.majorList = this.treeList[i].children
-            break
+        console.log(this.currentRow)
+        const { college, major, schoolYear, ...currentToFrom } = this.currentRow
+        this.treeList.map((item) => {
+          if (item.label === college) {
+            this.newCollegeValue[0] = item.value
+            item.children.map((majorItem) => {
+              if (majorItem.label === major) {
+                this.newCollegeValue[1] = majorItem.value
+                majorItem.children.map((schoolYearItem) => {
+                  if (schoolYearItem.label.indexOf(schoolYear) !== -1) {
+                    this.newCollegeValue[2] = schoolYearItem.value
+                  }
+                })
+              }
+            })
           }
-        }
+        })
+        currentToFrom.collegeInfo = this.newCollegeValue
+        this.form = currentToFrom
+        // { college, major, schoolYear, ...this.form } = this.currentRow
+        this.form.title = '修改培养目标'
       } else {
         this.$message({
           showClose: true,
@@ -242,10 +241,29 @@ export default {
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
+          // 过滤数据
+          const { collegeInfo, ...params } = this.form
+          this.treeList.map((item) => {
+            if (item.value === collegeInfo[0]) {
+              this.newCollegeInfo[0] = item.label
+              item.children.map((major) => {
+                if (major.value === collegeInfo[1]) {
+                  this.newCollegeInfo[1] = major.label
+                  major.children.map((schoolYear) => {
+                    if (schoolYear.value === collegeInfo[2]) {
+                      this.newCollegeInfo[2] = schoolYear.label
+                    }
+                  })
+                }
+              })
+            }
+          })
+          params.newCollegeInfo = this.newCollegeInfo
           if (this.form.title === '新增培养目标') {
-            this.operateForm('addDialog', this.form)
+            console.log(this.form)
+            this.operateForm('addDialog', params)
           } else if (this.form.title === '修改培养目标') {
-            this.operateForm('editDialog', this.form)
+            this.operateForm('editDialog', params)
           }
           this.getTableData('getTrainTarget')
           this.resetForm()
