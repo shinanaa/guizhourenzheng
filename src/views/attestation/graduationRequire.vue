@@ -52,21 +52,10 @@
           <!--创建/编辑-->
           <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
             <el-form :model="form" :rules="rules" ref="dialogForm">
-              <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
-                <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
-                  <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
-                <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
-                  <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
-                <el-select v-model="form.schoolYear" placeholder="请选择学年">
-                  <el-option label="2018" value="2018"></el-option>
-                  <el-option label="2019" value="2019"></el-option>
-                </el-select>
+              <el-form-item label="所属院系专业" :label-width="formLabelWidth" prop="collegeInfo">
+                <el-cascader
+                  v-model="form.collegeInfo"
+                  :options="treeList"></el-cascader>
               </el-form-item>
               <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
                 <el-select v-model="form.require" placeholder="请选择要求">
@@ -101,7 +90,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, valueToLabel, labelToValue } from '@/utils/common'
   export default {
     name: 'graduation-require',
     data() {
@@ -117,6 +106,7 @@
         targetOptions: ['毕业培养目标1', '毕业培养目标2', '毕业培养目标3', '毕业培养目标4'], // 培养目标列表
         targets: [], // 表单中选中的培养目标
         form: {
+          collegeInfo: [],
           title: '', // 弹窗标题
           order: '',
           college: '',
@@ -127,14 +117,8 @@
           schoolYear: ''
         },
         rules: {
-          college: [
-            { required: true, message: '请选择院系名称', trigger: 'change' }
-          ],
-          major: [
-            { required: true, message: '请选择专业名称', trigger: 'change' }
-          ],
-          schoolYear: [
-            { required: true, message: '请选择所属学年', trigger: 'change' }
+          collegeInfo: [
+            { required: true, message: '请选择院系相关信息', trigger: 'change' }
           ],
           require: [
             { required: true, message: '请选择专业毕业要求', trigger: 'change' }
@@ -153,7 +137,9 @@
         chooseTree: [], // 树形控件搜索
         isChoose: false,
         formLabelWidth: '120px',
-        currentRow: null
+        currentRow: null,
+        newCollegeInfo: [],
+        newCollegeValue: []
       }
     },
     components: { TableTools },
@@ -182,28 +168,27 @@
       },
       /* 点击工具栏编辑 */
       editContent() {
+        this.form = {}
         if (this.currentRow) {
           this.dialogFormVisible = true
-          this.form = this.currentRow
-          this.form.title = '修改毕业要求'
-          if (this.currentRow.target1 === '√') {
+          const { college, major, schoolYear, target1, target2, target3, target4, ...currentToFrom } = this.currentRow
+          if (target1 !== false) {
             this.targets.push('毕业培养目标1')
           }
-          if (this.currentRow.target2 === '√') {
+          if (target2 !== false) {
             this.targets.push('毕业培养目标2')
           }
-          if (this.currentRow.target3 === '√') {
+          if (target3 !== false) {
             this.targets.push('毕业培养目标3')
           }
-          if (this.currentRow.target4 === '√') {
+          if (target4 !== false) {
             this.targets.push('毕业培养目标4')
           }
-          for (let i = 0; i < this.treeList.length; i++) {
-            if (this.treeList[i].label === this.form.college) {
-              this.majorList = this.treeList[i].children
-              break
-            }
-          }
+          labelToValue(this.treeList, college, major, schoolYear, this.newCollegeValue)
+          currentToFrom.collegeInfo = this.newCollegeValue
+          this.form = currentToFrom
+          console.log(this.form)
+          this.form.title = '修改毕业要求'
         } else {
           this.$message({
             showClose: true,
@@ -261,11 +246,14 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            this.form.targets = this.targets // 上传后，后台根据targets内容为准，忽略target1234
+            const { collegeInfo, ...params } = this.form
+            valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
+            params.newCollegeInfo = this.newCollegeInfo
+            params.targets = this.targets
             if (this.form.title === '新增毕业要求') {
-              this.operateForm('addDialog', this.form)
+              this.operateForm('addDialog', params)
             } else if (this.form.title === '修改毕业要求') {
-              this.operateForm('editDialog', this.form)
+              this.operateForm('editDialog', params)
             }
             this.getTableData('getGraduationRequire')
             this.resetForm()
@@ -277,9 +265,8 @@
       // 弹窗点击取消重置form表单
       resetForm() {
         this.dialogFormVisible = false
-        this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
-        this.majorList = []
         this.targets = []
       },
       // 弹框选择院校
@@ -303,7 +290,6 @@
       // 将毕业培养目标为true的显示为✔
       targetsFilter(dataList) {
         // 单个值形式
-        console.log(dataList)
         dataList.map((obj) => {
           const change = Object.keys(obj).filter((item) => item.indexOf('target') >= 0)
           change.filter((item) => {

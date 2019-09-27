@@ -1,6 +1,6 @@
 import XLSX from 'xlsx'
 import FileSaver from 'file-saver'
-// 院系以及专业选择树的数据过滤
+// 院系以及专业选择树的查询提交数据过滤
 export function filterDataIds(ids) {
   const newIds = []
   const pidLength1 = [] // 院系
@@ -71,4 +71,42 @@ export function downloadExcel(tableID) {
     if (typeof console !== 'undefined') console.log(e, wbout)
   }
   return wbout
+}
+
+// 级联选择器 院系专业模式转换
+export function valueToLabel(filterData, valueArr, labelArr) {
+  filterData.map((item) => {
+    if (item.value === valueArr[0]) {
+      labelArr[0] = item.label
+      item.children.map((major) => {
+        if (major.value === valueArr[1]) {
+          labelArr[1] = major.label
+          major.children.map((schoolYear) => {
+            if (schoolYear.value === valueArr[2]) {
+              labelArr[2] = schoolYear.label
+            }
+          })
+        }
+      })
+    }
+  })
+}
+
+// 级联选择器 院系专业模式转换
+export function labelToValue(filterData, college, major, schoolYear, valueArr) {
+  filterData.map((item) => {
+    if (item.label === college) {
+      valueArr[0] = item.value
+      item.children.map((majorItem) => {
+        if (majorItem.label === major) {
+          valueArr[1] = majorItem.value
+          majorItem.children.map((schoolYearItem) => {
+            if (schoolYearItem.label.indexOf(schoolYear) !== -1) {
+              valueArr[2] = schoolYearItem.value
+            }
+          })
+        }
+      })
+    }
+  })
 }

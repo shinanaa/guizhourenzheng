@@ -83,7 +83,7 @@
 
 <script>
 import TableTools from '@/components/Guizhou/tableTools'
-import { filterDataIds } from '@/utils/common'
+import { filterDataIds, valueToLabel, labelToValue } from '@/utils/common'
 export default {
   name: 'target',
   data() {
@@ -98,8 +98,6 @@ export default {
       dialogFormVisible: false, // 是否现在创建/编辑弹窗
       form: {
         collegeInfo: [],
-        major: '',
-        schoolYear: '',
         target1: '',
         target2: '',
         target3: '',
@@ -123,7 +121,6 @@ export default {
         ]
       },
       treeList: [],
-      majorList: [],
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -166,24 +163,9 @@ export default {
         this.dialogFormVisible = true
         console.log(this.currentRow)
         const { college, major, schoolYear, ...currentToFrom } = this.currentRow
-        this.treeList.map((item) => {
-          if (item.label === college) {
-            this.newCollegeValue[0] = item.value
-            item.children.map((majorItem) => {
-              if (majorItem.label === major) {
-                this.newCollegeValue[1] = majorItem.value
-                majorItem.children.map((schoolYearItem) => {
-                  if (schoolYearItem.label.indexOf(schoolYear) !== -1) {
-                    this.newCollegeValue[2] = schoolYearItem.value
-                  }
-                })
-              }
-            })
-          }
-        })
+        labelToValue(this.treeList, college, major, schoolYear, this.newCollegeValue)
         currentToFrom.collegeInfo = this.newCollegeValue
         this.form = currentToFrom
-        // { college, major, schoolYear, ...this.form } = this.currentRow
         this.form.title = '修改培养目标'
       } else {
         this.$message({
@@ -243,24 +225,9 @@ export default {
           this.dialogFormVisible = false
           // 过滤数据
           const { collegeInfo, ...params } = this.form
-          this.treeList.map((item) => {
-            if (item.value === collegeInfo[0]) {
-              this.newCollegeInfo[0] = item.label
-              item.children.map((major) => {
-                if (major.value === collegeInfo[1]) {
-                  this.newCollegeInfo[1] = major.label
-                  major.children.map((schoolYear) => {
-                    if (schoolYear.value === collegeInfo[2]) {
-                      this.newCollegeInfo[2] = schoolYear.label
-                    }
-                  })
-                }
-              })
-            }
-          })
+          valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
           params.newCollegeInfo = this.newCollegeInfo
           if (this.form.title === '新增培养目标') {
-            console.log(this.form)
             this.operateForm('addDialog', params)
           } else if (this.form.title === '修改培养目标') {
             this.operateForm('editDialog', params)
@@ -275,13 +242,8 @@ export default {
     // 弹窗点击取消重置form表单
     resetForm() {
       this.dialogFormVisible = false
-      this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+      this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
       this.form = {}
-      this.majorList = []
-    },
-    // 弹框选择院校
-    selectCollege(data) {
-      this.majorList = this.treeList[data].children
     },
     // 方法封装 获取页面全部数据
     getTableData(urlName) {
