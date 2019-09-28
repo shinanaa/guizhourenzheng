@@ -1,3 +1,5 @@
+import Vue from 'vue'
+const v = new Vue()
 import XLSX from 'xlsx'
 import FileSaver from 'file-saver'
 // 院系以及专业选择树的查询提交数据过滤
@@ -9,8 +11,8 @@ export function filterDataIds(ids) {
   for (let i = 0; i < ids.length; i++) {
     const item = ids[i]
     if (item.hasOwnProperty('children')) { // 判断每一条数据是否含有children属性
-      const pid = item['id']
-      const pidLength = pid.split('_').length // 通过判断id的长短，来区分院系和专业，并分别添加到对应的列表中
+      const pid = item['value']
+      const pidLength = pid.split('_').length // 通过判断value的长短，来区分院系和专业，并分别添加到对应的列表中
       if (pidLength === 1) {
         pidLength1.push(item)
       } else {
@@ -20,7 +22,7 @@ export function filterDataIds(ids) {
       pidLength3.push(item) // 没有children属性，直接添加到学年列表中
     }
   }
-  // 从1里 删 2 和3  删2 用儿子比对删  删3 就得用 id比对删
+  // 从1里 删 2 和3  删2 用儿子比对删  删3 就得用 value比对删
   for (let i = 0; i < pidLength1.length; i++) {
     const item = pidLength1[i]
     // 删2 院系的子项中与专业重合的，从专业数组中的此项删除
@@ -31,7 +33,7 @@ export function filterDataIds(ids) {
     }
     // 删3 若学年的id中存在院系的id，将该学年从学年数组中删除
     for (let k = pidLength3.length - 1; k >= 0; k--) {
-      if (pidLength3[k].id.indexOf(item.id) > -1) {
+      if (pidLength3[k].value.indexOf(item.value) > -1) {
         pidLength3.splice(k, 1)
       }
     }
@@ -49,6 +51,43 @@ export function filterDataIds(ids) {
   return newIds.concat(pidLength1, pidLength2, pidLength3)
 }
 
+// 毕业要求页面 将毕业培养目标为true的显示为✔
+export function targetsFilter(dataList) {
+  // 单个值形式
+  dataList.map((obj) => {
+    const change = Object.keys(obj).filter((item) => item.indexOf('target') >= 0)
+    change.filter((item) => {
+      if (obj[item]) {
+        obj[item] = '✔'
+      }
+    })
+  })
+  // 数组形式
+  // dataList.map((item) => {
+  //   for (var i in item.target) {
+  //     if (item.target[i] === true) {
+  //       item.target[i] = '√'
+  //     }
+  //   }
+  //   var targets = item.target
+  //   delete item['target']
+  //   Object.assign(item, targets)
+  // })
+  return dataList
+}
+
+// 方法封装 操作（添加/编辑/删除）表单
+export function operateForm(url, params) {
+  v.$http.postRequest(url, params).then(res => {
+    if (res.status === 0) {
+      v.$message({
+        showClose: true,
+        message: res.msg,
+        type: 'success'
+      })
+    }
+  })
+}
 // 报表下载
 export function downloadExcel(tableID) {
   const wb = XLSX.utils.table_to_book(document.querySelector(tableID))

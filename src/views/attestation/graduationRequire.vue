@@ -42,6 +42,7 @@
           </el-table>
           <!--分页-->
           <el-pagination
+            v-if="total > 10"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
@@ -59,14 +60,7 @@
               </el-form-item>
               <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
                 <el-select v-model="form.require" placeholder="请选择要求">
-                  <el-option label="师德规范" value="2013"></el-option>
-                  <el-option label="教育情怀" value="2014"></el-option>
-                  <el-option label="学科素养" value="2015"></el-option>
-                  <el-option label="教学能力" value="2016"></el-option>
-                  <el-option label="班级指导" value="2017"></el-option>
-                  <el-option label="教育情怀" value="2019"></el-option>
-                  <el-option label="学科素养" value="2018"></el-option>
-                  <el-option label="教学能力" value="2010"></el-option>
+                  <el-option v-for="(require, index) in requireList" :label="require.label" :value="require.value" :key="index"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="活动性质" :label-width="formLabelWidth">
@@ -90,7 +84,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds, valueToLabel, labelToValue } from '@/utils/common'
+  import { filterDataIds, valueToLabel, labelToValue, targetsFilter, operateForm } from '@/utils/common'
   export default {
     name: 'graduation-require',
     data() {
@@ -109,12 +103,9 @@
           collegeInfo: [],
           title: '', // 弹窗标题
           order: '',
-          college: '',
-          major: '',
           number: '',
           require: '',
-          targets: [],
-          schoolYear: ''
+          targets: []
         },
         rules: {
           collegeInfo: [
@@ -129,7 +120,6 @@
         },
         school: [],
         treeList: [],
-        majorList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -139,7 +129,8 @@
         formLabelWidth: '120px',
         currentRow: null,
         newCollegeInfo: [],
-        newCollegeValue: []
+        newCollegeValue: [],
+        requireList: []
       }
     },
     components: { TableTools },
@@ -204,7 +195,7 @@
       // 点击工具栏删除
       deleteContent() {
         if (this.currentRow) {
-          this.operateForm('deleteDialog', this.currentRow.order)
+          operateForm('deleteDialog', this.currentRow.order)
           this.getTableData('getGraduationRequire')
         } else {
           this.$message({
@@ -251,9 +242,9 @@
             params.newCollegeInfo = this.newCollegeInfo
             params.targets = this.targets
             if (this.form.title === '新增毕业要求') {
-              this.operateForm('addDialog', params)
+              operateForm('addDialog', params)
             } else if (this.form.title === '修改毕业要求') {
-              this.operateForm('editDialog', params)
+              operateForm('editDialog', params)
             }
             this.getTableData('getGraduationRequire')
             this.resetForm()
@@ -269,57 +260,18 @@
         this.form = {}
         this.targets = []
       },
-      // 弹框选择院校
-      selectCollege(data) {
-        this.majorList = this.treeList[data].children
-      },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
         var that = this
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
             that.headers = res.headers
-            that.tableList = this.targetsFilter(res.resultList)
+            that.tableList = targetsFilter(res.resultList)
+            this.requireList = res.requires
             that.total = res.resultList.length
             that.loading = false
           } else {
             that.emptyText = '暂无数据'
-          }
-        })
-      },
-      // 将毕业培养目标为true的显示为✔
-      targetsFilter(dataList) {
-        // 单个值形式
-        dataList.map((obj) => {
-          const change = Object.keys(obj).filter((item) => item.indexOf('target') >= 0)
-          change.filter((item) => {
-            if (obj[item]) {
-              obj[item] = '✔'
-            }
-          })
-        })
-        // 数组形式
-        // dataList.map((item) => {
-        //   for (var i in item.target) {
-        //     if (item.target[i] === true) {
-        //       item.target[i] = '√'
-        //     }
-        //   }
-        //   var targets = item.target
-        //   delete item['target']
-        //   Object.assign(item, targets)
-        // })
-        return dataList
-      },
-      // 方法封装 操作（添加/编辑/删除）表单
-      operateForm(url, params) {
-        this.$http.postRequest(url, params).then(res => {
-          if (res.status === 0) {
-            this.$message({
-              showClose: true,
-              message: res.msg,
-              type: 'success'
-            })
           }
         })
       }

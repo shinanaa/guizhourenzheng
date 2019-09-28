@@ -48,6 +48,7 @@
           </el-table>
           <!--分页-->
           <el-pagination
+            v-if="total > 10"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
