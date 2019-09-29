@@ -128,6 +128,7 @@ export function valueToLabel(filterData, valueArr, labelArr) {
         }
       })
     }
+    return labelArr
   })
 }
 

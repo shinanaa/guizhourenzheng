@@ -72,14 +72,15 @@
             </el-form-item>
             <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
               <el-select v-model="form.require" placeholder="请选择要求">
-                <el-option label="师德规范" value="2013"></el-option>
-                <el-option label="教育情怀" value="2014"></el-option>
-                <el-option label="学科素养" value="2015"></el-option>
-                <el-option label="教学能力" value="2016"></el-option>
-                <el-option label="班级指导" value="2017"></el-option>
-                <el-option label="教育情怀" value="2019"></el-option>
-                <el-option label="学科素养" value="2018"></el-option>
-                <el-option label="教学能力" value="2010"></el-option>
+                <el-option v-for="(require, index) in requireList" :label="require.label" :value="require.value" :key="index"></el-option>
+                <!--<el-option label="师德规范" value="2013"></el-option>-->
+                <!--<el-option label="教育情怀" value="2014"></el-option>-->
+                <!--<el-option label="学科素养" value="2015"></el-option>-->
+                <!--<el-option label="教学能力" value="2016"></el-option>-->
+                <!--<el-option label="班级指导" value="2017"></el-option>-->
+                <!--<el-option label="教育情怀" value="2019"></el-option>-->
+                <!--<el-option label="学科素养" value="2018"></el-option>-->
+                <!--<el-option label="教学能力" value="2010"></el-option>-->
               </el-select>
             </el-form-item>
             <el-form-item label="认证标准" :label-width="formLabelWidth" prop="standards">
@@ -99,7 +100,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, operateForm } from '@/utils/common'
   export default {
     name: 'standards',
     data() {
@@ -145,7 +146,8 @@
         chooseTree: [], // 树形控件搜索
         isChoose: false,
         formLabelWidth: '120px',
-        currentRow: null
+        currentRow: null,
+        requireList: []
       }
     },
     components: { TableTools },
@@ -199,7 +201,7 @@
       // 点击工具栏删除
       deleteContent() {
         if (this.currentRow) {
-          this.operateForm('deleteDialog', this.currentRow.order)
+          operateForm('deleteDialog', this.currentRow.order)
           this.getTableData('getStandards')
         } else {
           this.$message({
@@ -221,12 +223,11 @@
           const searchRequest = {}
           searchRequest.inputText = param
           searchRequest.courses = newIds
-          var that = this
           this.$http.getRequest('getSearchData', param).then(res => {
             if (res.code === 1) {
-              that.tableList = res.resultList
-              that.total = res.resultList.length
-              that.emptyText = '无相关内容，请您调整查询内容'
+              this.tableList = res.resultList
+              this.total = res.resultList.length
+              this.emptyText = '无相关内容，请您调整查询内容'
             }
           })
         } else {
@@ -243,9 +244,9 @@
           if (valid) {
             this.dialogFormVisible = false
             if (this.form.title === '新增认证标准') {
-              this.operateForm('addDialog', this.form)
+              operateForm('addDialog', this.form)
             } else if (this.form.title === '修改认证标准') {
-              this.operateForm('editDialog', this.form)
+              operateForm('editDialog', this.form)
             }
             this.getTableData('getStandards')
             this.resetForm()
@@ -267,27 +268,15 @@
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
-        var that = this
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
-            that.headers = res.headers
-            that.tableList = res.resultList
-            that.total = res.resultList.length
-            that.loading = false
+            this.headers = res.headers
+            this.tableList = res.resultList
+            this.requireList = res.requires
+            this.total = res.resultList.length
+            this.loading = false
           } else {
-            that.emptyText = '暂无数据'
-          }
-        })
-      },
-      // 方法封装 操作（添加/编辑/删除）表单
-      operateForm(url, params) {
-        this.$http.postRequest(url, params).then(res => {
-          if (res.status === 0) {
-            this.$message({
-              showClose: true,
-              message: res.msg,
-              type: 'success'
-            })
+            this.emptyText = '暂无数据'
           }
         })
       }

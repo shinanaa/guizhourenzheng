@@ -56,7 +56,8 @@
               <el-form-item label="所属院系专业" :label-width="formLabelWidth" prop="collegeInfo">
                 <el-cascader
                   v-model="form.collegeInfo"
-                  :options="treeList"></el-cascader>
+                  :options="treeList"
+                  @change="changeJiLian"></el-cascader>
               </el-form-item>
               <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
                 <el-select v-model="form.require" placeholder="请选择要求">
@@ -85,6 +86,7 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds, valueToLabel, labelToValue, targetsFilter, operateForm } from '@/utils/common'
+
   export default {
     name: 'graduation-require',
     data() {
@@ -143,6 +145,9 @@
       })
     },
     methods: {
+      changeJiLian(val) {
+        console.log(val)
+      },
       /* 分页 val（每页显示数据）*/
       handleSizeChange(val) {
         this.pageSize = val
@@ -154,15 +159,14 @@
       /* 点击工具栏创建 */
       createdContent() {
         this.dialogFormVisible = true
-        this.form = {}
         this.form.title = '新增毕业要求'
       },
       /* 点击工具栏编辑 */
       editContent() {
-        this.form = {}
         if (this.currentRow) {
           this.dialogFormVisible = true
           const { college, major, schoolYear, target1, target2, target3, target4, ...currentToFrom } = this.currentRow
+          // // 获取当前数据培养目标选中状态
           if (target1 !== false) {
             this.targets.push('毕业培养目标1')
           }
@@ -175,11 +179,17 @@
           if (target4 !== false) {
             this.targets.push('毕业培养目标4')
           }
+          // // 将当前数据的院系相关值转换为级联选择器可显示的值
           labelToValue(this.treeList, college, major, schoolYear, this.newCollegeValue)
+          // // 从当前数据中过滤出不需要的值，并把需要的值给currentToFrom
           currentToFrom.collegeInfo = this.newCollegeValue
           this.form = currentToFrom
-          console.log(this.form)
           this.form.title = '修改毕业要求'
+          try {
+            this.$refs.dialogForm.resetFields()
+          } catch (err) {
+            console.log('出错啦')
+          }
         } else {
           this.$message({
             showClose: true,
