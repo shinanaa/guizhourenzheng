@@ -88,6 +88,7 @@ export function operateForm(url, params) {
     }
   })
 }
+
 // 报表下载
 export function downloadExcel(tableID) {
   const wb = XLSX.utils.table_to_book(document.querySelector(tableID))

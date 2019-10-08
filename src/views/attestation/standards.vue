@@ -73,14 +73,6 @@
             <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
               <el-select v-model="form.require" placeholder="请选择要求">
                 <el-option v-for="(require, index) in requireList" :label="require.label" :value="require.value" :key="index"></el-option>
-                <!--<el-option label="师德规范" value="2013"></el-option>-->
-                <!--<el-option label="教育情怀" value="2014"></el-option>-->
-                <!--<el-option label="学科素养" value="2015"></el-option>-->
-                <!--<el-option label="教学能力" value="2016"></el-option>-->
-                <!--<el-option label="班级指导" value="2017"></el-option>-->
-                <!--<el-option label="教育情怀" value="2019"></el-option>-->
-                <!--<el-option label="学科素养" value="2018"></el-option>-->
-                <!--<el-option label="教学能力" value="2010"></el-option>-->
               </el-select>
             </el-form-item>
             <el-form-item label="认证标准" :label-width="formLabelWidth" prop="standards">

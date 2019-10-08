@@ -83,7 +83,7 @@
 
 <script>
 import TableTools from '@/components/Guizhou/tableTools'
-import { filterDataIds, valueToLabel, labelToValue } from '@/utils/common'
+import { filterDataIds, valueToLabel, labelToValue, operateForm } from '@/utils/common'
 export default {
   name: 'target',
   data() {
@@ -167,6 +167,11 @@ export default {
         currentToFrom.collegeInfo = this.newCollegeValue
         this.form = currentToFrom
         this.form.title = '修改培养目标'
+        try {
+          this.$refs.dialogForm.resetFields()
+        } catch (err) {
+          console.log('出错啦')
+        }
       } else {
         this.$message({
           showClose: true,
@@ -182,7 +187,7 @@ export default {
     // 点击工具栏删除
     deleteContent() {
       if (this.currentRow) {
-        this.operateForm('deleteDialog', this.currentRow.order)
+        operateForm('deleteDialog', this.currentRow.order)
         this.getTableData('getTrainTarget')
       } else {
         this.$message({
@@ -228,9 +233,9 @@ export default {
           valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
           params.newCollegeInfo = this.newCollegeInfo
           if (this.form.title === '新增培养目标') {
-            this.operateForm('addDialog', params)
+            operateForm('addDialog', params)
           } else if (this.form.title === '修改培养目标') {
-            this.operateForm('editDialog', params)
+            operateForm('editDialog', params)
           }
           this.getTableData('getTrainTarget')
           this.resetForm()
@@ -256,18 +261,6 @@ export default {
           that.loading = false
         } else {
           that.emptyText = '暂无数据'
-        }
-      })
-    },
-    // 方法封装 操作（添加/编辑/删除）表单
-    operateForm(url, params) {
-      this.$http.postRequest(url, params).then(res => {
-        if (res.status === 0) {
-          this.$message({
-            showClose: true,
-            message: res.msg,
-            type: 'success'
-          })
         }
       })
     }

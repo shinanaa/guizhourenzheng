@@ -64,7 +64,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm">取 消</el-button>
             <el-button type="primary" @click="sureDialog">确 定</el-button>
           </div>
         </el-dialog>
@@ -74,7 +74,7 @@
 </template>
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, operateForm } from '@/utils/common'
   export default {
     name: 'indicator',
     data: function() {
@@ -199,7 +199,9 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             const info = JSON.parse(JSON.stringify(this.form))
-            this.operateForm('editDialog', info)
+            operateForm('editDialog', info)
+            this.resetForm()
+            this.getTableData('getIndicator')
           } else {
             return false
           }
@@ -209,20 +211,6 @@
       resetForm() {
         this.dialogFormVisible = false
         this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
-      },
-      // 方法封装 操作（添加/编辑/删除）表单
-      operateForm(url, params) {
-        this.$http.postRequest(url, params).then(res => {
-          if (res.status === 0) {
-            this.getTableData('getIndicator')
-            this.resetForm()
-            this.$message({
-              showClose: true,
-              message: res.msg,
-              type: 'success'
-            })
-          }
-        })
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {

@@ -81,7 +81,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, operateForm } from '@/utils/common'
 
   export default {
     name: 'course-manage',
@@ -161,7 +161,7 @@
       // 点击工具栏删除
       deleteContent() {
         if (this.currentRow) {
-          this.operateForm('deleteDialog', this.currentRow.order)
+          operateForm('deleteDialog', this.currentRow.order)
           this.getTableData('getCourseManage')
         } else {
           this.$message({
@@ -209,9 +209,9 @@
           if (valid) {
             this.dialogFormVisible = false
             if (this.form.title === '新增毕业要求') {
-              this.operateForm('addDialog', this.form)
+              operateForm('addDialog', this.form)
             } else if (this.form.title === '修改毕业要求') {
-              this.operateForm('editDialog', this.form)
+              operateForm('editDialog', this.form)
             }
             this.getTableData('getCourseManage')
             this.resetForm()
@@ -226,18 +226,6 @@
         this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.majorList = []
         console.log(this.form)
-      },
-      // 方法封装 操作（添加/编辑/删除）表单
-      operateForm(url, params) {
-        this.$http.postRequest(url, params).then(res => {
-          if (res.status === 0) {
-            this.$message({
-              showClose: true,
-              message: res.msg,
-              type: 'success'
-            })
-          }
-        })
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {

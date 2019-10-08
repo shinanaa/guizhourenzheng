@@ -154,7 +154,7 @@
         })
         if (this.setAll) {
           // 判断每组的权重之和是否为1
-          const allPass = this.sumArr.every((val, index) => val === 1)
+          const allPass = this.sumArr.every((val) => val === 1)
           if (allPass) {
             this.$http.postRequest('setWeights', this.tableList).then(res => {
               if (res.status === 0) {
