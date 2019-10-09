@@ -42,6 +42,7 @@
         :total="total">
       </el-pagination>
       <!--弹窗-->
+      <!--课程配置-->
       <el-dialog title="课程配置" :visible.sync="dialogFormVisible" :before-close="resetForm" >
         <el-form :model="formDispose"  ref="dialogForm">
           <el-form-item label="课程：" :label-width="formLabelWidth" prop="target1">
@@ -63,44 +64,45 @@
           <el-button type="primary" @click="sureDialog">确 定</el-button>
         </div>
       </el-dialog>
+      <!--课程平时组成配置-->
       <el-dialog title="课程平时组成" :visible.sync="peacetimeForm" :before-close="resetForm" >
-      <el-form :model="formPeace"  ref="formPeace">
-        <el-form-item label="课程：" :label-width="formLabelWidth" prop="target1">
-          <p>{{formPeace.course}}</p>
-        </el-form-item>
-        <el-form-item label="平时成绩组成：" :label-width="formLabelWidth" prop="target1">
-          <el-checkbox-group v-model="formPeace.form">
-            <el-checkbox label="期中考试" name="type"></el-checkbox>
-            <el-checkbox label="实验" name="type"></el-checkbox>
-            <el-checkbox label="课堂讨论" name="type"></el-checkbox>
-            <el-checkbox label="活动" name="type"></el-checkbox>
-            <el-checkbox label="实践" name="type"></el-checkbox>
-            <el-checkbox label="作业" name="type"></el-checkbox>
-            <el-checkbox label="出勤" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <div class="peaceForm" v-for="(peaceItem, index) in formPeace.form" :key="index">
-          <div class="line-left-right">
-            <span>{{peaceItem}}</span>
+        <el-form :model="formPeace"  ref="formPeace">
+          <el-form-item label="课程：" :label-width="formLabelWidth" prop="target1">
+            <p>{{formPeace.course}}</p>
+          </el-form-item>
+          <el-form-item label="平时成绩组成：" :label-width="formLabelWidth" prop="target1">
+            <el-checkbox-group v-model="formPeace.form">
+              <el-checkbox label="期中考试" name="type"></el-checkbox>
+              <el-checkbox label="实验" name="type"></el-checkbox>
+              <el-checkbox label="课堂讨论" name="type"></el-checkbox>
+              <el-checkbox label="活动" name="type"></el-checkbox>
+              <el-checkbox label="实践" name="type"></el-checkbox>
+              <el-checkbox label="作业" name="type"></el-checkbox>
+              <el-checkbox label="出勤" name="type"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <div class="peaceForm" v-for="(peaceItem, index) in formPeace.form" :key="index">
+            <div class="line-left-right">
+              <span>{{peaceItem}}</span>
+            </div>
+            <el-form-item label="占比：" :label-width="formLabelWidth" prop="schoolYear">
+              <el-select v-model="formDispose.final">
+                <el-option v-for="(num, index) in 9" :label="num/10" :value="num/10" :key="index"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="分值：" :label-width="formLabelWidth" prop="target1">
+              <el-input type="number"></el-input>
+            </el-form-item>
+            <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="次数：" :label-width="formLabelWidth" prop="target1">
+              <el-input type="number"></el-input>
+            </el-form-item>
           </div>
-          <el-form-item label="占比：" :label-width="formLabelWidth" prop="schoolYear">
-            <el-select v-model="formDispose.final">
-              <el-option v-for="(num, index) in 9" :label="num/10" :value="num/10" :key="index"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="分值：" :label-width="formLabelWidth" prop="target1">
-            <el-input type="num"></el-input>
-          </el-form-item>
-          <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="次数：" :label-width="formLabelWidth" prop="target1">
-            <el-input type="num"></el-input>
-          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="resetForm">取 消</el-button>
+          <el-button type="primary" @click="sureDialog">确 定</el-button>
         </div>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="resetForm">取 消</el-button>
-        <el-button type="primary" @click="sureDialog">确 定</el-button>
-      </div>
-    </el-dialog>
+      </el-dialog>
     </div>
   </div>
 </div>
@@ -108,7 +110,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, operateForm } from '@/utils/common'
   export default {
     name: 'granding',
     data() {
@@ -225,8 +227,12 @@
       // 弹框点击确定按钮
       sureDialog() {
         if (this.dialogFormVisible) {
-          this.operateForm('setCourseDispose', this.formDispose)
+          operateForm('setCourseDispose', this.formDispose)
           this.dialogFormVisible = false
+        }
+        if (this.peacetimeForm) {
+          operateForm('setCourseDispose', this.formPeace)
+          this.peacetimeForm = false
         }
       },
       // 弹窗点击取消重置form表单
@@ -238,18 +244,6 @@
         form = {}
         console.log('reset')
         console.log(form)
-      },
-      // 方法封装 操作（添加/编辑/删除）表单
-      operateForm(url, params) {
-        this.$http.postRequest(url, params).then(res => {
-          if (res.status === 0) {
-            this.$message({
-              showClose: true,
-              message: res.msg,
-              type: 'success'
-            })
-          }
-        })
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {

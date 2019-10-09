@@ -82,26 +82,35 @@
         options: [{
           label: '第一章',
           options: [{
-            value: 'Shanghai',
+            value: 'c1n1',
             label: '知识点一'
           }, {
-            value: 'Beijing',
+            value: 'c1n2',
             label: '知识点二'
           }]
         }, {
           label: '第二章',
           options: [{
-            value: 'Chengdu',
+            value: 'c2n1',
             label: '知识点一'
           }, {
-            value: 'Shenzhen',
+            value: 'c2n2',
             label: '知识点二'
           }, {
-            value: 'Guangzhou',
+            value: 'c2n3',
             label: '知识点三'
           }, {
-            value: 'Dalian',
+            value: 'c2n4',
             label: '知识点四'
+          }]
+        }, {
+          label: '第三章',
+          options: [{
+            value: 'c3n1',
+            label: '知识点一'
+          }, {
+            value: 'c3n2',
+            label: '知识点二'
           }]
         }],
         value: '',
@@ -212,17 +221,25 @@
         this.dialogFormVisible = false
         this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
       },
+      // 过滤知识点
+      filterKnowledge(data) {
+        data.filter((item) => {
+          if (item.knowledge.length > 1) {
+            item.knowledge = item.knowledge.join(', ')
+          }
+        })
+        return data
+      },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
-        var that = this
         this.$http.getRequest(urlName).then(res => {
           if (res.code === 1) {
-            that.headers = res.headers
-            that.tableList = res.resultList
-            that.total = res.resultList.length
-            that.loading = false
+            this.headers = res.headers
+            this.tableList = this.filterKnowledge(res.resultList)
+            this.total = res.resultList.length
+            this.loading = false
           } else {
-            that.emptyText = '暂无数据'
+            this.emptyText = '暂无数据'
           }
         })
       }

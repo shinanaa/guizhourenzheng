@@ -45,14 +45,14 @@
         <!--编辑课程目标-->
         <el-dialog title="编辑课程目标" :visible.sync="dialogFormVisible" :before-close="resetForm">
           <!--编辑课程目标-->
-          <el-form :model="form1" ref="dialogForm" v-if='elForm1'>
+          <el-form :model="form1" ref="dialogForm" v-if='elForm1' :rules="rules1">
             <el-form-item label="课程：" :label-width="formLabelWidth">
               <p>{{form1.courseName}}</p>
             </el-form-item>
-            <el-form-item label="课程目标观测点：" :label-width="formLabelWidth">
+            <el-form-item label="课程目标观测点：" :label-width="formLabelWidth" prop="watchPoint">
               <el-input type="textarea" v-model="form1.watchPoint"></el-input>
             </el-form-item>
-            <el-form-item label="课程权重：" :label-width="formLabelWidth">
+            <el-form-item label="课程权重：" :label-width="formLabelWidth" prop="weight">
               <el-select v-model="form1.weight" placeholder="请选择">
                 <el-option
                   v-for="item in 9"
@@ -185,7 +185,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, operateForm } from '@/utils/common'
   export default {
     name: 'target',
     data() {
@@ -211,6 +211,14 @@
           relationWidthSupport: '',
           toDo: '',
           weight: 0.1
+        },
+        rules1: {
+          watchPoint: [
+            { required: true, message: '课程目标观测点不能为空', trigger: 'blur' }
+          ],
+          weight: [
+            { required: true, message: '请设置课程权重', trigger: 'change' }
+          ]
         },
         form2: {
           moduleName: '',
@@ -413,8 +421,7 @@
       },
       // 点击工具栏删除
       deleteContent(row) {
-        console.log(row.order)
-        this.operateForm('deleteDialog', row.order)
+        operateForm('deleteDialog', row.order)
         this.getTableData('getCoursesModule')
       },
       // 弹框点击确定按钮
@@ -444,9 +451,9 @@
       // 提交
       submitForm(form, apiUrl) {
         if (this.isAdd) {
-          this.operateForm('addDialog', form)
+          operateForm('addDialog', form)
         } else {
-          this.operateForm('editDialog', form)
+          operateForm('editDialog', form)
         }
         this.getTableData(apiUrl)
         this.resetForm(form)
@@ -470,18 +477,6 @@
             that.loading = false
           } else {
             that.emptyText = '暂无数据'
-          }
-        })
-      },
-      // 方法封装 操作（添加/编辑/删除）表单
-      operateForm(url, params) {
-        this.$http.postRequest(url, params).then(res => {
-          if (res.status === 0) {
-            this.$message({
-              showClose: true,
-              message: res.msg,
-              type: 'success'
-            })
           }
         })
       }
