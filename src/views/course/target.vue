@@ -78,10 +78,10 @@
               <span>理论教学</span>
             </div>
             <el-form-item label="课内学时：" :label-width="formLabelWidth">
-              <el-input type="text" v-model="form2.theoryInClass"></el-input>
+              <el-input type="number" v-model="form2.theoryInClass"></el-input>
             </el-form-item>
             <el-form-item label="课外学时：" :label-width="formLabelWidth">
-              <el-input type="text" v-model="form2.theoryOutClass"></el-input>
+              <el-input type="number" v-model="form2.theoryOutClass"></el-input>
             </el-form-item>
             <el-form-item label="教学手段与方法：" :label-width="formLabelWidth">
               <el-input type="textarea" v-model="form2.theoryTeachMeansTheory"></el-input>
@@ -90,10 +90,10 @@
               <span>实践教学</span>
             </div>
             <el-form-item label="课内学时：" :label-width="formLabelWidth">
-              <el-input type="text" v-model="form2.practicalInClass"></el-input>
+              <el-input type="number" v-model="form2.practicalInClass"></el-input>
             </el-form-item>
             <el-form-item label="课外学时：" :label-width="formLabelWidth">
-              <el-input type="text" v-model="form2.practicalOutClass"></el-input>
+              <el-input type="number" v-model="form2.practicalOutClass"></el-input>
             </el-form-item>
             <el-form-item label="教学手段与方法：" :label-width="formLabelWidth">
               <el-input type="textarea" v-model="form2.practicalTeachMeansPracical"></el-input>

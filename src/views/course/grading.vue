@@ -71,29 +71,23 @@
             <p>{{formPeace.course}}</p>
           </el-form-item>
           <el-form-item label="平时成绩组成：" :label-width="formLabelWidth" prop="target1">
-            <el-checkbox-group v-model="formPeace.form">
-              <el-checkbox label="期中考试" name="type"></el-checkbox>
-              <el-checkbox label="实验" name="type"></el-checkbox>
-              <el-checkbox label="课堂讨论" name="type"></el-checkbox>
-              <el-checkbox label="活动" name="type"></el-checkbox>
-              <el-checkbox label="实践" name="type"></el-checkbox>
-              <el-checkbox label="作业" name="type"></el-checkbox>
-              <el-checkbox label="出勤" name="type"></el-checkbox>
+            <el-checkbox-group v-model="formPeace.form" @change="setChecked">
+              <el-checkbox v-for="(peaceForm, index) in peaceForms" :label="peaceForm.label" name="type" :key="index"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <div class="peaceForm" v-for="(peaceItem, index) in formPeace.form" :key="index">
+          <div class="peaceForm" v-for="(peaceItem, index) in formPeace.setForm" :key="index">
             <div class="line-left-right">
-              <span>{{peaceItem}}</span>
+              <span>{{peaceItem.label}}</span>
             </div>
             <el-form-item label="占比：" :label-width="formLabelWidth" prop="schoolYear">
-              <el-select v-model="formDispose.final">
+              <el-select v-model="peaceItem.final">
                 <el-option v-for="(num, index) in 9" :label="num/10" :value="num/10" :key="index"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="分值：" :label-width="formLabelWidth" prop="target1">
-              <el-input type="number"></el-input>
+            <el-form-item v-if="peaceItem.label !== '期中考试' && peaceItem.label !== '出勤'" label="分值：" :label-width="formLabelWidth" prop="target1">
+              <el-input type="number" v-model="peaceItem.score"></el-input>
             </el-form-item>
-            <el-form-item v-if="peaceItem !== '期中考试' && peaceItem !== '出勤'" label="次数：" :label-width="formLabelWidth" prop="target1">
+            <el-form-item v-if="peaceItem.label !== '期中考试' && peaceItem.label !== '出勤'" label="次数：" :label-width="formLabelWidth" prop="target1">
               <el-input type="number"></el-input>
             </el-form-item>
           </div>
@@ -111,10 +105,34 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds, operateForm } from '@/utils/common'
+
+  const peaceForm = [{
+    value: 'midterm',
+    label: '期中考试'
+  }, {
+    value: 'test',
+    label: '实验'
+  }, {
+    value: 'discuss',
+    label: '课堂讨论'
+  }, {
+    value: 'activity',
+    label: '活动'
+  }, {
+    value: 'practice',
+    label: '实践'
+  }, {
+    value: 'task',
+    label: '作业'
+  }, {
+    value: 'attendance',
+    label: '出勤'
+  }]
   export default {
     name: 'granding',
     data() {
       return {
+        peaceForms: peaceForm,
         isChoose: false,
         treeList: [],
         defaultProps: {
@@ -139,15 +157,16 @@
         formPeace: {
           course: '',
           form: [],
-          ratio: { // 占比
-            midterm: null, // 期中考试
-            test: null, // 实验
-            discuss: null, // 课堂讨论
-            activity: null,
-            practice: null, // 实践
-            task: null,
-            attendance: null // 出勤
-          }
+          // ratio: { // 占比
+          //   midterm: null, // 期中考试
+          //   test: null, // 实验
+          //   discuss: null, // 课堂讨论
+          //   activity: null,
+          //   practice: null, // 实践
+          //   task: null,
+          //   attendance: null // 出勤
+          // }
+          setForm: []
         },
         courseDetailsTable: [],
         spanArr: [],
@@ -213,6 +232,17 @@
         this.peacetimeForm = true
         this.formPeace.course = row.course
         console.log(row)
+      },
+      // 获取带有属性的选中的平时组成值
+      setChecked(value) {
+        this.formPeace.setForm = []
+        peaceForm.filter((item) => {
+          if (value.indexOf(item.label) >= 0) {
+            // console.log(item)
+            this.formPeace.setForm.push(item)
+          }
+        })
+        console.log(this.formPeace.setForm)
       },
       // 课程详情获取数据
       courseDetails(row) {
