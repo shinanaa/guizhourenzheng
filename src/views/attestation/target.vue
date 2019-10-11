@@ -120,6 +120,7 @@ export default {
           { required: true, message: '培养目标不能为空', trigger: 'blur' }
         ]
       },
+      isAdd: false,
       treeList: [],
       defaultProps: {
         children: 'children',
@@ -154,12 +155,14 @@ export default {
     /* 点击工具栏创建 */
     createdContent() {
       this.dialogFormVisible = true
+      this.isAdd = true
       this.form = {}
       this.form.title = '新增培养目标'
     },
     /* 点击工具栏编辑 */
     editContent() {
       if (this.currentRow) {
+        this.isAdd = false
         this.dialogFormVisible = true
         console.log(this.currentRow)
         const { college, major, schoolYear, ...currentToFrom } = this.currentRow
@@ -232,9 +235,9 @@ export default {
           const { collegeInfo, ...params } = this.form
           valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
           params.newCollegeInfo = this.newCollegeInfo
-          if (this.form.title === '新增培养目标') {
+          if (this.isAdd) {
             operateForm('addDialog', params)
-          } else if (this.form.title === '修改培养目标') {
+          } else {
             operateForm('editDialog', params)
           }
           this.getTableData('getTrainTarget')

@@ -105,6 +105,7 @@
         total: 0, // 分页 总条数
         pageSize: 10, // 分页 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
+        isAdd: false,
         form: {
           college: '',
           major: '',
@@ -163,6 +164,7 @@
       /* 点击工具栏创建 */
       createdContent() {
         this.dialogFormVisible = true
+        this.isAdd = true
         this.form = {}
         this.form.title = '新增认证标准'
       },
@@ -170,6 +172,7 @@
       editContent() {
         if (this.currentRow) {
           this.dialogFormVisible = true
+          this.isAdd = false
           this.form = this.currentRow
           this.form.title = '修改认证标准'
           for (let i = 0; i < this.treeList.length; i++) {
@@ -235,9 +238,9 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            if (this.form.title === '新增认证标准') {
+            if (this.isAdd) {
               operateForm('addDialog', this.form)
-            } else if (this.form.title === '修改认证标准') {
+            } else {
               operateForm('editDialog', this.form)
             }
             this.getTableData('getStandards')

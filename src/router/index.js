@@ -150,6 +150,32 @@ export const constantRouterMap = [
       meta: { title: '课程达成度', icon: 'international', noCache: true }
     }
     ]
+  },
+  {
+    path: '/examManagement',
+    component: Layout,
+    redirect: '/examManagement/examManagement',
+    alwaysShow: true, // will always show the root menu
+    meta: { title: '考试管理', icon: 'table', roles: ['admin', 'editor'] },
+    children: [{
+      path: '/examManagement/examManagement',
+      component: () => import('@/views/examManagement/examManagement'),
+      name: 'examManagement',
+      meta: { title: '考试管理', icon: 'tab', noCache: true }
+    },
+    {
+      path: '/examManagement/propositionalTask',
+      component: () => import('@/views/examManagement/propositionalTask'),
+      name: 'propositionalTask',
+      meta: { title: '命题任务', icon: 'list', noCache: true }
+    },
+    {
+      path: '/examManagement/examPlan',
+      component: () => import('@/views/examManagement/examPlan'),
+      name: 'examPlan',
+      meta: { title: '考试计划', icon: 'international', noCache: true }
+    }
+    ]
   }
   /* {
     path: '',

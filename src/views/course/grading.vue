@@ -88,7 +88,7 @@
               <el-input type="number" v-model="peaceItem.score"></el-input>
             </el-form-item>
             <el-form-item v-if="peaceItem.label !== '期中考试' && peaceItem.label !== '出勤'" label="次数：" :label-width="formLabelWidth" prop="target1">
-              <el-input type="number"></el-input>
+              <el-input type="number" v-model="peaceItem.second"></el-input>
             </el-form-item>
           </div>
         </el-form>
@@ -157,16 +157,7 @@
         formPeace: {
           course: '',
           form: [],
-          // ratio: { // 占比
-          //   midterm: null, // 期中考试
-          //   test: null, // 实验
-          //   discuss: null, // 课堂讨论
-          //   activity: null,
-          //   practice: null, // 实践
-          //   task: null,
-          //   attendance: null // 出勤
-          // }
-          setForm: []
+          setForm: [] // 选中的平时组成内容
         },
         courseDetailsTable: [],
         spanArr: [],
@@ -238,15 +229,12 @@
         this.formPeace.setForm = []
         peaceForm.filter((item) => {
           if (value.indexOf(item.label) >= 0) {
-            // console.log(item)
-            this.formPeace.setForm.push(item)
+            this.formPeace.setForm.push(JSON.parse(JSON.stringify(item)))
           }
         })
-        console.log(this.formPeace.setForm)
       },
       // 课程详情获取数据
       courseDetails(row) {
-        console.log(row)
         this.$router.push({
           path: '/course/grading/details',
           query: {
@@ -264,16 +252,18 @@
           operateForm('setCourseDispose', this.formPeace)
           this.peacetimeForm = false
         }
+        this.resetForm()
       },
       // 弹窗点击取消重置form表单
-      resetForm(form) {
+      resetForm() {
         this.dialogFormVisible = false
         this.peacetimeForm = false
         this.courseFormDetails = false
-        // this.$refs.dialogForm.clearValidate() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
-        form = {}
+        // this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.formPeace.setForm = []
+        this.formPeace.form = []
         console.log('reset')
-        console.log(form)
+        console.log(this.formPeace)
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {

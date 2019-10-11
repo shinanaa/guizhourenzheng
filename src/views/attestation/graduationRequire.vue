@@ -99,6 +99,7 @@
         total: 0, // 分页 总条数
         pageSize: 10, // 分页 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
+        isAdd: false,
         targetOptions: ['毕业培养目标1', '毕业培养目标2', '毕业培养目标3', '毕业培养目标4'], // 培养目标列表
         targets: [], // 表单中选中的培养目标
         form: {
@@ -159,12 +160,14 @@
       /* 点击工具栏创建 */
       createdContent() {
         this.dialogFormVisible = true
+        this.isAdd = true
         this.form.title = '新增毕业要求'
       },
       /* 点击工具栏编辑 */
       editContent() {
         if (this.currentRow) {
           this.dialogFormVisible = true
+          this.isAdd = false
           const { college, major, schoolYear, target1, target2, target3, target4, ...currentToFrom } = this.currentRow
           // // 获取当前数据培养目标选中状态
           if (target1 !== false) {
@@ -251,9 +254,9 @@
             valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
             params.newCollegeInfo = this.newCollegeInfo
             params.targets = this.targets
-            if (this.form.title === '新增毕业要求') {
+            if (this.isAdd) {
               operateForm('addDialog', params)
-            } else if (this.form.title === '修改毕业要求') {
+            } else {
               operateForm('editDialog', params)
             }
             this.getTableData('getGraduationRequire')
