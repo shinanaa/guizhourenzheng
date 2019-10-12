@@ -93,6 +93,7 @@
         total: 0,
         pagesize: 10, // 表格列表每页显示条数
         dialogFormVisible: false, // 是否现在创建/编辑弹窗
+        isAdd: false,
         form: {
           title: '',
           college: '',
@@ -151,8 +152,8 @@
       /* 点击工具栏创建 */
       createdContent() {
         this.dialogFormVisible = true
-        // this.form = {}
-        this.form.title = '新增毕业要求'
+        this.isAdd = true
+        this.form.title = '新增课程'
       },
       // 获取表格当前行数据
       handleCurrentRow(val) {
@@ -208,9 +209,9 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            if (this.form.title === '新增毕业要求') {
+            if (this.isAdd) {
               operateForm('addDialog', this.form)
-            } else if (this.form.title === '修改毕业要求') {
+            } else {
               operateForm('editDialog', this.form)
             }
             this.getTableData('getCourseManage')
