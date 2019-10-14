@@ -220,9 +220,9 @@
       },
       // 课程平时组成
       peaceForm(row) {
+        this.resetForm()
         this.peacetimeForm = true
         this.formPeace.course = row.course
-        console.log(row)
       },
       // 获取带有属性的选中的平时组成值
       setChecked(value) {
@@ -252,7 +252,6 @@
           operateForm('setCourseDispose', this.formPeace)
           this.peacetimeForm = false
         }
-        this.resetForm()
       },
       // 弹窗点击取消重置form表单
       resetForm() {

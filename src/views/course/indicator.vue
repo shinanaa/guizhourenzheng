@@ -80,37 +80,40 @@
     data: function() {
       return {
         options: [{
+          value: 'chapter1',
           label: '第一章',
           options: [{
             value: 'c1n1',
-            label: '知识点一'
+            label: '第一章知识点一'
           }, {
             value: 'c1n2',
-            label: '知识点二'
+            label: '第一章知识点二'
           }]
         }, {
+          value: 'chapter2',
           label: '第二章',
           options: [{
             value: 'c2n1',
-            label: '知识点一'
+            label: '第二章知识点一'
           }, {
             value: 'c2n2',
-            label: '知识点二'
+            label: '第二章知识点二'
           }, {
             value: 'c2n3',
-            label: '知识点三'
+            label: '第二章知识点三'
           }, {
             value: 'c2n4',
-            label: '知识点四'
+            label: '第二章知识点四'
           }]
         }, {
+          value: 'chapter3',
           label: '第三章',
           options: [{
             value: 'c3n1',
-            label: '知识点一'
+            label: '第三章知识点一'
           }, {
             value: 'c3n2',
-            label: '知识点二'
+            label: '第三章知识点二'
           }]
         }],
         value: '',
@@ -174,6 +177,11 @@
         this.dialogFormVisible = true
         this.form.course = row.course
         this.form.indicator = row.indicator
+        if (Array.isArray(row.knowledge)) {
+          this.form.knowledge = row.knowledge
+        } else {
+          this.form.knowledge = row.knowledge.split(',')
+        }
       },
       // 点击工具栏查询
       searchData(param) {
@@ -224,6 +232,15 @@
       // 过滤知识点
       filterKnowledge(data) {
         data.filter((item) => {
+          this.options.map((chapter) => {
+            chapter.options.map((knowValue) => {
+              for (let i = 0; i < item.knowledge.length; i++) {
+                if (item.knowledge[i] === knowValue.value) {
+                  item.knowledge[i] = knowValue.label
+                }
+              }
+            })
+          })
           if (item.knowledge.length > 1) {
             item.knowledge = item.knowledge.join(', ')
           }
