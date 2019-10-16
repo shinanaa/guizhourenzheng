@@ -269,7 +269,7 @@
         },
         isChoose: false,
         formLabelWidth: '120px',
-        require: [0.8, 0.7, 0.7, 0.6, 0.7, 0.8, 0.9, 0.9],
+        require: [],
         currentRow: {
           schoolYear: '2018',
           major: ''
@@ -277,7 +277,6 @@
       }
     },
     created() {
-      this.getTableData('getEligibility')
       // 获取院系树的数据
       this.$http.getRequest('getChooseData').then(res => {
         if (res.status === 1) {
@@ -286,7 +285,7 @@
       })
     },
     mounted() {
-      this.drawLine()
+      this.getTableData('getEligibility')
     },
     components: { TableTools },
     methods: {
@@ -332,22 +331,7 @@
       },
       // 点击表格行
       handleCurrentRow(val) {
-        if (val) {
-          this.require = []
-          this.currentRow = val
-          for (const i in val) {
-            if (i.indexOf('require') >= 0) {
-              this.require.push(val[i])
-            }
-          }
-        } else {
-          this.currentRow = this.tableList[0]
-          for (const i in this.tableList[0]) {
-            if (i.indexOf('require') >= 0) {
-              this.require.push(this.tableList[0][i])
-            }
-          }
-        }
+        this.getRequireData(val)
         this.drawLine()
       },
       // 点击工具栏删除
@@ -393,6 +377,7 @@
       },
       // 弹框点击确定按钮
       sureDialog() {
+        console.log(this.require)
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
@@ -403,6 +388,7 @@
             }
             this.getTableData('getEligibility')
             this.resetForm()
+            console.log(this.require)
           } else {
             return false
           }
@@ -413,6 +399,7 @@
         this.dialogFormVisible = false
         this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
+        this.require = []
         this.majorList = []
       },
       // 弹框选择院校
@@ -428,10 +415,31 @@
             this.total = res.resultList.length
             this.currentRow = res.resultList[0]
             this.loading = false
+            this.getRequireData()
+            this.drawLine()
           } else {
             this.emptyText = '暂无数据'
           }
         })
+      },
+      // 获取折线图数据
+      getRequireData(datas) {
+        this.require = []
+        if (datas) {
+          this.currentRow = datas
+          for (const i in datas) {
+            if (i.indexOf('require') >= 0) {
+              this.require.push(datas[i])
+            }
+          }
+        } else {
+          this.currentRow = this.tableList[0]
+          for (const i in this.tableList[0]) {
+            if (i.indexOf('require') >= 0) {
+              this.require.push(this.tableList[0][i])
+            }
+          }
+        }
       },
       drawLine() {
         // 基于准备好的dom，初始化echarts实例

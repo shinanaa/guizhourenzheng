@@ -66,6 +66,7 @@
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds, downloadExcel } from '@/utils/common'
   import echarts from 'echarts'
+  const category = ['毕业要求一', '毕业要求二', '毕业要求三', '毕业要求四', '毕业要求五', '毕业要求六', '毕业要求七', '毕业要求八']
   export default {
     name: 'graduation-requirements-achievement',
     data() {
@@ -148,16 +149,15 @@
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
-        var that = this
         this.$http.getRequest(urlName, params).then(res => {
           if (res.code === 1) {
             console.log(res)
-            that.headers = res.headers
-            that.tableList = res.resultList
-            that.total = res.resultList.length
-            that.loading = false
+            this.headers = res.headers
+            this.tableList = res.resultList
+            this.total = res.resultList.length
+            this.loading = false
           } else {
-            that.emptyText = '暂无数据'
+            this.emptyText = '暂无数据'
           }
         })
       },
@@ -168,24 +168,40 @@
         myChart.setOption({
           title: { text: '毕业要求达成度' },
           tooltip: {},
+          legend: {
+            data: ['合格标准', '实际情况']
+          },
           xAxis: {
             type: 'category',
-            data: ['毕业要求一', '毕业要求二', '毕业要求三', '毕业要求四', '毕业要求五', '毕业要求六', '毕业要求七', '毕业要求八']
+            data: category
           },
           yAxis: {
             type: 'value'
           },
           series: [{
+            name: '合格标准',
             type: 'line',
             itemStyle: {
               normal: {
-                color: '#2ec7c9',
+                color: '#1890ff',
                 lineStyle: {
                   color: '#1890ff'
                 }
               }
             },
             data: [0.8, 0.7, 0.7, 0.6, 0.7, 0.8, 0.9, 0.9]
+          }, {
+            name: '实际情况',
+            type: 'line',
+            itemStyle: {
+              normal: {
+                color: '#facc14',
+                lineStyle: {
+                  color: '#facc14'
+                }
+              }
+            },
+            data: [0.6, 0.9, 0.8, 0.7, 0.8, 0.5, 0.7, 0.6]
           }]
         })
       }
