@@ -31,20 +31,22 @@ const i = {
   setCourseDispose: { url: 'course/setCourseDispose', isMock: false }, // 课程组成页面设置课程配置
   getCourseDetails: { url: 'course/getCourseDetails', isMock: false }, // 获取课程组成页面查看详情的数据内容
   getPeaseDetails: { url: 'statistics/getPeaseDetails', isMock: false }, // 获取课程组成详情页的平时成绩详情内容
-  getRequireAchievement: { url: 'statistics/getRequireAchievement', isMock: false }, // 获取毕业要求达成度页面数据
+  // getRequireAchievement: { url: 'statistics/getRequireAchievement', isMock: false }, // 获取毕业要求达成度页面数据
+  getRequireAchievement: { url: 'statistics/getRequireAchievementNormal', isMock: false }, // 获取毕业要求达成度页面数据
   getRequireDetails: { url: 'statistics/getRequireDetails', isMock: false }, // 获取毕业要求达成度页面中每一个毕业要求对应的数据
+  // getStatisticsStandards: { url: 'statistics/getStatisticsStandards', isMock: false }, // 获取博野要求达成度页面专业想对应的合格标准数据
   getAchievementTable: { url: 'statistics/getAchievementTable', isMock: false }, // 获取要求达成度计算表页面数据
   getCourseAchievement: { url: 'statistics/getCourseAchievement', isMock: false }, // 获取课程达成度页面表格数据
-  getCourseAchievementDetails: { url: 'statistics/getCourseAchievementDetails', isMock: false }, // 获取课程达成度详情表格数据
-  mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
-  dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
-  dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
-  unrepayRecord: { url: 'yunying/unrepayRecord', isMock: false }, // 待收总览
-  getLineData: { url: 'yunying/countDaily', isMock: false }, // 整点报数对比图
-  getSourceCount: { url: 'yunying/sourceCountDaily', isMock: false }, // 充值提现信息
-  getSourceFund: { url: 'yunying/sourceFundAndIncomeDaily', isMock: false }, // 应收本金收益
-  getMaturityCont: { url: 'yunying/expireHistory', isMock: false }, // 到期明细
-  getMaturityContPage: { url: 'yunying/expireHistoryPage', isMock: false } // 到期明细
+  getCourseAchievementDetails: { url: 'statistics/getCourseAchievementDetails', isMock: false } // 获取课程达成度详情表格数据
+  // mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
+  // dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
+  // dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
+  // unrepayRecord: { url: 'yunying/unrepayRecord', isMock: false }, // 待收总览
+  // getLineData: { url: 'yunying/countDaily', isMock: false }, // 整点报数对比图
+  // getSourceCount: { url: 'yunying/sourceCountDaily', isMock: false }, // 充值提现信息
+  // getSourceFund: { url: 'yunying/sourceFundAndIncomeDaily', isMock: false }, // 应收本金收益
+  // getMaturityCont: { url: 'yunying/expireHistory', isMock: false }, // 到期明细
+  // getMaturityContPage: { url: 'yunying/expireHistoryPage', isMock: false } // 到期明细
 }
 
 export default i
