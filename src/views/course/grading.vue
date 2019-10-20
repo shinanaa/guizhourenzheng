@@ -6,7 +6,7 @@
   </div>
   <div class="container">
     <table-tools @dialogFormVisible="dialogFormVisible = true"
-                 @chooseSchool="isChoose = true"
+                 @chooseSchool="isChoose = !isChoose"
                  @searchData="searchData"
                  :select-college-and-major="true"
     ></table-tools>
@@ -235,10 +235,12 @@
       },
       // 课程详情获取数据
       courseDetails(row) {
+        console.log(row)
         this.$router.push({
           path: '/course/grading/details',
           query: {
-            course: row
+            course: row.course,
+            class: row.class
           }
         })
       },

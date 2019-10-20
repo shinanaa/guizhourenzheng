@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true"
-                   @chooseSchool="isChoose = true"
+                   @chooseSchool="isChoose = !isChoose"
                    :select-college-and-major="true"
                    :btn-create-show="true"
                    :btn-del-show="true"

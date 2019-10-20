@@ -11,7 +11,7 @@
     <div class="container">
       <table-tools
         @createdContent="createdContent"
-        @chooseSchool="isChoose = true"
+        @chooseSchool="isChoose = !isChoose"
         @editContent="editContent"
         @deleteContent="deleteContent"
         @searchData="searchData"

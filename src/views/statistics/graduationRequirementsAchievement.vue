@@ -32,7 +32,7 @@
             :prop="header.prop">
             <template slot-scope="scope">
               <span v-if="header.prop.indexOf('require') < 0">{{scope.row[header.prop]}}</span>
-              <el-button v-if="header.prop.indexOf('require') >= 0" type="text" @click="showDetails(scope.row, index)">{{scope.row[header.prop]}}</el-button>
+              <el-button v-if="header.prop.indexOf('require') >= 0" type="text" @click.stop="showDetails(scope.row, index)">{{scope.row[header.prop]}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -62,7 +62,7 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds, downloadExcel } from '@/utils/common'
-  import echarts from 'echarts'
+  import Echarts from 'echarts'
   const category = ['毕业要求一', '毕业要求二', '毕业要求三', '毕业要求四', '毕业要求五', '毕业要求六', '毕业要求七', '毕业要求八']
   export default {
     name: 'graduation-requirements-achievement',
@@ -138,20 +138,20 @@
         })
       },
       seeTrend(row) {
-        console.log(row)
         this.getRequireData(row)
+        this.getStandardsData(row.major)
         this.drawLine()
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
         this.$http.getRequest(urlName, params).then(res => {
           if (res.code === 1) {
-            console.log(res)
             this.headers = res.headers
             this.tableList = res.resultList
             this.total = res.resultList.length
             this.currentRow = res.resultList[0]
-            this.standard = res.standardList[0].standard
+            this.standards = res.standardList
+            this.getStandardsData(this.currentRow.major)
             this.getRequireData()
             this.drawLine()
             this.loading = false
@@ -160,9 +160,8 @@
           }
         })
       },
-      // 获取折线图数据
+      // 获取实际情况折线图数据
       getRequireData(datas) {
-        console.log(123)
         this.require = []
         if (datas) {
           this.currentRow = datas
@@ -179,13 +178,18 @@
             }
           }
         }
-        console.log(this.require)
+      },
+      // 获取合格标准直线图数据
+      getStandardsData(major) {
+        this.standards.map((item) => {
+          if (item.major === major) {
+            this.standard = item.standard
+          }
+        })
       },
       drawLine() {
-        console.log(456)
-        console.log(this.require)
         // 基于准备好的dom，初始化echarts实例
-        const myChart = echarts.init(document.getElementById('myChart'))
+        const myChart = Echarts.init(document.getElementById('myChart'))
         // 绘制图表
         myChart.setOption({
           title: { text: '毕业要求达成度' },

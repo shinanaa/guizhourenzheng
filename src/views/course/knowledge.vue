@@ -5,7 +5,7 @@
         <el-tree ref="tree" :data="treeList" :props="defaultProps" show-checkbox></el-tree>
       </div>
       <div class="container">
-        <table-tools @chooseSchool="isChoose = true"
+        <table-tools @chooseSchool="isChoose = !isChoose"
                      :select-college-and-major="true"
                      :btn-create-show="true"
                      @searchData="searchData"
@@ -187,7 +187,8 @@ export default {
       this.$router.push({
         path: `/course/knowledge/details`,
         query: {
-          course: row
+          major: row.major,
+          course: row.course
         }
       })
     },

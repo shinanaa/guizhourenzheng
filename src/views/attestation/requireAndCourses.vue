@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true"
-                   @chooseSchool="chooseSchool"
+                   @chooseSchool="isChoose = !isChoose"
                    @searchData="searchData"
                    :requires="requires"
                    :select-college-and-major="true"
@@ -112,9 +112,6 @@
       /* 学院选择树*/
       handleNodeClick(data) {
         // this.isChoose = false;
-      },
-      chooseSchool() {
-        this.isChoose = true
       },
       /* 点击工具栏编辑 */
       editContent(row) {

@@ -4,7 +4,7 @@
       <div class="content">
         <div class="detailsText">
           <el-button type="primary" @click="backPage">返回</el-button>
-          <p>{{this.msg.class}} > {{this.msg.course}}</p>
+          <p>{{this.class}} > {{this.course}}</p>
         </div>
         <el-table
           v-loading="loading"
@@ -87,8 +87,11 @@
       }
     },
     created() {
-      this.msg = this.$route.query.course
-      if (!this.msg.class) {
+      this.class = this.$route.query.class
+      this.course = this.$route.query.course
+      this.msg.class = this.class
+      this.msg.course = this.course
+      if (!this.msg) {
         this.$router.push('/course/grading')
         return
       }
@@ -106,7 +109,8 @@
       '$route': {
         handler: function() {
           console.log('luyoubianle')
-          this.msg = this.$route.query.course
+          this.class = this.$route.query.class
+          this.course = this.$route.query.course
           var that = this
           this.$http.getRequest('getCourseDetails', this.msg).then(res => {
             if (res.code === 1) {

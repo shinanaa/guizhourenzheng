@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <table-tools @dialogFormVisible="dialogFormVisible = true"
-                   @chooseSchool="isChoose = true"
+                   @chooseSchool="isChoose = !isChoose"
                    @searchData="searchData"
                    :select-college-and-major="true"></table-tools>
       <div class="content">

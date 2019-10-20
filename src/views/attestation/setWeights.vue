@@ -5,7 +5,7 @@
       </div>
       <div class="container">
         <table-tools @dialogFormVisible="dialogFormVisible = true"
-                     @chooseSchool="isChoose = true"
+                     @chooseSchool="isChoose = !isChoose"
                      @searchData="searchData"
                      :btn-not-visible="true"
                      :requires="requires"

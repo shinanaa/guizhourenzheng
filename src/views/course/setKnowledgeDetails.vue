@@ -4,7 +4,7 @@
       <div class="content">
         <div class="detailsText">
           <el-button type="primary" @click="backPage">返回</el-button>
-          <p>{{this.msg.major}} > {{this.msg.course}}</p>
+          <p>{{this.major}} > {{this.course}}</p>
         </div>
         <el-table
           v-loading="loading"
@@ -53,7 +53,10 @@ export default {
   name: 'set-knowledge-details',
   data() {
     return {
-      msg: {},
+      msg: {
+        major: '',
+        course: ''
+      },
       loading: false,
       courseDetailsTable: [],
       headers: [],
@@ -67,10 +70,14 @@ export default {
     }
   },
   created() {
-    this.msg = this.$route.query.course
+    this.major = this.$route.query.major
+    this.course = this.$route.query.course
+    this.msg = {
+      major: this.major,
+      course: this.course
+    }
     this.$http.getRequest('getKnowledgeDetails', this.msg).then(res => {
       if (res.code === 1) {
-        console.log(res)
         this.headers = res.headers
         this.courseDetailsTable = res.resultList
         this.loading = false
@@ -82,7 +89,8 @@ export default {
   watch: {
     '$route': {
       handler: function() {
-        this.msg = this.$route.query.course
+        this.major = this.$route.query.major
+        this.course = this.$route.query.course
         var that = this
         this.$http.getRequest('getKnowledgeDetails', this.msg).then(res => {
           if (res.code === 1) {
@@ -121,7 +129,6 @@ export default {
     },
     // 添加知识点
     addKnowledeg() {
-      console.log(this.knowledges)
       const newKnowledeg = {
         label: `知识点${this.knowledges.length + 1}`
       }
@@ -139,7 +146,6 @@ export default {
       for (let i = 0; i < this.knowledges.length; i++) {
         info['knowledge' + (i + 1)] = this.knowledges[i].knowledge
       }
-      console.log(info)
       this.operateForm('editKnowledge', info)
     },
     // 方法封装 操作（添加/编辑/删除）表单
