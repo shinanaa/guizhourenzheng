@@ -144,14 +144,11 @@ export default {
       isChoose: false,
       formLabelWidth: '120px',
       require: [0.8, 0.7, 0.7, 0.6, 0.7, 0.8, 0.9, 0.9],
-      currentRow: {
-        schoolYear: '2018',
-        major: ''
-      }
+      currentRow: null
     }
   },
   created() {
-    this.getTableData('getEligibility')
+    this.getTableData('getExamManage')
     // 获取院系树的数据
     this.$http.getRequest('getChooseData').then(res => {
       if (res.status === 1) {
@@ -199,29 +196,13 @@ export default {
     },
     // 点击表格行
     handleCurrentRow(val) {
-      if (val) {
-        this.require = []
-        this.currentRow = val
-        for (const i in val) {
-          if (i.indexOf('require') >= 0) {
-            this.require.push(val[i])
-          }
-        }
-      } else {
-        this.currentRow = this.tableList[0]
-        for (const i in this.tableList[0]) {
-          if (i.indexOf('require') >= 0) {
-            this.require.push(this.tableList[0][i])
-          }
-        }
-      }
-      this.drawLine()
+      this.currentRow = val
     },
     // 点击工具栏删除
     deleteContent() {
       if (this.currentRow) {
         operateForm('deleteDialog', this.currentRow.order)
-        this.getTableData('getEligibility')
+        this.getTableData('getExamManage')
       } else {
         this.$message({
           showClose: true,
@@ -268,7 +249,7 @@ export default {
           } else {
             operateForm('editDialog', this.form)
           }
-          this.getTableData('getEligibility')
+          this.getTableData('getExamManage')
           this.resetForm()
         } else {
           return false
@@ -285,14 +266,22 @@ export default {
     selectCollege(data) {
       this.majorList = this.treeList[data].children
     },
+    // 过滤是否生效
+    filterEffect(data) {
+      data.map((item) => {
+        item.examEffect ? item.examEffect = '是' : item.examEffect = '否'
+      })
+      return data
+    },
     // 方法封装 获取页面全部数据
     getTableData(urlName) {
       this.$http.getRequest(urlName).then(res => {
         if (res.code === 1) {
           this.headers = res.headers
-          this.tableList = res.resultList
+          this.tableList = this.filterEffect(res.resultList)
+          console.log(123)
+          console.log(this.tableList)
           this.total = res.resultList.length
-          this.currentRow = res.resultList[0]
           this.loading = false
         } else {
           this.emptyText = '暂无数据'

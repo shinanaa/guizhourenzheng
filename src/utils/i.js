@@ -37,7 +37,8 @@ const i = {
   // getStatisticsStandards: { url: 'statistics/getStatisticsStandards', isMock: false }, // 获取博野要求达成度页面专业想对应的合格标准数据
   getAchievementTable: { url: 'statistics/getAchievementTable', isMock: false }, // 获取要求达成度计算表页面数据
   getCourseAchievement: { url: 'statistics/getCourseAchievement', isMock: false }, // 获取课程达成度页面表格数据
-  getCourseAchievementDetails: { url: 'statistics/getCourseAchievementDetails', isMock: false } // 获取课程达成度详情表格数据
+  getCourseAchievementDetails: { url: 'statistics/getCourseAchievementDetails', isMock: false }, // 获取课程达成度详情表格数据
+  getExamManage: { url: 'getExamManagement/getExamManagement', isMock: false } // 获取考试管理页面数据
   // mouthReport: { url: 'yunying/monthReport', isMock: false }, // 运营月度报告
   // dailyRepayment: { url: 'yunying/dailyRepayment', isMock: false }, // 当日还款计划
   // dailyStatistics: { url: 'yunying/dailyStatistics', isMock: false }, // 当日产品销售统计
