@@ -1,12 +1,13 @@
 <template>
   <div class="login-container">
-
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+    <!--label-position设置无效，因为el-form-item没有添加label-->
+    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right">
       <div class="title-container">
         <h3 class="title">专业认证系统</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
+          <!--svg-icon为全局组件-->
           <svg-icon icon-class="user" />
         </span>
         <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="请输入用户名"
@@ -73,18 +74,14 @@ export default {
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
+      this.passwordType === 'password' ? this.passwordType = '' : this.passwordType = 'password'
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => { // 验证
         if (valid) {
           this.loading = true
           this.loginForm.url = 'loginOn'
-          this.$store.dispatch('LoginByUsername', this.loginForm).then((result) => { // 提交vuex的actions 名字为LoginByUsername
+          this.$store.dispatch('LoginByUsername', this.loginForm).then((result) => { // 提交一个名字为LoginByUsername的actions 在action里进行接口请求
             this.loading = false
             if (result.state === 0) {
               this.$router.push({ path: '/' })

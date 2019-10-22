@@ -30,7 +30,14 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
   {
-    path: '',
+    path: '/',
+    component: Layout,
+    redirect: '/attestation/graduationRequire',
+    alwaysShow: true, // will always show the root menu
+    meta: { title: '认证管理', icon: 'component', roles: ['admin', 'editor'] }
+  },
+  {
+    path: '/attestation',
     component: Layout,
     redirect: '/attestation/graduationRequire',
     alwaysShow: true, // will always show the root menu
