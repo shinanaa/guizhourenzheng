@@ -50,6 +50,8 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(userInfo).then(response => {
           const data = response
+          console.log('response')
+          console.log(response)
           if (response.state === 0) {
             commit('SET_TOKEN', data.token)
             commit('SET_ROLES', data.roles)

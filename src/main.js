@@ -31,7 +31,7 @@ Vue.use(Element, {
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-
+// 不显示生产模式的信息
 Vue.config.productionTip = false
 
 new Vue({

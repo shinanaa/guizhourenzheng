@@ -85,7 +85,7 @@ const myHttp = {
       url: url,
       method: 'post',
       transformRequest: [function(param) {
-        return qs.stringify(param)
+        return qs.stringify(param) // 将param序列化为url形式，并以&进行拼接
       }],
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

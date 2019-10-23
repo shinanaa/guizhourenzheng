@@ -344,6 +344,7 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+// 可访问的路由
 export const asyncRouterMap = [
   { path: '*', redirect: '/404', hidden: true }
 ]
