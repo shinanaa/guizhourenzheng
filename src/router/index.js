@@ -162,7 +162,7 @@ export const constantRouterMap = [
     path: '/examManagement',
     component: Layout,
     redirect: '/examManagement/examManagement',
-    alwaysShow: true, // will always show the root menu
+    alwaysShow: false, // will always show the root menu
     meta: { title: '考试管理', icon: 'table', roles: ['admin', 'editor'] },
     children: [{
       path: '/examManagement/examManagement',

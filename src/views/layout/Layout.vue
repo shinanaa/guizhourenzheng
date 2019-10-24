@@ -1,5 +1,6 @@
 <template>
   <div class="app-wrapper" :class="classObj">
+    <!--手机模式下导航列表打开时的遮罩层-->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
@@ -50,11 +51,11 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "../../styles/mixin.scss";
   .app-wrapper {
-    @include clearfix;
+    @include clearfix; /*引用混合指令中的clearfix*/
     position: relative;
     height: 100%;
     width: 100%;
-    &.mobile.openSidebar{
+    &.mobile.openSidebar{ /*继承父类，相当于.app-wrapper.mobile.openSidebar*/
       position: fixed;
       top: 0;
     }
