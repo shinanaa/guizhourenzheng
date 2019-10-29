@@ -29,6 +29,7 @@ const tagsView = {
       }
     },
     DEL_OTHERS_VIEWS: (state, view) => {
+      // entries() 方法返回一个数组的迭代对象，该对象包含数组的键值对 (key/value)
       for (const [i, v] of state.visitedViews.entries()) {
         if (v.path === view.path) {
           state.visitedViews = state.visitedViews.slice(i, i + 1)
