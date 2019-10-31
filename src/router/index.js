@@ -24,11 +24,21 @@ import Layout from '@/views/layout/Layout'
     noCache: true                if true ,the page will no be cached(default is false)
   }
  **/
+// 所有权限通用路由表
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
-  { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
+  { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true }
+]
+
+export default new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
+})
+// 异步挂载的路由
+export const asyncRouterMap = [
   {
     path: '/',
     component: Layout,
@@ -183,169 +193,7 @@ export const constantRouterMap = [
       meta: { title: '考试计划', icon: 'international', noCache: true }
     }
     ]
-  }
-  /* {
-    path: '',
-    component: Layout,
-    redirect: '/operationDepartment/index',
-    alwaysShow: true, // will always show the root menu
-    meta: { title: '运营部门', icon: 'dashboard', roles: ['admin', 'editor'] },
-    children: [{
-      path: '/operationDepartment/index',
-      component: () => import('@/views/operationDepartment/index'),
-      name: 'operationDepartment',
-      meta: { title: '每月报表', icon: 'dashboard', noCache: true }
-    },
-    {
-      path: '/operationDepartment/dangriHK',
-      component: () => import('@/views/operationDepartment/dangriHK'),
-      name: 'dangriHK',
-      meta: { title: '当日还款统计', icon: 'dashboard', noCache: true }
-    },
-    {
-      path: '/operationDepartment/dangriCP',
-      component: () => import('@/views/operationDepartment/dangriCP'),
-      name: 'dangriCP',
-      meta: { title: '当日销售统计', icon: 'dashboard', noCache: true }
-    },
-    {
-      path: '/operationDepartment/daishouZL',
-      component: () => import('@/views/operationDepartment/zonglan'),
-      name: 'daishouZL',
-      meta: { title: '待收总览', icon: 'dashboard', noCache: true }
-    }
-    ]
-  },*/
-  // {
-  //   path: '/operationDepartment',
-  //   component: Layout,
-  //   redirect: '/operationDepartment/daishouZX',
-  //   alwaysShow: true, // will always show the root menu
-  //   meta: { title: '分析决策', icon: 'dashboard' },
-  //   children: [
-  //     {
-  //       path: '/operationDepartment/daishouZX',
-  //       component: () => import('@/views/allPointDiscount/index'),
-  //       name: 'daishouZX',
-  //       meta: { title: '整点报数对比图', icon: 'dashboard', noCache: true }
-  //     },
-  //     {
-  //       path: '/operationDepartment/daishouCZ',
-  //       component: () => import('@/views/userNew/index'),
-  //       name: 'daishouCZ',
-  //       meta: { title: '充值提现信息', icon: 'dashboard', noCache: true }
-  //     },
-  //     {
-  //       path: '/operationDepartment/daishouCA',
-  //       component: () => import('@/views/userRecharge/index'),
-  //       name: 'daishouCA',
-  //       meta: { title: '应收本金收益', icon: 'dashboard', noCache: true }
-  //     },
-  //     {
-  //       path: '/operationDepartment/daishouDQ',
-  //       component: () => import('@/views/userDqmx/index'),
-  //       name: 'daishouDQ',
-  //       meta: { title: '到期统计', icon: 'dashboard', noCache: true }
-  //     }
-  //   ]
-  // }
-  // {
-  //   path: 'menu1',
-  //   component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //   name: 'menu1',
-  //   meta: { title: 'menu1' },
-  //   redirect: '/nested/menu1/menu1-1',
-  //   children: [
-  //     {
-  //       path: 'menu1-1',
-  //       component: () => import('@/views/nested/menu1/menu1-1'),
-  //       name: 'menu1-1',
-  //       meta: { title: 'menu1-1' }
-  //     },
-  //     {
-  //       path: 'menu1-2',
-  //       component: () => import('@/views/nested/menu1/menu1-2'),
-  //       name: 'menu1-2',
-  //       redirect: '/nested/menu1/menu1-2/menu1-2-1',
-  //       meta: { title: 'menu1-2' },
-  //       children: [
-  //         {
-  //           path: 'menu1-2-1',
-  //           component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //           name: 'menu1-2-1',
-  //           meta: { title: 'menu1-2-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //           name: 'menu1-2-2',
-  //           meta: { title: 'menu1-2-2' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu1-3',
-  //       component: () => import('@/views/nested/menu1/menu1-3'),
-  //       name: 'menu1-3',
-  //       meta: { title: 'menu1-3' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: 'menu2',
-  //   name: 'menu2',
-  //   component: () => import('@/views/nested/menu2/index'),
-  //   meta: { title: 'menu2' }
-  // }
-  // {
-  //   path: '/menuExample',
-  //   component: Layout,
-  //   redirect: '/menuExample/index',
-  //   alwaysShow: true, // will always show the root menu
-  //   meta: { title: 'menuExample', icon: 'documentation', roles: ['admin', 'editor'] },
-  //   children: [{
-  //     path: 'index',
-  //     component: () => import('@/views/menuExample/index'),
-  //     name: 'menuExample',
-  //     meta: { title: 'menuExample', icon: 'documentation', noCache: true }
-  //   }, {
-  //     path: 'index2',
-  //     component: () => import('@/views/menuExample/index2'),
-  //     name: 'menuExample2',
-  //     meta: { title: 'menuExample2', icon: 'documentation', noCache: true }
-  //   }]
-  // },
-  // {
-  //   path: '/documentation',
-  //   component: Layout,
-  //   redirect: '/documentation/index',
-  //   children: [{
-  //     path: 'index',
-  //     component: () => import('@/views/documentation/index'),
-  //     name: 'documentation',
-  //     meta: { title: 'documentation', icon: 'documentation', noCache: true }
-  //   }]
-  // },
-  // {
-  //   path: '/guide',
-  //   component: Layout,
-  //   redirect: '/guide/index',
-  //   children: [{
-  //     path: 'index',
-  //     component: () => import('@/views/guide/index'),
-  //     name: 'guide',
-  //     meta: { title: 'guide', icon: 'guide', noCache: true }
-  //   }]
-  // }
-]
-
-export default new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
-})
-// 可访问的路由
-export const asyncRouterMap = [
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 // export const asyncRouterMap = [
