@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 const app = {
   state: {
     sidebar: {
-      opened: !+Cookies.get('sidebarStatus'),
+      opened: !+Cookies.get('sidebarStatus'), // !+ 数字为0或者NaN时返回true  +将字符串转换为数字 ！取反
       withoutAnimation: false
     },
     device: 'desktop',
