@@ -15,11 +15,11 @@
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <!--<router-link to="/">-->
+          <router-link to="/">
             <el-dropdown-item>
-              管理员
+              {{token}}
             </el-dropdown-item>
-          <!--</router-link>-->
+          </router-link>
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -51,7 +51,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'name',
-      'avatar'
+      'avatar',
+      'token'
     ])
   },
   methods: {
