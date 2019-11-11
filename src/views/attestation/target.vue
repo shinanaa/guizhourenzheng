@@ -24,7 +24,7 @@
         <!--表格-->
         <el-table
           v-loading="loading"
-          :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+          :data="pagingTabelData"
           highlight-current-row
           @current-change="handleCurrentRow"
           border
@@ -51,7 +51,7 @@
           :total="total">
         </el-pagination>
         <!--创建/编辑-->
-        <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
+        <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" :before-close="resetForm" >
           <el-form :model="form" :rules="rules" ref="dialogForm">
             <el-form-item label="院系信息" :label-width="formLabelWidth" prop="collegeInfo">
               <el-cascader
@@ -84,18 +84,17 @@
 <script>
 import TableTools from '@/components/Guizhou/tableTools'
 import { filterDataIds, valueToLabel, labelToValue, operateForm } from '@/utils/common'
+import { pagingMixin, treeMixin } from '@/utils/mixin'
 export default {
   name: 'target',
+  mixins: [pagingMixin, treeMixin],
   data() {
     return {
       loading: true,
       emptyText: '',
       headers: [], // 表头
       tableList: [], // 表格内容
-      currentPage: 1, // 分页 当前显示页
-      total: 0, // 分页 总条数
-      pageSize: 10, // 分页 表格列表每页显示条数
-      dialogFormVisible: false, // 是否现在创建/编辑弹窗
+      dialogFormVisible: false, // 是否显示创建/编辑弹窗
       form: {
         collegeInfo: [],
         target1: '',
@@ -121,16 +120,16 @@ export default {
         ]
       },
       isAdd: false,
-      treeList: [],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      },
       isChoose: false,
       formLabelWidth: '120px',
       currentRow: null,
       newCollegeInfo: [],
       newCollegeValue: []
+    }
+  },
+  computed: {
+    formTitle() {
+      return this.isAdd ? '新增培养目标' : '修改培养目标'
     }
   },
   components: { TableTools },
@@ -144,36 +143,26 @@ export default {
     })
   },
   methods: {
-    /* 分页 val（每页显示数据）*/
-    handleSizeChange(val) {
-      this.pageSize = val
-    },
-    /* 分页 当前显示的页码*/
-    handleCurrentChange(val) {
-      this.currentPage = val
-    },
     /* 点击工具栏创建 */
     createdContent() {
       this.dialogFormVisible = true
       this.isAdd = true
       this.form = {}
-      this.form.title = '新增培养目标'
     },
     /* 点击工具栏编辑 */
     editContent() {
       if (this.currentRow) {
         this.isAdd = false
         this.dialogFormVisible = true
-        console.log(this.currentRow)
         const { college, major, schoolYear, ...currentToFrom } = this.currentRow
         labelToValue(this.treeList, college, major, schoolYear, this.newCollegeValue)
         currentToFrom.collegeInfo = this.newCollegeValue
         this.form = currentToFrom
-        this.form.title = '修改培养目标'
         try {
           this.$refs.dialogForm.resetFields()
         } catch (err) {
           console.log('出错啦')
+          console.log(err)
         }
       } else {
         this.$message({
