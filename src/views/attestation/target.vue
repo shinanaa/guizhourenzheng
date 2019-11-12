@@ -84,17 +84,12 @@
 <script>
 import TableTools from '@/components/Guizhou/tableTools'
 import { filterDataIds, valueToLabel, labelToValue, operateForm } from '@/utils/common'
-import { pagingMixin, treeMixin } from '@/utils/mixin'
+import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
 export default {
   name: 'target',
-  mixins: [pagingMixin, treeMixin],
+  mixins: [pagingMixin, treeMixin, tablePageMixin],
   data() {
     return {
-      loading: true,
-      emptyText: '',
-      headers: [], // 表头
-      tableList: [], // 表格内容
-      dialogFormVisible: false, // 是否显示创建/编辑弹窗
       form: {
         collegeInfo: [],
         target1: '',
@@ -119,9 +114,6 @@ export default {
           { required: true, message: '培养目标不能为空', trigger: 'blur' }
         ]
       },
-      isAdd: false,
-      isChoose: false,
-      formLabelWidth: '120px',
       currentRow: null,
       newCollegeInfo: [],
       newCollegeValue: []
@@ -135,12 +127,6 @@ export default {
   components: { TableTools },
   created() {
     this.getTableData('getTrainTarget')
-    this.$http.getRequest('getChooseData').then(res => {
-      if (res.status === 1) {
-        console.log(res)
-        this.treeList = res.schoolData
-      }
-    })
   },
   methods: {
     /* 点击工具栏创建 */

@@ -7,6 +7,33 @@ export const treeMixin = {
         label: 'label'
       }
     }
+  },
+  created() {
+    this.$http.getRequest('getChooseData').then(res => {
+      if (res.status === 1) {
+        this.treeList = res.schoolData
+      }
+    })
+  }
+}
+
+export const tablePageMixin = {
+  data() {
+    return {
+      loading: true,
+      emptyText: '暂无数据',
+      headers: [],
+      tableList: [],
+      dialogFormVisible: false,
+      isAdd: false,
+      isChoose: false,
+      formLabelWidth: '120px'
+    }
+  },
+  computed: {
+    pagingTabelData() {
+      return this.tableList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+    }
   }
 }
 
@@ -16,11 +43,6 @@ export const pagingMixin = {
       total: 0,
       currentPage: 1,
       pageSize: 10
-    }
-  },
-  computed: {
-    pagingTabelData() {
-      return this.tableList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
     }
   },
   methods: {

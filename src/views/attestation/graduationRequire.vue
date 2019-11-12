@@ -24,7 +24,7 @@
           <!--表格-->
           <el-table
             v-loading="loading"
-            :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+            :data="pagingTabelData"
             highlight-current-row
             @current-change="handleCurrentRow"
             border
@@ -86,18 +86,12 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds, valueToLabel, labelToValue, targetsFilter, operateForm } from '@/utils/common'
-  import { pagingMixin, treeMixin } from '@/utils/mixin'
+  import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
     name: 'graduation-require',
-    mixins: [pagingMixin, treeMixin],
+    mixins: [pagingMixin, treeMixin, tablePageMixin],
     data() {
       return {
-        loading: true,
-        emptyText: '暂无数据',
-        headers: [], // 表头
-        tableList: [], // 表格内容
-        dialogFormVisible: false, // 是否现在创建/编辑弹窗
-        isAdd: false,
         targetOptions: ['毕业培养目标1', '毕业培养目标2', '毕业培养目标3', '毕业培养目标4'], // 培养目标列表
         targets: [], // 表单中选中的培养目标
         form: {
@@ -120,9 +114,6 @@
           ]
         },
         school: [],
-        chooseTree: [], // 树形控件搜索
-        isChoose: false,
-        formLabelWidth: '120px',
         currentRow: null,
         newCollegeInfo: [],
         newCollegeValue: [],
@@ -132,11 +123,6 @@
     components: { TableTools },
     created() {
       this.getTableData('getGraduationRequire')
-      this.$http.getRequest('getChooseData').then(res => {
-        if (res.status === 1) {
-          this.treeList = res.schoolData
-        }
-      })
     },
     methods: {
       changeJiLian(val) {
