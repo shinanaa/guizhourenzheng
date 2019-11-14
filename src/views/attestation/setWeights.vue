@@ -46,29 +46,19 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds } from '@/utils/common'
+  import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
+    mixins: [pagingMixin, treeMixin, tablePageMixin],
     data: function() {
       return {
-        loading: true,
-        headers: [],
         requires: [], // 毕业要求选项
         setHeaders: [], // 设置权重表格表头（弹窗中）
-        tableList: [], // 表格内容
         setTableList: [], // 设置权重表格内容（弹窗中）
-        currentPage: 1,
         setTotal: 0, // 设置权重表格内容总条数（弹窗中）
-        dialogFormVisible: false, // 是否现在创建/编辑弹窗
         dialogWeightsVisible: false, // 是否显示权重设置弹窗
         form: {
           region: ''
         },
-        treeList: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        isChoose: false,
-        formLabelWidth: '120px',
         position: 0,
         sumArr: [],
         setAll: false
@@ -76,22 +66,8 @@
     },
     created() {
       this.getTableData('getCourses')
-      // 获取院系树的数据
-      this.$http.getRequest('getChooseData').then(res => {
-        if (res.status === 1) {
-          this.treeList = res.schoolData
-        }
-      })
     },
     methods: {
-      /* 分页 val（每页显示数据）*/
-      handleSizeChange(val) {
-        this.pagesSize = val
-      },
-      /* 分页 当前显示的页码*/
-      handleCurrentChange(val) {
-        this.currentPage = val
-      },
       // 点击工具栏查询
       searchData(param) {
         const oldIds = this.$refs.tree.getCheckedNodes() // 获取所有的选中状态的数据
@@ -180,18 +156,6 @@
           item.weight = null
         })
       },
-      // 弹窗形式，显示弹窗内容
-      // setWeights(index, rows) {
-      //   this.dialogWeightsVisible = true
-      //   var that = this
-      //   this.$http.getRequest('getCourses', rows[index]).then(res => {
-      //     if (res.code === 1) {
-      //       that.setHeaders = res.headers
-      //       that.setTableList = res.resultList
-      //       that.setTotal = res.resultList.length
-      //     }
-      //   })
-      // },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
         var that = this

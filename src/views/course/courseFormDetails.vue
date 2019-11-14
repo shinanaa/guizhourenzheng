@@ -10,8 +10,7 @@
           v-loading="loading"
           :data="courseDetailsTable"
           :span-method="mergeSpan"
-          border
-          style="width: 100%;">
+          border>
           <el-table-column label="总评成绩组成">
             <el-table-column
               prop="type"
@@ -187,5 +186,17 @@
       p{display: inline-block;}
       button{margin-right: 15px;}
     }
+  }
+  /deep/ table,tbody,thead {
+    width: 100% !important;
+  }
+  /deep/ colgroup {
+    position: absolute;
+    width: 100% !important;
+    display: flex;
+  }
+  /deep/ col {
+    flex: 1;
+    text-align: center;
   }
 </style>

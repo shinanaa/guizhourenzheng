@@ -9,8 +9,7 @@
         <el-table
           v-loading="loading"
           :data="courseDetailsTable"
-          border
-          style="width: 100%;">
+          border>
           <template v-for="header in headers">
             <el-table-column
               :prop="header.prop"
@@ -176,5 +175,17 @@ export default {
     .el-form-item{
       p{margin: 0;}
     }
+  }
+  /deep/ table,tbody,thead {
+    width: 100% !important;
+  }
+  /deep/ colgroup {
+    position: absolute;
+    width: 100% !important;
+    display: flex;
+  }
+  /deep/ col {
+    flex: 1;
+    text-align: center;
   }
 </style>

@@ -68,25 +68,14 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds } from '@/utils/common'
+  import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
+    mixins: [pagingMixin, treeMixin, tablePageMixin],
     data: function() {
       return {
-        loading: false,
         emptyText: '请先选择院系及专业，进行查询',
         requires: [], // 毕业要求选项
         currentCourses: [], // 当前专业的所有课程
-        headers: [],
-        tableList: [], // 表格内容
-        currentPage: 1,
-        total: 0,
-        pagesize: 10, // 表格列表每页显示条数
-        dialogFormVisible: false, // 是否现在创建/编辑弹窗
-        treeList: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        isChoose: false,
         formLabelWidth: '220px',
         currentRow: null
       }
@@ -101,18 +90,6 @@
       })
     },
     methods: {
-      /* 分页 val（每页显示数据）*/
-      handleSizeChange(val) {
-        this.pagesize = val
-      },
-      /* 分页 当前显示的页码*/
-      handleCurrentChange(val) {
-        this.currentPage = val
-      },
-      /* 学院选择树*/
-      handleNodeClick(data) {
-        // this.isChoose = false;
-      },
       /* 点击工具栏编辑 */
       editContent(row) {
         this.dialogFormVisible = true
