@@ -47,7 +47,7 @@
         <el-dialog title="编辑指标点对应的课程" :visible.sync="dialogFormVisible" :before-close="resetForm">
           <el-form ref="dialogForm">
             <el-form-item class="formCenter" :class="item.value !== '' ? 'selected' : ''" label-position="center" v-for="(item,index) in currentCourses" :label="item.label" :label-width="formLabelWidth" :key="index" ref="formItem">
-              <el-select placeholder="难度" v-model="item.value" @change="chooseCourses(item.value)">
+              <el-select placeholder="难度" v-model="item.value">
                 <el-option label="不设置" value=""></el-option>
                 <el-option label="H" value="H"></el-option>
                 <el-option label="M" value="M"></el-option>
@@ -136,9 +136,6 @@
         this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
         this.majorList = []
-      },
-      chooseCourses(values) {
-        console.log(values)
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {
