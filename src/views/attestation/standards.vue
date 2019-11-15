@@ -93,19 +93,12 @@
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
   import { filterDataIds, operateForm } from '@/utils/common'
+  import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
     name: 'standards',
+    mixins: [pagingMixin, treeMixin, tablePageMixin],
     data() {
       return {
-        loading: true,
-        emptyText: '',
-        headers: [], // 表头
-        tableList: [], // 表格内容
-        currentPage: 1, // 分页 当前显示页
-        total: 0, // 分页 总条数
-        pageSize: 10, // 分页 表格列表每页显示条数
-        dialogFormVisible: false, // 是否现在创建/编辑弹窗
-        isAdd: false,
         form: {
           college: '',
           major: '',
@@ -130,15 +123,7 @@
             { required: true, message: '请输入认证标准', trigger: 'blur' }
           ]
         },
-        treeList: [],
         majorList: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        chooseTree: [], // 树形控件搜索
-        isChoose: false,
-        formLabelWidth: '120px',
         currentRow: null,
         requireList: []
       }
@@ -146,21 +131,8 @@
     components: { TableTools },
     created() {
       this.getTableData('getStandards')
-      this.$http.getRequest('getChooseData').then(res => {
-        if (res.status === 1) {
-          this.treeList = res.schoolData
-        }
-      })
     },
     methods: {
-      /* 分页 val（每页显示数据）*/
-      handleSizeChange(val) {
-        this.pageSize = val
-      },
-      /* 分页 当前显示的页码*/
-      handleCurrentChange(val) {
-        this.currentPage = val
-      },
       /* 点击工具栏创建 */
       createdContent() {
         this.dialogFormVisible = true

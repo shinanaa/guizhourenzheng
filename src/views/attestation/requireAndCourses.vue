@@ -15,7 +15,7 @@
         <!--表格-->
         <el-table
           v-loading="loading"
-          :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
           border
           style="width: 100%;text-align: center;">
           <template v-for="header in headers">
@@ -39,7 +39,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
-          :page-size="pagesize"
+          :page-size="pageSize"
           layout="prev, pager, next, jumper"
           :total="total">
         </el-pagination>
@@ -73,6 +73,7 @@
     mixins: [pagingMixin, treeMixin, tablePageMixin],
     data: function() {
       return {
+        loading: false,
         emptyText: '请先选择院系及专业，进行查询',
         requires: [], // 毕业要求选项
         currentCourses: [], // 当前专业的所有课程
@@ -96,7 +97,6 @@
         for (let i = 0; i < this.currentCourses.length; i++) {
           for (const keys in row) {
             if (this.currentCourses[i].prop === keys) {
-              // this.currentCourses[i].value = row[keys]
               this.$set(this.currentCourses[i], 'value', row[keys])
             }
           }
