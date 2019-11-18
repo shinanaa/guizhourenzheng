@@ -34,6 +34,20 @@ export const tablePageMixin = {
     pagingTabelData() {
       return this.tableList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
     }
+  },
+  methods: {
+    // 方法封装 操作（添加/编辑/删除）表单
+    operateForm(url, params) {
+      this.$http.postRequest(url, params).then(res => {
+        if (res.status === 0) {
+          this.$message({
+            showClose: true,
+            message: res.msg,
+            type: 'success'
+          })
+        }
+      })
+    }
   }
 }
 

@@ -34,7 +34,7 @@
           <!--表格-->
           <el-table
             v-loading="loading"
-            :data="tableList.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="tableList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
             highlight-current-row
             @current-change="handleCurrentRow"
             border
@@ -52,12 +52,12 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-size="pagesize"
+            :page-size="pageSize"
             layout="prev, pager, next, jumper"
             :total="total">
           </el-pagination>
           <!--创建-->
-          <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
+          <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" :before-close="resetForm" >
             <el-form :model="form" :rules="rules" ref="dialogForm">
               <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
                 <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
@@ -112,19 +112,13 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds, operateForm } from '@/utils/common'
+  import { filterDataIds } from '@/utils/common'
   import echarts from 'echarts'
+  import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
+    mixins: [pagingMixin, treeMixin, tablePageMixin],
     data: function() {
       return {
-        loading: true,
-        headers: [],
-        tableList: [], // 表格内容
-        currentPage: 1,
-        total: 0,
-        pagesize: 10, // 表格列表每页显示条数
-        dialogFormVisible: false, // 是否现在创建/编辑弹窗
-        isAdd: false,
         form: {
           college: '',
           major: '',
@@ -261,14 +255,7 @@
             }
           ]
         },
-        treeList: [],
         majorList: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        isChoose: false,
-        formLabelWidth: '120px',
         require: [],
         currentRow: {
           schoolYear: '2018',
@@ -276,27 +263,17 @@
         }
       }
     },
-    created() {
-      // 获取院系树的数据
-      this.$http.getRequest('getChooseData').then(res => {
-        if (res.status === 1) {
-          this.treeList = res.schoolData
-        }
-      })
+    computed: {
+      formTitle() {
+        return this.isAdd ? '新增合格标准' : '修改合格标准'
+      }
     },
+    created() {},
     mounted() {
       this.getTableData('getEligibility')
     },
     components: { TableTools },
     methods: {
-      /* 分页 val（每页显示数据）*/
-      handleSizeChange(val) {
-        this.pagesize = val
-      },
-      /* 分页 当前显示的页码*/
-      handleCurrentChange(val) {
-        this.currentPage = val
-      },
       /* 学院选择树*/
       handleNodeClick(data) {
         this.isChoose = false
@@ -306,15 +283,14 @@
         this.dialogFormVisible = true
         this.isAdd = true
         this.form = {}
-        this.form.title = '新增毕业要求'
       },
       /* 点击工具栏编辑 */
       editContent() {
+        console.log(this.currentRow)
         if (this.currentRow) {
           this.dialogFormVisible = true
           this.isAdd = false
           this.form = this.currentRow
-          this.form.title = '修改毕业要求'
           for (let i = 0; i < this.treeList.length; i++) {
             if (this.treeList[i].label === this.form.college) {
               this.majorList = this.treeList[i].children
@@ -337,7 +313,7 @@
       // 点击工具栏删除
       deleteContent() {
         if (this.currentRow) {
-          operateForm('deleteDialog', this.currentRow.order)
+          this.operateForm('deleteDialog', this.currentRow.order)
           this.getTableData('getEligibility')
         } else {
           this.$message({
@@ -382,9 +358,9 @@
           if (valid) {
             this.dialogFormVisible = false
             if (this.isAdd) {
-              operateForm('addDialog', this.form)
+              this.operateForm('addDialog', this.form)
             } else {
-              operateForm('editDialog', this.form)
+              this.operateForm('editDialog', this.form)
             }
             this.getTableData('getEligibility')
             this.resetForm()

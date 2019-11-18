@@ -92,7 +92,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds, operateForm } from '@/utils/common'
+  import { filterDataIds } from '@/utils/common'
   import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
     name: 'standards',
@@ -168,7 +168,7 @@
       // 点击工具栏删除
       deleteContent() {
         if (this.currentRow) {
-          operateForm('deleteDialog', this.currentRow.order)
+          this.operateForm('deleteDialog', this.currentRow.order)
           this.getTableData('getStandards')
         } else {
           this.$message({
@@ -211,9 +211,9 @@
           if (valid) {
             this.dialogFormVisible = false
             if (this.isAdd) {
-              operateForm('addDialog', this.form)
+              this.operateForm('addDialog', this.form)
             } else {
-              operateForm('editDialog', this.form)
+              this.operateForm('editDialog', this.form)
             }
             this.getTableData('getStandards')
             this.resetForm()

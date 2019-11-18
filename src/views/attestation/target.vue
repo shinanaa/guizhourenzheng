@@ -83,7 +83,7 @@
 
 <script>
 import TableTools from '@/components/Guizhou/tableTools'
-import { filterDataIds, valueToLabel, labelToValue, operateForm } from '@/utils/common'
+import { filterDataIds, valueToLabel, labelToValue } from '@/utils/common'
 import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
 export default {
   name: 'target',
@@ -165,7 +165,7 @@ export default {
     // 点击工具栏删除
     deleteContent() {
       if (this.currentRow) {
-        operateForm('deleteDialog', this.currentRow.order)
+        this.operateForm('deleteDialog', this.currentRow.order)
         this.getTableData('getTrainTarget')
       } else {
         this.$message({
@@ -211,9 +211,9 @@ export default {
           valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
           params.newCollegeInfo = this.newCollegeInfo
           if (this.isAdd) {
-            operateForm('addDialog', params)
+            this.operateForm('addDialog', params)
           } else {
-            operateForm('editDialog', params)
+            this.operateForm('editDialog', params)
           }
           this.getTableData('getTrainTarget')
           this.resetForm()

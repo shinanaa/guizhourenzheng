@@ -51,7 +51,7 @@
             :total="total">
           </el-pagination>
           <!--创建/编辑-->
-          <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
+          <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" :before-close="resetForm" >
             <el-form :model="form" :rules="rules" ref="dialogForm">
               <el-form-item label="所属院系专业" :label-width="formLabelWidth" prop="collegeInfo">
                 <el-cascader
@@ -85,7 +85,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds, valueToLabel, labelToValue, targetsFilter, operateForm } from '@/utils/common'
+  import { filterDataIds, valueToLabel, labelToValue, targetsFilter } from '@/utils/common'
   import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
     name: 'graduation-require',
@@ -96,7 +96,6 @@
         targets: [], // 表单中选中的培养目标
         form: {
           collegeInfo: [],
-          title: '', // 弹窗标题
           order: '',
           number: '',
           require: '',
@@ -120,6 +119,11 @@
         requireList: []
       }
     },
+    computed: {
+      formTitle() {
+        return this.isAdd ? '新增毕业要求' : '修改毕业要求'
+      }
+    },
     components: { TableTools },
     created() {
       this.getTableData('getGraduationRequire')
@@ -132,7 +136,6 @@
       createdContent() {
         this.dialogFormVisible = true
         this.isAdd = true
-        this.form.title = '新增毕业要求'
       },
       /* 点击工具栏编辑 */
       editContent() {
@@ -150,7 +153,6 @@
           // // 从当前数据中过滤出不需要的值，并把需要的值给currentToFrom
           currentToFrom.collegeInfo = this.newCollegeValue
           this.form = currentToFrom
-          this.form.title = '修改毕业要求'
           try {
             this.$refs.dialogForm.resetFields()
           } catch (err) {
@@ -171,7 +173,7 @@
       // 点击工具栏删除
       deleteContent() {
         if (this.currentRow) {
-          operateForm('deleteDialog', this.currentRow.order)
+          this.operateForm('deleteDialog', this.currentRow.order)
           this.getTableData('getGraduationRequire')
         } else {
           this.$message({
@@ -218,9 +220,9 @@
             params.newCollegeInfo = this.newCollegeInfo
             params.targets = this.targets
             if (this.isAdd) {
-              operateForm('addDialog', params)
+              this.operateForm('addDialog', params)
             } else {
-              operateForm('editDialog', params)
+              this.operateForm('editDialog', params)
             }
             this.getTableData('getGraduationRequire')
             this.resetForm()

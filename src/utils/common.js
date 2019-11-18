@@ -1,5 +1,5 @@
-import Vue from 'vue'
-const v = new Vue()
+// import Vue from 'vue'
+// const v = new Vue()
 import XLSX from 'xlsx'
 import FileSaver from 'file-saver'
 // 院系以及专业选择树的查询提交数据过滤
@@ -74,19 +74,6 @@ export function targetsFilter(dataList) {
   //   Object.assign(item, targets)
   // })
   return dataList
-}
-
-// 方法封装 操作（添加/编辑/删除）表单
-export function operateForm(url, params) {
-  v.$http.postRequest(url, params).then(res => {
-    if (res.status === 0) {
-      v.$message({
-        showClose: true,
-        message: res.msg,
-        type: 'success'
-      })
-    }
-  })
 }
 
 // 报表下载
