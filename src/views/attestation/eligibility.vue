@@ -59,21 +59,10 @@
           <!--创建-->
           <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" :before-close="resetForm" >
             <el-form :model="form" :rules="rules" ref="dialogForm">
-              <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
-                <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
-                  <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
-                <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
-                  <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
-                <el-select v-model="form.schoolYear" placeholder="请选择学年">
-                  <el-option label="2018" value="2018"></el-option>
-                  <el-option label="2019" value="2019"></el-option>
-                </el-select>
+              <el-form-item label="院系信息" :label-width="formLabelWidth" prop="collegeInfo">
+                <el-cascader
+                  v-model="form.collegeInfo"
+                  :options="treeList"></el-cascader>
               </el-form-item>
               <el-form-item label="毕业要求一" :label-width="formLabelWidth" prop="require1">
                 <el-input type="number" v-model="form.require1" step="0.1" min="0.1" max="0.9"></el-input>
@@ -112,7 +101,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, valueToLabel, labelToValue } from '@/utils/common'
   import echarts from 'echarts'
   import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
@@ -120,9 +109,7 @@
     data: function() {
       return {
         form: {
-          college: '',
-          major: '',
-          schoolYear: '',
+          collegeInfo: [],
           require1: '',
           require2: '',
           require3: '',
@@ -133,14 +120,8 @@
           require8: ''
         },
         rules: {
-          college: [
-            { required: true, message: '请选择院系名称', trigger: 'change' }
-          ],
-          major: [
-            { required: true, message: '请选择专业名称', trigger: 'change' }
-          ],
-          schoolYear: [
-            { required: true, message: '请选择所属学年', trigger: 'change' }
+          collegeInfo: [
+            { required: true, message: '请选择院系相关信息', trigger: 'change' }
           ],
           require1: [
             { required: true, message: '毕业要求一不能为空', trigger: 'blur' },
@@ -255,12 +236,14 @@
             }
           ]
         },
-        majorList: [],
+        // majorList: [],
         require: [],
         currentRow: {
           schoolYear: '2018',
           major: ''
-        }
+        },
+        newCollegeInfo: [],
+        newCollegeValue: []
       }
     },
     computed: {
@@ -288,15 +271,13 @@
       editContent() {
         console.log(this.currentRow)
         if (this.currentRow) {
-          this.dialogFormVisible = true
           this.isAdd = false
-          this.form = this.currentRow
-          for (let i = 0; i < this.treeList.length; i++) {
-            if (this.treeList[i].label === this.form.college) {
-              this.majorList = this.treeList[i].children
-              break
-            }
-          }
+          this.dialogFormVisible = true
+          const { college, major, schoolYear, ...currentToFrom } = this.currentRow
+          labelToValue(this.treeList, college, major, schoolYear, this.newCollegeValue)
+          currentToFrom.collegeInfo = this.newCollegeValue
+          this.form = currentToFrom
+          console.log(this.form)
         } else {
           this.$message({
             showClose: true,
@@ -357,14 +338,17 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
+            // 过滤数据
+            const { collegeInfo, ...params } = this.form
+            valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
+            params.newCollegeInfo = this.newCollegeInfo
             if (this.isAdd) {
-              this.operateForm('addDialog', this.form)
+              this.operateForm('addDialog', params)
             } else {
-              this.operateForm('editDialog', this.form)
+              this.operateForm('editDialog', params)
             }
             this.getTableData('getEligibility')
             this.resetForm()
-            console.log(this.require)
           } else {
             return false
           }
@@ -376,11 +360,7 @@
         this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
         this.require = []
-        this.majorList = []
-      },
-      // 弹框选择院校
-      selectCollege(data) {
-        this.majorList = this.treeList[data].children
+        // this.majorList = []
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
