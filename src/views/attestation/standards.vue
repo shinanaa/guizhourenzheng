@@ -52,23 +52,12 @@
           :total="total">
         </el-pagination>
         <!--创建/编辑-->
-        <el-dialog :title="form.title" :visible.sync="dialogFormVisible" :before-close="resetForm" >
+        <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" :before-close="resetForm" >
           <el-form :model="form" :rules="rules" ref="dialogForm">
-            <el-form-item label="院系" :label-width="formLabelWidth" prop="college">
-              <el-select v-model="form.college" placeholder="请选择学院" @change="selectCollege">
-                <el-option v-for="(c, index) in treeList" :label="c.label" :value="index" :key="index"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="专业" :label-width="formLabelWidth" prop="major">
-              <el-select v-model="form.major" placeholder="请选择专业" no-data-text="请先选择院系">
-                <el-option v-for="(m, index) in majorList" :label="m.label" :value="index" :key="index"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="学年" :label-width="formLabelWidth" prop="schoolYear">
-              <el-select v-model="form.schoolYear" placeholder="请选择学年">
-                <el-option label="2018" value="2018"></el-option>
-                <el-option label="2019" value="2019"></el-option>
-              </el-select>
+            <el-form-item label="所属院系专业" :label-width="formLabelWidth" prop="collegeInfo">
+              <el-cascader
+                v-model="form.collegeInfo"
+                :options="treeList"></el-cascader>
             </el-form-item>
             <el-form-item label="专业毕业要求" :label-width="formLabelWidth" prop="require">
               <el-select v-model="form.require" placeholder="请选择要求">
@@ -92,7 +81,7 @@
 
 <script>
   import TableTools from '@/components/Guizhou/tableTools'
-  import { filterDataIds } from '@/utils/common'
+  import { filterDataIds, labelToValue, valueToLabel } from '@/utils/common'
   import { pagingMixin, treeMixin, tablePageMixin } from '@/utils/mixin'
   export default {
     name: 'standards',
@@ -100,21 +89,13 @@
     data() {
       return {
         form: {
-          college: '',
-          major: '',
-          schoolYear: '',
+          collegeInfo: [],
           require: '',
           standards: ''
         },
         rules: {
-          college: [
-            { required: true, message: '请选择院系名称', trigger: 'change' }
-          ],
-          major: [
-            { required: true, message: '请选择专业名称', trigger: 'change' }
-          ],
-          schoolYear: [
-            { required: true, message: '请选择所属学年', trigger: 'change' }
+          collegeInfo: [
+            { required: true, message: '请选择院系相关信息', trigger: 'change' }
           ],
           require: [
             { required: true, message: '请选择专业毕业要求', trigger: 'change' }
@@ -123,9 +104,15 @@
             { required: true, message: '请输入认证标准', trigger: 'blur' }
           ]
         },
-        majorList: [],
         currentRow: null,
+        newCollegeInfo: [],
+        newCollegeValue: [],
         requireList: []
+      }
+    },
+    computed: {
+      formTitle() {
+        return this.isAdd ? '新增认证标准' : '修改认证标准'
       }
     },
     components: { TableTools },
@@ -138,20 +125,22 @@
         this.dialogFormVisible = true
         this.isAdd = true
         this.form = {}
-        this.form.title = '新增认证标准'
       },
       /* 点击工具栏编辑 */
       editContent() {
         if (this.currentRow) {
           this.dialogFormVisible = true
           this.isAdd = false
-          this.form = this.currentRow
-          this.form.title = '修改认证标准'
-          for (let i = 0; i < this.treeList.length; i++) {
-            if (this.treeList[i].label === this.form.college) {
-              this.majorList = this.treeList[i].children
-              break
-            }
+          const { college, major, schoolYear, ...currentToFrom } = this.currentRow
+          // // 将当前数据的院系相关值转换为级联选择器可显示的值
+          labelToValue(this.treeList, college, major, schoolYear, this.newCollegeValue)
+          // // 从当前数据中过滤出不需要的值，并把需要的值给currentToFrom
+          currentToFrom.collegeInfo = this.newCollegeValue
+          this.form = currentToFrom
+          try {
+            this.$refs.dialogForm.resetFields()
+          } catch (err) {
+            console.log('出错啦')
           }
         } else {
           this.$message({
@@ -210,10 +199,13 @@
         this.$refs.dialogForm.validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
+            const { collegeInfo, ...params } = this.form
+            valueToLabel(this.treeList, collegeInfo, this.newCollegeInfo)
+            params.newCollegeInfo = this.newCollegeInfo
             if (this.isAdd) {
-              this.operateForm('addDialog', this.form)
+              this.operateForm('addDialog', params)
             } else {
-              this.operateForm('editDialog', this.form)
+              this.operateForm('editDialog', params)
             }
             this.getTableData('getStandards')
             this.resetForm()
@@ -225,13 +217,8 @@
       // 弹窗点击取消重置form表单
       resetForm() {
         this.dialogFormVisible = false
-        this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
+        this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
         this.form = {}
-        this.majorList = []
-      },
-      // 弹框选择院校
-      selectCollege(data) {
-        this.majorList = this.treeList[data].children
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName) {
