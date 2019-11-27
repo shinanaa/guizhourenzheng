@@ -76,13 +76,12 @@
         loading: false,
         emptyText: '请先选择院系及专业，进行查询',
         requires: [], // 毕业要求选项
-        currentCourses: [], // 当前专业的所有课程
+        currentCourses: [], // 当前专业的所有课程 表头
         formLabelWidth: '220px',
         currentRow: null
       }
     },
     created() {
-      // this.getTableData('getRequireCourses')
       this.$http.getRequest('getChooseData').then(res => {
         if (res.status === 1) {
           this.treeList = res.schoolData
@@ -91,17 +90,6 @@
       })
     },
     methods: {
-      /* 点击工具栏编辑 */
-      editContent(row) {
-        this.dialogFormVisible = true
-        for (let i = 0; i < this.currentCourses.length; i++) {
-          for (const keys in row) {
-            if (this.currentCourses[i].prop === keys) {
-              this.$set(this.currentCourses[i], 'value', row[keys])
-            }
-          }
-        }
-      },
       // 点击工具栏查询
       searchData(param) {
         this.loading = true
@@ -115,7 +103,7 @@
           searchRequest.inputText = param
           searchRequest.courses = newIds
           console.log(searchRequest)
-          this.getTableData('getRequireCourses')
+          this.getTableData('getRequireCourses', searchRequest)
         } else {
           this.$message({
             showClose: true,
@@ -133,9 +121,7 @@
       // 弹窗点击取消重置form表单
       resetForm() {
         this.dialogFormVisible = false
-        this.$refs.dialogForm.clearValidate() // 取消验证状态颜色  resetFields // 清空验证表单所有，包括颜色和内容
-        this.form = {}
-        this.majorList = []
+        this.$refs.dialogForm.resetFields() // clearValidate取消验证状态颜色   // 清空验证表单所有，包括颜色和内容
       },
       // 方法封装 获取页面全部数据
       getTableData(urlName, params) {

@@ -257,12 +257,6 @@
     },
     components: { TableTools },
     methods: {
-      /* 点击工具栏创建 */
-      createdContent() {
-        this.dialogFormVisible = true
-        this.isAdd = true
-        this.form = {}
-      },
       /* 点击工具栏编辑 */
       editContent() {
         if (JSON.stringify(this.currentRow) !== '{}' && this.currentRow) {

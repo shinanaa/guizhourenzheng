@@ -133,10 +133,10 @@
         console.log(val)
       },
       /* 点击工具栏创建 */
-      createdContent() {
-        this.dialogFormVisible = true
-        this.isAdd = true
-      },
+      // createdContent() {
+      //   this.dialogFormVisible = true
+      //   this.isAdd = true
+      // },
       /* 点击工具栏编辑 */
       editContent() {
         if (this.currentRow) {

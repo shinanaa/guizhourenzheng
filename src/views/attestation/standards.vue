@@ -121,11 +121,10 @@
     },
     methods: {
       /* 点击工具栏创建 */
-      createdContent() {
-        this.dialogFormVisible = true
-        this.isAdd = true
-        this.form = {}
-      },
+      // createdContent() {
+      //   this.dialogFormVisible = true
+      //   this.isAdd = true
+      // },
       /* 点击工具栏编辑 */
       editContent() {
         if (this.currentRow) {

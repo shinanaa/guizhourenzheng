@@ -47,6 +47,11 @@ export const tablePageMixin = {
           })
         }
       })
+    },
+    /* 点击工具栏创建 */
+    createdContent() {
+      this.dialogFormVisible = true
+      this.isAdd = true
     }
   }
 }
