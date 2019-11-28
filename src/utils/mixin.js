@@ -33,6 +33,9 @@ export const tablePageMixin = {
   computed: {
     pagingTabelData() {
       return this.tableList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+    },
+    total() {
+      return this.tableList.length
     }
   },
   methods: {
@@ -59,7 +62,6 @@ export const tablePageMixin = {
 export const pagingMixin = {
   data() {
     return {
-      total: 0,
       currentPage: 1,
       pageSize: 10
     }

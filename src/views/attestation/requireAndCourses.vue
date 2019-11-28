@@ -90,6 +90,17 @@
       })
     },
     methods: {
+      /* 点击工具栏编辑 */
+      editContent(row) {
+        this.dialogFormVisible = true
+        for (let i = 0; i < this.currentCourses.length; i++) {
+          for (const keys in row) {
+            if (this.currentCourses[i].prop === keys) {
+              this.$set(this.currentCourses[i], 'value', row[keys])
+            }
+          }
+        }
+      },
       // 点击工具栏查询
       searchData(param) {
         this.loading = true
@@ -130,7 +141,7 @@
           if (res.code === 1) {
             that.headers = res.headers
             that.tableList = res.resultList
-            that.total = res.resultList.length
+            // that.total = res.resultList.length
             that.currentCourses = res.headers.slice(1)
             that.loading = false
           } else {

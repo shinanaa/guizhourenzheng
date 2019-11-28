@@ -188,7 +188,7 @@ export default {
         this.$http.getRequest('getSearchData', param).then(res => {
           if (res.code === 1) {
             this.tableList = res.resultList
-            this.total = res.resultList.length
+            // this.total = res.resultList.length
             this.emptyText = '无相关内容，请您调整查询内容'
           }
         })
@@ -234,7 +234,7 @@ export default {
         if (res.code === 1) {
           that.headers = res.headers
           that.tableList = res.resultList
-          that.total = res.resultList.length
+          // that.total = res.resultList.length
           that.loading = false
         } else {
           that.emptyText = '暂无数据'
