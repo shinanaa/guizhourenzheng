@@ -141,7 +141,7 @@
           if (res.code === 1) {
             that.headers = res.headers
             that.tableList = res.resultList
-            // that.total = res.resultList.length
+            that.total = res.resultList.length
             that.currentCourses = res.headers.slice(1)
             that.loading = false
           } else {

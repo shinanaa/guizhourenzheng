@@ -1,7 +1,7 @@
 {
   "name": "admin-system",
   "version": "1.0.0",
-  "description": "银多后台统计系统",
+  "description": "后台统计系统",
   "author": "liuchi <liuchi188@163.com.com>",
   "license": "MIT",
   "scripts": {
